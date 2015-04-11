@@ -2,35 +2,51 @@ package com.jawnnypoo.physicslayout.sample;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+
+import com.jawnnypoo.physicslayout.PhysicsLayout;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    PhysicsLayout physicsLayout;
+    SwitchCompat physicsSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        physicsLayout = (PhysicsLayout) findViewById(R.id.physics_layout);
+        physicsSwitch = (SwitchCompat) findViewById(R.id.physics_switch);
+        physicsSwitch.setChecked(true);
+        physicsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    physicsLayout.enablePhysics();
+                } else {
+                    physicsLayout.disablePhysics();
+                }
+            }
+        });
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_reset) {
             return true;
         }
 

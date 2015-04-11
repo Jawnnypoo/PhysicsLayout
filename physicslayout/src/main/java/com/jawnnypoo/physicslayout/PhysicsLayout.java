@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import org.jbox2d.collision.shapes.ChainShape;
@@ -27,7 +25,9 @@ public class PhysicsLayout extends RelativeLayout {
     private static final String TAG = PhysicsLayout.class.getSimpleName();
 
     private static final float EARTH_GRAVITY = 9.8f;
-    private static final int RENDER_TO_PHYSICS_RATIO = 100;
+    private static final int RENDER_TO_PHYSICS_RATIO = 1;
+
+    private static final float FRAME_RATE = 1/60f;
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 5;
 
@@ -37,8 +37,6 @@ public class PhysicsLayout extends RelativeLayout {
     private int width;
     private int height;
     private long lastDrawTime = System.currentTimeMillis();
-
-    private ImageView testView;
 
     public PhysicsLayout(Context context) {
         super(context);
@@ -62,12 +60,7 @@ public class PhysicsLayout extends RelativeLayout {
     }
 
     private void init() {
-        testView = new ImageView(getContext());
-        ViewGroup.LayoutParams params =
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        testView.setLayoutParams(params);
-        testView.setImageResource(R.drawable.ic_test_image);
-        addView(testView);
+
     }
 
     @Override
@@ -85,23 +78,8 @@ public class PhysicsLayout extends RelativeLayout {
         super.onLayout(changed, l, t, r, b);
         //TODO add views to world as they are laid out
         for (int i = 0; i < getChildCount(); i++) {
-
+            createBody(getChildAt(i));
         }
-    }
-
-    @Override
-    public void addView(View child) {
-        super.addView(child);
-    }
-
-    @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        super.addView(child, index, params);
-    }
-
-    @Override
-    public void addView(View child, int width, int height) {
-        super.addView(child, width, height);
     }
 
     public void enablePhysics() {
@@ -115,6 +93,10 @@ public class PhysicsLayout extends RelativeLayout {
 
     //TODO traverse children and readd to world
     private void createWorld(int width, int height) {
+        //Null out all the bodies
+        for (int i = 0; i < getChildCount(); i++) {
+           getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
+        }
         Log.d(TAG, "createWorld");
         //TODO clear all bodies in the views
         //bodies.clear();
@@ -125,7 +107,7 @@ public class PhysicsLayout extends RelativeLayout {
                 new Vec2(pxToM(width), 0)
         });
 
-        createBody(testView);
+        //createBody(testView);
     }
 
     private void createBound(Vec2[] verts)
@@ -167,7 +149,7 @@ public class PhysicsLayout extends RelativeLayout {
         //Create Player
         BodyDef aboutPlayer = new BodyDef();
         aboutPlayer.type = BodyType.DYNAMIC; //movable
-        aboutPlayer.position.set(0.0f, 200.0f);
+        aboutPlayer.position.set(0.0f, 0.0f);
         PolygonShape playerBox = new PolygonShape();
         playerBox.setAsBox(10.0f, 10.0f);
         FixtureDef fixtureDef = new FixtureDef();
@@ -177,7 +159,7 @@ public class PhysicsLayout extends RelativeLayout {
 
         Body body  = world.createBody(aboutPlayer);
         body.createFixture(fixtureDef);
-        testView.setTag(R.id.physics_layout_body_tag, body);
+        view.setTag(R.id.physics_layout_body_tag, body);
     }
 
     private Vec2 getWorldPositionFromView(View view) {
@@ -188,7 +170,7 @@ public class PhysicsLayout extends RelativeLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (enablePhysics) {
-            world.step(0.01666667F, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+            world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
             View view;
             Body body;
             for (int i = 0; i < getChildCount(); i++) {
@@ -198,10 +180,10 @@ public class PhysicsLayout extends RelativeLayout {
                     Log.d(TAG, "Position for " + i + " :" + body.getPosition());
 
                     //TODO figure out good ratio for mToPx
-//                    view.setX(mToPx(body.getPosition().x));
-//                    view.setY(mToPx(body.getPosition().y));
-                    view.setX(body.getPosition().x);
-                    view.setY(body.getPosition().y);
+                    view.setTranslationX(mToPx(body.getPosition().x));
+                    view.setTranslationY(mToPx(body.getPosition().y));
+//                    view.setX(body.getPosition().x);
+//                    view.setY(body.getPosition().y);
                 }
                 //view.setY(view.getY()+1);
             }
