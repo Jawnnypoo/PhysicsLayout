@@ -3,6 +3,8 @@ package com.jawnnypoo.physicslayout;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,8 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 
+import java.util.ArrayList;
+
 /**
  * Created by Jawn on 4/9/2015.
  */
@@ -25,18 +29,19 @@ public class PhysicsLayout extends RelativeLayout {
     private static final String TAG = PhysicsLayout.class.getSimpleName();
 
     private static final float EARTH_GRAVITY = 9.8f;
-    private static final int RENDER_TO_PHYSICS_RATIO = 1;
+    //10 pixels for every meter
+    private static final int RENDER_TO_PHYSICS_RATIO = 10;
 
     private static final float FRAME_RATE = 1/60f;
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 5;
 
+    private Paint debugPaint;
     private World world;
-    //private ArrayList<Body> bodies = new ArrayList<>();
+    private ArrayList<Body> bounds = new ArrayList<>();
     private boolean enablePhysics;
     private int width;
     private int height;
-    private long lastDrawTime = System.currentTimeMillis();
 
     public PhysicsLayout(Context context) {
         super(context);
@@ -60,15 +65,17 @@ public class PhysicsLayout extends RelativeLayout {
     }
 
     private void init() {
-
+        debugPaint = new Paint();
+        debugPaint.setColor(Color.RED);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        Log.d(TAG, "onSizeChanged");
         width = w;
         height = h;
-        createWorld(w,h);
+        createWorld();
         //TODO only do this if configured
         enablePhysics();
     }
@@ -76,7 +83,7 @@ public class PhysicsLayout extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        //TODO add views to world as they are laid out
+        Log.d(TAG, "onLayout");
         for (int i = 0; i < getChildCount(); i++) {
             createBody(getChildAt(i));
         }
@@ -91,26 +98,68 @@ public class PhysicsLayout extends RelativeLayout {
         enablePhysics = false;
     }
 
-    //TODO traverse children and readd to world
-    private void createWorld(int width, int height) {
+    public void setGravity(Vec2 gravity) {
+        world.setGravity(gravity);
+    }
+
+    private void createWorld() {
         //Null out all the bodies
         for (int i = 0; i < getChildCount(); i++) {
            getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
         }
+        bounds.clear();
         Log.d(TAG, "createWorld");
-        //TODO clear all bodies in the views
+        //TODO do we need to remove the old views from the world?
         //bodies.clear();
         world = new World(new Vec2(0, EARTH_GRAVITY));
-        //top left to right bound
-        createBound(new Vec2[] {
-                new Vec2(0, 0),
-                new Vec2(pxToM(width), 0)
-        });
-
-        //createBody(testView);
+        addBounds();
     }
 
-    private void createBound(Vec2[] verts)
+    private void addBounds() {
+        Body bottomBound = createBound(new Vec2[] { new Vec2(0.0F, pxToM(height)), new Vec2(pxToM(width), pxToM(height)) });
+        bottomBound.setUserData(new PhysicsData(width, 4));
+        bounds.add(bottomBound);
+        //createBound(new Vec2[] { new Vec2(0.0F, 0.0F), new Vec2(pxToM(width), 0.0F) });
+        //createBound(new Vec2[] { new Vec2(pxToM(width), 0.0F), new Vec2(pxToM(width), pxToM(height)) });
+        Body leftBound = createBound(new Vec2[]{new Vec2(0.0F, 0.0F), new Vec2(0.0F, pxToM(height))});
+        leftBound.setUserData(new PhysicsData(1, height));
+        bounds.add(leftBound);
+//        //top left to top right bound
+//        createBound(new Vec2[] {
+//                new Vec2(0, 0),
+//                new Vec2(pxToM(width), 0)
+//        });
+//
+//        //top right to bottom right bound
+//        createBound(new Vec2[] {
+//                new Vec2(pxToM(width), 0),
+//                new Vec2(pxToM(width), pxToM(height))
+//        });
+//
+//        //bottom right to bottom left bound
+//        createBound(new Vec2[] {
+//                new Vec2(pxToM(width), pxToM(height)),
+//                new Vec2(0, pxToM(height))
+//        });
+//
+//        //bottom left to top left bound
+//        createBound(new Vec2[] {
+//                new Vec2(0, pxToM(height)),
+//                new Vec2(0, 0)
+//        });
+    }
+
+    private void removeBounds() {
+        for (Body body : bounds) {
+            world.destroyBody(body);
+        }
+    }
+
+    public void resetPhysics() {
+        createWorld();
+    }
+
+    private Body createBound(Vec2[] verts)
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
@@ -125,6 +174,7 @@ public class PhysicsLayout extends RelativeLayout {
         //localBody.setUserData(new AttendeeHeadData(null, false, 0.0F, null));
         //define the fixture for the body that we added to the world
         body.createFixture(fixtureDef);
+        return body;
     }
 
     private void createBody(View view) {
@@ -149,16 +199,20 @@ public class PhysicsLayout extends RelativeLayout {
         //Create Player
         BodyDef aboutPlayer = new BodyDef();
         aboutPlayer.type = BodyType.DYNAMIC; //movable
-        aboutPlayer.position.set(0.0f, 0.0f);
+        aboutPlayer.position.set(pxToM(view.getX()), pxToM(view.getY()));
         PolygonShape playerBox = new PolygonShape();
-        playerBox.setAsBox(10.0f, 10.0f);
+        int width = (int) pxToM(view.getWidth());
+        int height = (int) pxToM(view.getHeight());
+        playerBox.setAsBox(width, height);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = playerBox;
-        fixtureDef.density = 1.0f;
+        fixtureDef.density = 0.5f;
         fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.5f;
 
         Body body  = world.createBody(aboutPlayer);
         body.createFixture(fixtureDef);
+        body.setUserData(new PhysicsData(width, height));
         view.setTag(R.id.physics_layout_body_tag, body);
     }
 
@@ -173,19 +227,30 @@ public class PhysicsLayout extends RelativeLayout {
             world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
             View view;
             Body body;
+            PhysicsData data;
             for (int i = 0; i < getChildCount(); i++) {
                 view = getChildAt(i);
                 body = (Body) view.getTag(R.id.physics_layout_body_tag);
                 if (body != null) {
+                    data = (PhysicsData) body.getUserData();
                     Log.d(TAG, "Position for " + i + " :" + body.getPosition());
 
                     //TODO figure out good ratio for mToPx
-                    view.setTranslationX(mToPx(body.getPosition().x));
-                    view.setTranslationY(mToPx(body.getPosition().y));
+                    view.setTranslationX(mToPx(body.getPosition().x) - mToPx(data.width/2));
+                    view.setTranslationY(mToPx(body.getPosition().y) - mToPx(data.height/2));
 //                    view.setX(body.getPosition().x);
 //                    view.setY(body.getPosition().y);
                 }
                 //view.setY(view.getY()+1);
+            }
+            PhysicsData physicsData;
+            for (Body bound : bounds) {
+                physicsData = (PhysicsData) bound.getUserData();
+                canvas.drawRect(bound.getPosition().x,
+                        bound.getPosition().y,
+                        bound.getPosition().x + physicsData.width,
+                        bound.getPosition().y + physicsData.height,
+                        debugPaint);
             }
             invalidate();
         }
@@ -199,7 +264,22 @@ public class PhysicsLayout extends RelativeLayout {
         return pixels / RENDER_TO_PHYSICS_RATIO;
     }
 
+    /**
+     * Allows us to store needed data on a physics body,
+     */
     private static class PhysicsData {
+        public int width;
+        public int height;
+
+        /**
+         * Init physics data
+         * @param width in meters
+         * @param height in meters
+         */
+        public PhysicsData(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
 
     }
 }

@@ -47,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_reset) {
+            physicsLayout.resetPhysics();
             return true;
         }
 
