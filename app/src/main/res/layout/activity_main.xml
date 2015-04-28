@@ -16,8 +16,16 @@
         android:background="@android:color/holo_blue_bright">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/asdf"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_launcher"/>
+
+        <ImageView
+            android:id="@+id/hersa"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginLeft="100dp"
             android:src="@drawable/ic_launcher"/>
 
         </com.jawnnypoo.physicslayout.PhysicsLayout>
@@ -25,8 +33,24 @@
     <android.support.v7.widget.SwitchCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/abc_control_padding_material"
+        android:padding="16dp"
         android:text="Physics"
+        android:textSize="22sp"
         android:id="@+id/physics_switch" />
+
+    <android.support.v7.widget.SwitchCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Fling"
+        android:textSize="22sp"
+        android:id="@+id/fling_switch" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Random Impulse"
+        android:id="@+id/impulse_button" />
 
 </LinearLayout>
