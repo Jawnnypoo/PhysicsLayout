@@ -196,17 +196,17 @@ public class PhysicsLayout extends RelativeLayout {
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.5f;
 
-        bodyDef.position.set(0, pxToM(height + boundSize/2));
-        Body bottomBody = world.createBody(bodyDef);
-        bottomBody.createFixture(fixtureDef);
-        bottomBody.setUserData(new PhysicsData(-1, boxWidth, boxHeight));
-        bounds.add(bottomBody);
-
-        bodyDef.position.set(0, pxToM(-boundSize/2));
+        bodyDef.position.set(0, -boxHeight/2);
         Body topBody = world.createBody(bodyDef);
         topBody.createFixture(fixtureDef);
         topBody.setUserData(new PhysicsData(-1, boxWidth, boxHeight));
         bounds.add(topBody);
+
+        bodyDef.position.set(0, pxToM(height) - boxHeight/2);
+        Body bottomBody = world.createBody(bodyDef);
+        bottomBody.createFixture(fixtureDef);
+        bottomBody.setUserData(new PhysicsData(-1, boxWidth, boxHeight));
+        bounds.add(bottomBody);
     }
 
     private void createLeftAndRightBounds() {
