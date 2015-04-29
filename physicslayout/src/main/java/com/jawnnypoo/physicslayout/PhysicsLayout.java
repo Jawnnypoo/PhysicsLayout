@@ -32,7 +32,7 @@ public class PhysicsLayout extends RelativeLayout {
 
     private static final float EARTH_GRAVITY = 9.8f;
     //50 pixels for every meter
-    private static final int RENDER_TO_PHYSICS_RATIO = 50;
+    private static final float RENDER_TO_PHYSICS_RATIO = 50.0f;
 
     private static final int BOUND_SIZE_DP = 4;
     private static final float FRAME_RATE = 1/60f;
@@ -84,13 +84,14 @@ public class PhysicsLayout extends RelativeLayout {
         height = h;
         createWorld();
         //TODO only do this if configured
-        enablePhysics();
+        //enablePhysics();
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         Log.d(TAG, "onLayout");
+        createWorld();
         createAllViewBodies();
     }
 
@@ -101,6 +102,10 @@ public class PhysicsLayout extends RelativeLayout {
 
     public void disablePhysics() {
         enablePhysics = false;
+    }
+
+    public boolean isPhysicsEnabled() {
+        return enablePhysics;
     }
 
     public void setGravity(Vec2 gravity) {
@@ -236,7 +241,7 @@ public class PhysicsLayout extends RelativeLayout {
         bodyDef.type = BodyType.DYNAMIC; //movable
         //TODO allow for rotation?
         bodyDef.fixedRotation = true;
-        bodyDef.position.set(pxToM(view.getX()), pxToM(view.getY()));
+        bodyDef.position.set(pxToM(view.getX() + view.getWidth()/2), pxToM(view.getY() + view.getHeight()/2));
         PolygonShape box = new PolygonShape();
         int boxWidth = (int) pxToM(view.getWidth()/2);
         int boxHeight = (int) pxToM(view.getHeight()/2);
@@ -286,8 +291,8 @@ public class PhysicsLayout extends RelativeLayout {
 
                     //TODO figure out good ratio for mToPx
                     //Tranlate over, since Box2d origin is the center
-                    view.setTranslationX(mToPx(body.getPosition().x) - view.getWidth()/2);
-                    view.setTranslationY(mToPx(body.getPosition().y) - view.getHeight()/2);
+                    view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
+                    view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
                     if (debugDraw) {
                         canvas.drawRect(
                                 mToPx(body.getPosition().x) - mToPx(data.width),
