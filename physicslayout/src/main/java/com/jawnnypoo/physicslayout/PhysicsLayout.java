@@ -83,7 +83,6 @@ public class PhysicsLayout extends RelativeLayout {
         Log.d(TAG, "onSizeChanged");
         width = w;
         height = h;
-        createWorld();
         //TODO only do this if configured
         //enablePhysics();
     }
