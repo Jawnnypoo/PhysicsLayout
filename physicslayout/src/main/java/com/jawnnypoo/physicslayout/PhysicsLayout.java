@@ -34,7 +34,8 @@ public class PhysicsLayout extends RelativeLayout {
     //50 pixels for every meter
     private static final float RENDER_TO_PHYSICS_RATIO = 50.0f;
 
-    private static final int BOUND_SIZE_DP = 4;
+    //Size in DP of the bounds (world walls) of the view
+    private static final int BOUND_SIZE_DP = 20;
     private static final float FRAME_RATE = 1/60f;
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 5;
@@ -243,8 +244,8 @@ public class PhysicsLayout extends RelativeLayout {
         bodyDef.fixedRotation = true;
         bodyDef.position.set(pxToM(view.getX() + view.getWidth()/2), pxToM(view.getY() + view.getHeight()/2));
         PolygonShape box = new PolygonShape();
-        int boxWidth = (int) pxToM(view.getWidth()/2);
-        int boxHeight = (int) pxToM(view.getHeight()/2);
+        float boxWidth = pxToM(view.getWidth()/2);
+        float boxHeight = pxToM(view.getHeight()/2);
         box.setAsBox(boxWidth, boxHeight);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = box;
@@ -331,15 +332,15 @@ public class PhysicsLayout extends RelativeLayout {
      */
     private static class PhysicsData {
         public int viewId;
-        public int width;
-        public int height;
+        public float width;
+        public float height;
 
         /**
          * Init physics data
          * @param width in meters
          * @param height in meters
          */
-        public PhysicsData(int viewId, int width, int height) {
+        public PhysicsData(int viewId, float width, float height) {
             this.viewId = viewId;
             this.width = width;
             this.height = height;
