@@ -71,6 +71,7 @@ public class PhysicsLayout extends RelativeLayout {
     }
 
     private void init() {
+        setWillNotDraw(false);
         density = getResources().getDisplayMetrics().density;
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
@@ -258,6 +259,20 @@ public class PhysicsLayout extends RelativeLayout {
         view.setTag(R.id.physics_layout_body_tag, body);
     }
 
+    /**
+     * Finds the physics body that corresponds to the view. Requires the view to have an id.
+     * Returns null if no body exists for the view
+     * @param id the view's id of the body you want to retrieve
+     * @return body that determines the views physics
+     */
+    public Body findBodyById(int id) {
+        View view = findViewById(id);
+        if (view != null) {
+            return (Body) view.getTag(R.id.physics_layout_body_tag);
+        }
+        return null;
+    }
+
     public void giveRandomImpulse() {
         Body body;
         Vec2 impulse;
@@ -277,7 +292,6 @@ public class PhysicsLayout extends RelativeLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (enablePhysics) {
-
             world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
             View view;
             Body body;
@@ -288,9 +302,6 @@ public class PhysicsLayout extends RelativeLayout {
                 if (body != null) {
                     data = (PhysicsData) body.getUserData();
                     //Log.d(TAG, "Position for " + i + " :" + body.getPosition());
-
-                    //TODO figure out good ratio for mToPx
-                    //Tranlate over, since Box2d origin is the center
                     view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
                     view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
                     if (debugDraw) {
@@ -302,17 +313,6 @@ public class PhysicsLayout extends RelativeLayout {
                                 debugPaint);
                     }
                 }
-                //view.setY(view.getY()+1);
-            }
-            PhysicsData physicsData;
-            for (Body bound : bounds) {
-                physicsData = (PhysicsData) bound.getUserData();
-                canvas.drawRect(
-                        mToPx(bound.getPosition().x) -  mToPx(physicsData.width),
-                        mToPx(bound.getPosition().y) - mToPx(physicsData.height),
-                        mToPx(bound.getPosition().x) + mToPx(physicsData.width),
-                        mToPx(bound.getPosition().y) + mToPx(physicsData.height),
-                        debugPaint);
             }
             invalidate();
         }
