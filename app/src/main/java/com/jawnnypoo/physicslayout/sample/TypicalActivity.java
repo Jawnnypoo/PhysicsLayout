@@ -15,6 +15,6 @@ public class TypicalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_typical);
         PhysicsLinearLayout layout = (PhysicsLinearLayout) findViewById(R.id.physics_layout);
-        layout.getPhysicsDelegate().enablePhysics();
+        layout.getPhysics().enablePhysics();
     }
 }

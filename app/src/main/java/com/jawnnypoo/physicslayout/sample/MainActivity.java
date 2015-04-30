@@ -26,21 +26,21 @@ public class MainActivity extends AppCompatActivity {
         physicsSwitch = (SwitchCompat) findViewById(R.id.physics_switch);
         flingSwitch = (SwitchCompat) findViewById(R.id.fling_switch);
         impulseButton = findViewById(R.id.impulse_button);
-        physicsSwitch.setChecked(physicsRelativeLayout.getPhysicsDelegate().isPhysicsEnabled());
+        physicsSwitch.setChecked(physicsRelativeLayout.getPhysics().isPhysicsEnabled());
         physicsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    physicsRelativeLayout.getPhysicsDelegate().enablePhysics();
+                    physicsRelativeLayout.getPhysics().enablePhysics();
                 } else {
-                    physicsRelativeLayout.getPhysicsDelegate().disablePhysics();
+                    physicsRelativeLayout.getPhysics().disablePhysics();
                 }
             }
         });
         impulseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                physicsRelativeLayout.getPhysicsDelegate().giveRandomImpulse();
+                physicsRelativeLayout.getPhysics().giveRandomImpulse();
             }
         });
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_reset) {
-            physicsRelativeLayout.getPhysicsDelegate().resetPhysics();
+            physicsRelativeLayout.getPhysics().resetPhysics();
             return true;
         }
 
