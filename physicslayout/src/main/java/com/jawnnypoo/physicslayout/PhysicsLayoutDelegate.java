@@ -27,7 +27,10 @@ public class PhysicsLayoutDelegate {
 
     private static final String TAG = PhysicsLayoutDelegate.class.getSimpleName();
 
-    private static final float EARTH_GRAVITY = 9.8f;
+    public static final float NO_GRAVITY = 0.0f;
+    public static final float MOON_GRAVITY = 1.6f;
+    public static final float EARTH_GRAVITY = 9.8f;
+    public static final float JUPITER_GRAVITY = 24.8f;
     //50 pixels for every meter
     private static final float RENDER_TO_PHYSICS_RATIO = 50.0f;
     //Size in DP of the bounds (world walls) of the view
@@ -134,6 +137,7 @@ public class PhysicsLayoutDelegate {
         for (Body body : bounds) {
             world.destroyBody(body);
         }
+        bounds.clear();
     }
 
     private void createTopAndBottomBounds() {
