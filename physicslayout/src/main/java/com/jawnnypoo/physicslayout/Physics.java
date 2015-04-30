@@ -230,6 +230,14 @@ public class Physics {
         return null;
     }
 
+    /**
+     * Get the current Box2D world controlling the physics of this view
+     * @return
+     */
+    public World getWorld() {
+        return world;
+    }
+
     public void enablePhysics() {
         enablePhysics = true;
         viewGroup.invalidate();
@@ -267,10 +275,6 @@ public class Physics {
 
     public void setDebugDrawPhysicsBounds(boolean value) {
         debugDraw = value;
-    }
-
-    public void setGravity(Vec2 gravity) {
-        world.setGravity(gravity);
     }
 
     /**
