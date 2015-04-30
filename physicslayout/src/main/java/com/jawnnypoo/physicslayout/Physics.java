@@ -23,9 +23,9 @@ import java.util.Random;
  * layouts without requiring further extension (LinearLayout, RelativeLayout etc)
  * Created by Jawn on 4/29/2015.
  */
-public class PhysicsLayoutDelegate {
+public class Physics {
 
-    private static final String TAG = PhysicsLayoutDelegate.class.getSimpleName();
+    private static final String TAG = Physics.class.getSimpleName();
 
     public static final float NO_GRAVITY = 0.0f;
     public static final float MOON_GRAVITY = 1.6f;
@@ -63,7 +63,7 @@ public class PhysicsLayoutDelegate {
      * Call this when your view is created (remember to call from each possible constructor). Pass
      * the layout (extends ViewGroup) that you want to apply physics to.
      */
-    public PhysicsLayoutDelegate(ViewGroup viewGroup) {
+    public Physics(ViewGroup viewGroup) {
         this.viewGroup = viewGroup;
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);

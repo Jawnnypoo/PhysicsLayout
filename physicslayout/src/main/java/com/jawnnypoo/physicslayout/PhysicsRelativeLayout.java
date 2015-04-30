@@ -15,7 +15,7 @@ public class PhysicsRelativeLayout extends RelativeLayout {
 
     private static final String TAG = PhysicsRelativeLayout.class.getSimpleName();
 
-    private PhysicsLayoutDelegate physicsLayoutDelegate;
+    private Physics physics;
 
     public PhysicsRelativeLayout(Context context) {
         super(context);
@@ -40,31 +40,31 @@ public class PhysicsRelativeLayout extends RelativeLayout {
 
     private void init() {
         setWillNotDraw(false);
-        physicsLayoutDelegate = new PhysicsLayoutDelegate(this);
+        physics = new Physics(this);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         Log.d(TAG, "onSizeChanged");
-        physicsLayoutDelegate.onSizeChanged(w, h);
+        physics.onSizeChanged(w, h);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         Log.d(TAG, "onLayout");
-        physicsLayoutDelegate.onLayout();
+        physics.onLayout();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        physicsLayoutDelegate.onDraw(canvas);
+        physics.onDraw(canvas);
     }
 
-    public PhysicsLayoutDelegate getPhysicsDelegate() {
-        return physicsLayoutDelegate;
+    public Physics getPhysics() {
+        return physics;
     }
 
 }
