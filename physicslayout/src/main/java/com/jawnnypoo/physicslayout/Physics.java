@@ -47,6 +47,10 @@ public class Physics {
         return pixels / RENDER_TO_PHYSICS_RATIO;
     }
 
+    private static float radiansToDegrees(float radians) {
+        return radians/3.14f*180f;
+    }
+
     private boolean debugDraw = true;
     private boolean enablePhysics;
 
@@ -95,6 +99,7 @@ public class Physics {
                     //Log.d(TAG, "Position for " + i + " :" + body.getPosition());
                     view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
                     view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
+                    view.setRotation(radiansToDegrees(body.getAngle()));
                     if (debugDraw) {
                         canvas.drawRect(
                                 mToPx(body.getPosition().x) - mToPx(data.width),
@@ -198,7 +203,6 @@ public class Physics {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DYNAMIC; //movable
         //TODO allow for rotation?
-        bodyDef.fixedRotation = true;
         bodyDef.position.set(pxToM(view.getX() + view.getWidth()/2), pxToM(view.getY() + view.getHeight()/2));
         PolygonShape box = new PolygonShape();
         float boxWidth = pxToM(view.getWidth()/2);
