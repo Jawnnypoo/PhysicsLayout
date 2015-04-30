@@ -8,12 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.jawnnypoo.physicslayout.PhysicsLayout;
+import com.jawnnypoo.physicslayout.PhysicsRelativeLayout;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    PhysicsLayout physicsLayout;
+    PhysicsRelativeLayout physicsRelativeLayout;
     SwitchCompat physicsSwitch;
     SwitchCompat flingSwitch;
     View impulseButton;
@@ -22,31 +22,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        physicsLayout = (PhysicsLayout) findViewById(R.id.physics_layout);
+        physicsRelativeLayout = (PhysicsRelativeLayout) findViewById(R.id.physics_layout);
         physicsSwitch = (SwitchCompat) findViewById(R.id.physics_switch);
         flingSwitch = (SwitchCompat) findViewById(R.id.fling_switch);
         impulseButton = findViewById(R.id.impulse_button);
-        physicsSwitch.setChecked(true);
+        physicsSwitch.setChecked(physicsRelativeLayout.getPhysicsHelper().isPhysicsEnabled());
         physicsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    physicsLayout.enablePhysics();
+                    physicsRelativeLayout.getPhysicsHelper().enablePhysics();
                 } else {
-                    physicsLayout.disablePhysics();
+                    physicsRelativeLayout.getPhysicsHelper().disablePhysics();
                 }
-            }
-        });
-        flingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                physicsLayout.setFling(isChecked);
             }
         });
         impulseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                physicsLayout.giveRandomImpulse();
+                physicsRelativeLayout.getPhysicsHelper().giveRandomImpulse();
             }
         });
 
@@ -65,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_reset) {
-            physicsLayout.resetPhysics();
+            physicsRelativeLayout.getPhysicsHelper().resetPhysics();
             return true;
         }
 

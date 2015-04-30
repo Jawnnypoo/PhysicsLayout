@@ -1,15 +1,11 @@
 package com.jawnnypoo.physicslayout;
 
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
 
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -23,100 +19,97 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Layout that simulates physics on its direct child views
- * Created by Jawn on 4/9/2015.
+ * Implementation for physics layout is found here, since we want to offer the main
+ * layouts without requiring further extension (LinearLayout, RelativeLayout etc)
+ * Created by Jawn on 4/29/2015.
  */
-public class PhysicsLayout extends RelativeLayout {
+public class PhysicsLayoutDelegate {
 
-    private static final String TAG = PhysicsLayout.class.getSimpleName();
+    private static final String TAG = PhysicsLayoutDelegate.class.getSimpleName();
 
     private static final float EARTH_GRAVITY = 9.8f;
     //50 pixels for every meter
     private static final float RENDER_TO_PHYSICS_RATIO = 50.0f;
-
     //Size in DP of the bounds (world walls) of the view
     private static final int BOUND_SIZE_DP = 20;
     private static final float FRAME_RATE = 1/60f;
     private static final int VELOCITY_ITERATIONS = 8;
     private static final int POSITION_ITERATIONS = 5;
 
+    private static float mToPx(float meters) {
+        return meters * RENDER_TO_PHYSICS_RATIO;
+    }
+
+    private static float pxToM(float pixels) {
+        return pixels / RENDER_TO_PHYSICS_RATIO;
+    }
+
     private boolean debugDraw = true;
-    private Paint debugPaint;
+    private boolean enablePhysics;
+
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
-    private boolean enablePhysics;
+
+    private ViewGroup viewGroup;
+    private Paint debugPaint;
+    private float density;
     private int width;
     private int height;
-    private float density;
 
-    public PhysicsLayout(Context context) {
-        super(context);
-        init();
-    }
-
-    public PhysicsLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public PhysicsLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    @TargetApi(21)
-    public PhysicsLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
-    private void init() {
-        setWillNotDraw(false);
-        density = getResources().getDisplayMetrics().density;
+    /**
+     * Call this when your view is created (remember to call from each possible constructor). Pass
+     * the layout (extends ViewGroup) that you want to apply physics to.
+     */
+    public PhysicsLayoutDelegate(ViewGroup viewGroup) {
+        this.viewGroup = viewGroup;
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
         debugPaint.setAlpha(100);
+        density = viewGroup.getResources().getDisplayMetrics().density;
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        Log.d(TAG, "onSizeChanged");
-        width = w;
-        height = h;
-        //TODO only do this if configured
-        //enablePhysics();
+    public void onSizeChanged(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        Log.d(TAG, "onLayout");
+    public void onLayout() {
         createWorld();
         createAllViewBodies();
     }
 
-    public void enablePhysics() {
-        enablePhysics = true;
-        invalidate();
-    }
-
-    public void disablePhysics() {
-        enablePhysics = false;
-    }
-
-    public boolean isPhysicsEnabled() {
-        return enablePhysics;
-    }
-
-    public void setGravity(Vec2 gravity) {
-        world.setGravity(gravity);
+    public void onDraw(Canvas canvas) {
+        if (enablePhysics) {
+            world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+            View view;
+            Body body;
+            PhysicsData data;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                view = viewGroup.getChildAt(i);
+                body = (Body) view.getTag(R.id.physics_layout_body_tag);
+                if (body != null) {
+                    data = (PhysicsData) body.getUserData();
+                    //Log.d(TAG, "Position for " + i + " :" + body.getPosition());
+                    view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
+                    view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
+                    if (debugDraw) {
+                        canvas.drawRect(
+                                mToPx(body.getPosition().x) - mToPx(data.width),
+                                mToPx(body.getPosition().y) - mToPx(data.height),
+                                mToPx(body.getPosition().x) + mToPx(data.width),
+                                mToPx(body.getPosition().y) + mToPx(data.height),
+                                debugPaint);
+                    }
+                }
+            }
+            viewGroup.invalidate();
+        }
     }
 
     private void createWorld() {
         //Null out all the bodies
-        for (int i = 0; i < getChildCount(); i++) {
-           getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            viewGroup.getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
         }
         bounds.clear();
         Log.d(TAG, "createWorld");
@@ -127,8 +120,8 @@ public class PhysicsLayout extends RelativeLayout {
     }
 
     private void createAllViewBodies() {
-        for (int i = 0; i < getChildCount(); i++) {
-            createBody(getChildAt(i));
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            createBody(viewGroup.getChildAt(i));
         }
     }
 
@@ -140,46 +133,6 @@ public class PhysicsLayout extends RelativeLayout {
     private void removeBounds() {
         for (Body body : bounds) {
             world.destroyBody(body);
-        }
-    }
-
-    public void resetPhysics() {
-        View view;
-        for (int i = 0; i < getChildCount(); i++) {
-            view = getChildAt(i);
-            view.setTranslationX(0);
-            view.setTranslationY(0);
-        }
-        createWorld();
-        createAllViewBodies();
-    }
-
-    public void setDebugDrawPhysicsBounds(boolean value) {
-        debugDraw = value;
-    }
-
-    private final OnDragListener mDragListener = new OnDragListener() {
-        @Override
-        public boolean onDrag(View v, DragEvent event) {
-            Log.d(TAG, "onDrag " + event.getX() +" " +  event.getY());
-            if (event.getAction() == DragEvent.ACTION_DRAG_ENDED || event.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-                v.setTranslationX(event.getX());
-            }
-            return false;
-        }
-    };
-
-    private final OnClickListener mOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d(TAG, "onClick");
-        }
-    };
-
-    public void setFling(boolean allow) {
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).setOnDragListener(allow ? mDragListener : null);
-            //getChildAt(i).setOnClickListener(allow ? mOnClickListener : null);
         }
     }
 
@@ -266,64 +219,54 @@ public class PhysicsLayout extends RelativeLayout {
      * @return body that determines the views physics
      */
     public Body findBodyById(int id) {
-        View view = findViewById(id);
+        View view = viewGroup.findViewById(id);
         if (view != null) {
             return (Body) view.getTag(R.id.physics_layout_body_tag);
         }
         return null;
     }
 
+    public void enablePhysics() {
+        enablePhysics = true;
+        viewGroup.invalidate();
+    }
+
+    public void disablePhysics() {
+        enablePhysics = false;
+    }
+
+    public boolean isPhysicsEnabled() {
+        return enablePhysics;
+    }
+
+    public void resetPhysics() {
+        View view;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            view = viewGroup.getChildAt(i);
+            view.setTranslationX(0);
+            view.setTranslationY(0);
+        }
+        createWorld();
+        createAllViewBodies();
+    }
+
     public void giveRandomImpulse() {
         Body body;
         Vec2 impulse;
         Random random = new Random();
-        for (int i = 0; i < getChildCount(); i++) {
-            impulse = new Vec2(random.nextInt(5000) - 5000, random.nextInt(5000) - 5000);
-            body = (Body) getChildAt(i).getTag(R.id.physics_layout_body_tag);
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            impulse = new Vec2(random.nextInt(1000) - 1000, random.nextInt(1000) - 1000);
+            body = (Body) viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag);
             body.applyLinearImpulse(impulse, body.getPosition());
         }
     }
 
-    private Vec2 getWorldPositionFromView(View view) {
-        return new Vec2(pxToM(view.getX()), pxToM(view.getY()));
+    public void setDebugDrawPhysicsBounds(boolean value) {
+        debugDraw = value;
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (enablePhysics) {
-            world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-            View view;
-            Body body;
-            PhysicsData data;
-            for (int i = 0; i < getChildCount(); i++) {
-                view = getChildAt(i);
-                body = (Body) view.getTag(R.id.physics_layout_body_tag);
-                if (body != null) {
-                    data = (PhysicsData) body.getUserData();
-                    //Log.d(TAG, "Position for " + i + " :" + body.getPosition());
-                    view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
-                    view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
-                    if (debugDraw) {
-                        canvas.drawRect(
-                                mToPx(body.getPosition().x) - mToPx(data.width),
-                                mToPx(body.getPosition().y) - mToPx(data.height),
-                                mToPx(body.getPosition().x) + mToPx(data.width),
-                                mToPx(body.getPosition().y) + mToPx(data.height),
-                                debugPaint);
-                    }
-                }
-            }
-            invalidate();
-        }
-    }
-
-    private static float mToPx(float meters) {
-        return meters * RENDER_TO_PHYSICS_RATIO;
-    }
-
-    private static float pxToM(float pixels) {
-        return pixels / RENDER_TO_PHYSICS_RATIO;
+    public void setGravity(Vec2 gravity) {
+        world.setGravity(gravity);
     }
 
     /**
