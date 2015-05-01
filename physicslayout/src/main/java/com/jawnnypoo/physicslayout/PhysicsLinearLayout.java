@@ -17,28 +17,28 @@ public class PhysicsLinearLayout extends LinearLayout {
 
     public PhysicsLinearLayout(Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public PhysicsLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public PhysicsLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
     @TargetApi(21)
     public PhysicsLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(attrs);
     }
 
-    private void init() {
+    private void init(AttributeSet attrs) {
         setWillNotDraw(false);
-        physics = new Physics(this);
+        physics = new Physics(this, attrs);
     }
 
     @Override

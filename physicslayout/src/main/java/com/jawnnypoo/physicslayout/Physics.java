@@ -1,8 +1,10 @@
 package com.jawnnypoo.physicslayout;
 
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,10 +54,13 @@ public class Physics {
     }
 
     private boolean debugDraw = true;
-    private boolean enablePhysics;
+    private boolean enablePhysics = true;
 
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
+    private float gravityX = 0.0f;
+    private float gravityY = EARTH_GRAVITY;
+    private boolean hasBounds = true;
 
     private ViewGroup viewGroup;
     private Paint debugPaint;
@@ -68,50 +73,77 @@ public class Physics {
      * the layout (extends ViewGroup) that you want to apply physics to.
      */
     public Physics(ViewGroup viewGroup) {
+        this(viewGroup, null);
+    }
+
+    public Physics(ViewGroup viewGroup, AttributeSet attrs) {
         this.viewGroup = viewGroup;
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
         debugPaint.setAlpha(100);
         density = viewGroup.getResources().getDisplayMetrics().density;
+        if (attrs != null) {
+            TypedArray a = viewGroup.getContext().obtainStyledAttributes(attrs, R.styleable.Physics);
+            enablePhysics = a.getBoolean(R.styleable.Physics_physics, enablePhysics);
+            gravityX = a.getFloat(R.styleable.Physics_gravityX, gravityX);
+            gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
+            hasBounds = a.getBoolean(R.styleable.Physics_bounds, hasBounds);
+            a.recycle();
+        }
     }
 
+    /**
+     * Call this every time your view gets a call to onSizeChanged so that the world can
+     * respond to this change.
+     * @param width
+     * @param height
+     */
     public void onSizeChanged(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
+    /**
+     * Call this every time your view gets a call to onLayout so that the world can
+     * respond to this change.
+     */
     public void onLayout() {
         createWorld();
         createAllViewBodies();
     }
 
+    /**
+     * Call this when your view calls onDraw so that physics can be processed
+     * @param canvas
+     */
     public void onDraw(Canvas canvas) {
-        if (enablePhysics) {
-            world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-            View view;
-            Body body;
-            PhysicsData data;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                view = viewGroup.getChildAt(i);
-                body = (Body) view.getTag(R.id.physics_layout_body_tag);
-                if (body != null) {
-                    data = (PhysicsData) body.getUserData();
-                    //Log.d(TAG, "Position for " + i + " :" + body.getPosition());
-                    view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
-                    view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
-                    view.setRotation(radiansToDegrees(body.getAngle()));
-                    if (debugDraw) {
-                        canvas.drawRect(
-                                mToPx(body.getPosition().x) - mToPx(data.width),
-                                mToPx(body.getPosition().y) - mToPx(data.height),
-                                mToPx(body.getPosition().x) + mToPx(data.width),
-                                mToPx(body.getPosition().y) + mToPx(data.height),
-                                debugPaint);
-                    }
+        if (!enablePhysics) {
+            return;
+        }
+        //TODO do this on a different thread. Has potential to cause ANRs
+        world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        View view;
+        Body body;
+        PhysicsData data;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            view = viewGroup.getChildAt(i);
+            body = (Body) view.getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                data = (PhysicsData) body.getUserData();
+                view.setX(mToPx(body.getPosition().x) - mToPx(data.width));
+                view.setY(mToPx(body.getPosition().y) - mToPx(data.height));
+                view.setRotation(radiansToDegrees(body.getAngle()));
+                if (debugDraw) {
+                    canvas.drawRect(
+                            mToPx(body.getPosition().x) - mToPx(data.width),
+                            mToPx(body.getPosition().y) - mToPx(data.height),
+                            mToPx(body.getPosition().x) + mToPx(data.width),
+                            mToPx(body.getPosition().y) + mToPx(data.height),
+                            debugPaint);
                 }
             }
-            viewGroup.invalidate();
         }
+        viewGroup.invalidate();
     }
 
     private void createWorld() {
@@ -123,8 +155,10 @@ public class Physics {
         Log.d(TAG, "createWorld");
         //TODO do we need to remove the old views from the world?
         //bodies.clear();
-        world = new World(new Vec2(0, EARTH_GRAVITY));
-        addBounds();
+        world = new World(new Vec2(gravityX, gravityY));
+        if (hasBounds) {
+            enableBounds();
+        }
     }
 
     private void createAllViewBodies() {
@@ -133,12 +167,14 @@ public class Physics {
         }
     }
 
-    private void addBounds() {
+    private void enableBounds() {
+        hasBounds = true;
         createTopAndBottomBounds();
         createLeftAndRightBounds();
     }
 
-    private void removeBounds() {
+    private void disableBounds() {
+        hasBounds = false;
         for (Body body : bounds) {
             world.destroyBody(body);
         }

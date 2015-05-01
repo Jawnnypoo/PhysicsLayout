@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="Physics">
+
+        <!--Turn on and off physics-->
+        <attr name="physics" format="boolean"/>
+        <!--Set the X component of gravity-->
+        <attr name="gravityX" format="float"/>
+        <!--Set the Y component of gravity-->
+        <attr name="gravityY" format="float"/>
+        <!--Define if the view should have outer boundaries-->
+        <attr name="bounds" format="boolean"/>
+
+    </declare-styleable>
+
 </resources>
