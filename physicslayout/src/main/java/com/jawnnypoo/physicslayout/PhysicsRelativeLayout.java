@@ -54,7 +54,7 @@ public class PhysicsRelativeLayout extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         Log.d(TAG, "onLayout");
-        physics.onLayout();
+        physics.onLayout(changed);
     }
 
     @Override

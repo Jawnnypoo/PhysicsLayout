@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="physics_layout_body_tag" type="id"/>
+    <item name="physics_layout_config_tag" type="id"/>
 </resources>
