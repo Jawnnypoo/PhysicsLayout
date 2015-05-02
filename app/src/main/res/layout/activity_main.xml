@@ -12,7 +12,8 @@
         android:id="@+id/physics_layout"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:physics="false">
 
         <ImageView
             android:layout_width="wrap_content"

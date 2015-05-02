@@ -3,7 +3,9 @@ package com.jawnnypoo.physicslayout;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
 /**
@@ -57,6 +59,16 @@ public class PhysicsLinearLayout extends LinearLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         physics.onDraw(canvas);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return physics.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        return physics.onTouchEvent(event);
     }
 
     public Physics getPhysics() {

@@ -4,8 +4,10 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -54,6 +56,16 @@ public class Physics {
         return radians/3.14f*180f;
     }
 
+    /**
+     * A controller that will receive the drag events.
+     */
+    public interface OnFlingListener {
+        void onGrabbed();
+        void onReleased();
+    }
+
+    private OnFlingListener onFlingListener;
+
     private boolean debugDraw = true;
 
     private World world;
@@ -62,12 +74,14 @@ public class Physics {
     private float gravityY = EARTH_GRAVITY;
     private boolean enablePhysics = true;
     private boolean hasBounds = true;
+    private boolean allowFling = false;
 
     private ViewGroup viewGroup;
     private Paint debugPaint;
     private float density;
     private int width;
     private int height;
+    private ViewDragHelper viewDragHelper;
 
     /**
      * Call this when your view is created (remember to call from each possible constructor). Pass
@@ -79,6 +93,7 @@ public class Physics {
 
     public Physics(ViewGroup viewGroup, AttributeSet attrs) {
         this.viewGroup = viewGroup;
+        viewDragHelper = ViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
         debugPaint.setStyle(Paint.Style.STROKE);
@@ -114,6 +129,28 @@ public class Physics {
             createWorld();
             createAllViewBodies();
         }
+    }
+
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(TAG, "onIntercepTouchEvent");
+        if (!allowFling) {
+            return false;
+        }
+        final int action = ev.getActionMasked();
+        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
+            viewDragHelper.cancel();
+            return false;
+        }
+        return viewDragHelper.shouldInterceptTouchEvent(ev);
+    }
+
+    public boolean onTouchEvent(MotionEvent ev) {
+        Log.d(TAG, "onTouchEvent");
+        if (!allowFling) {
+            return false;
+        }
+        viewDragHelper.processTouchEvent(ev);
+        return true;
     }
 
     /**
@@ -335,6 +372,57 @@ public class Physics {
             body = (Body) viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag);
             body.applyLinearImpulse(impulse, body.getPosition());
         }
+    }
+
+    ViewDragHelper.Callback viewDragHelperCallback = new ViewDragHelper.Callback() {
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
+            Log.d(TAG, "tryCaptureView");
+            return true;
+        }
+
+        @Override
+        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy);
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            return left;
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return top;
+        }
+
+        @Override
+        public void onViewCaptured(View capturedChild, int activePointerId) {
+            super.onViewCaptured(capturedChild, activePointerId);
+            if (onFlingListener != null) {
+                onFlingListener.onGrabbed();
+            }
+        }
+
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            super.onViewReleased(releasedChild, xvel, yvel);
+            if (onFlingListener != null) {
+                onFlingListener.onReleased();
+            }
+        }
+    };
+
+    public void enableFling() {
+        allowFling = true;
+    }
+
+    public void disableFling() {
+        allowFling = false;
+    }
+
+    public void setOnFlingListener(OnFlingListener onFlingListener) {
+        this.onFlingListener = onFlingListener;
     }
 
 }
