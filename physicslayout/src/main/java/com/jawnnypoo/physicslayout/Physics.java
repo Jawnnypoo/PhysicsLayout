@@ -4,7 +4,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -81,7 +80,8 @@ public class Physics {
     private float density;
     private int width;
     private int height;
-    private ViewDragHelper viewDragHelper;
+    private PhysicsViewDragHelper viewDragHelper;
+    private View viewBeingDragged;
 
     /**
      * Call this when your view is created (remember to call from each possible constructor). Pass
@@ -93,7 +93,7 @@ public class Physics {
 
     public Physics(ViewGroup viewGroup, AttributeSet attrs) {
         this.viewGroup = viewGroup;
-        viewDragHelper = ViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
+        viewDragHelper = PhysicsViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
         debugPaint.setStyle(Paint.Style.STROKE);
@@ -167,10 +167,13 @@ public class Physics {
         Body body;
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             view = viewGroup.getChildAt(i);
+            if (view == viewBeingDragged) {
+                continue;
+            }
             body = (Body) view.getTag(R.id.physics_layout_body_tag);
             if (body != null) {
-                view.setX(mToPx(body.getPosition().x) - view.getWidth()/2);
-                view.setY(mToPx(body.getPosition().y) - view.getHeight()/2);
+                view.setX(mToPx(body.getPosition().x) - view.getWidth() / 2);
+                view.setY(mToPx(body.getPosition().y) - view.getHeight() / 2);
                 view.setRotation(radiansToDegrees(body.getAngle()));
                 if (debugDraw) {
                     //TODO figure out if circle or rect and draw accordingly
@@ -374,7 +377,7 @@ public class Physics {
         }
     }
 
-    ViewDragHelper.Callback viewDragHelperCallback = new ViewDragHelper.Callback() {
+    PhysicsViewDragHelper.Callback viewDragHelperCallback = new PhysicsViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             Log.d(TAG, "tryCaptureView");
@@ -399,6 +402,7 @@ public class Physics {
         @Override
         public void onViewCaptured(View capturedChild, int activePointerId) {
             super.onViewCaptured(capturedChild, activePointerId);
+            viewBeingDragged = capturedChild;
             if (onFlingListener != null) {
                 onFlingListener.onGrabbed();
             }
@@ -407,6 +411,14 @@ public class Physics {
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
+            viewBeingDragged = null;
+            Body body = (Body)releasedChild.getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                body.setTransform(new Vec2(pxToM(releasedChild.getX() + releasedChild.getWidth() / 2),
+                        pxToM(releasedChild.getY() + releasedChild.getHeight() / 2)),
+                        body.getAngle());
+                body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
+            }
             if (onFlingListener != null) {
                 onFlingListener.onReleased();
             }
