@@ -1416,7 +1416,7 @@ public class PhysicsViewDragHelper {
         return x >= view.getX() &&
                 x < view.getX() + view.getWidth() &&
                 y >= view.getY() &&
-                y < view.getBottom() + view.getHeight();
+                y < view.getY() + view.getHeight();
     }
 
     /**
@@ -1432,7 +1432,7 @@ public class PhysicsViewDragHelper {
         for (int i = childCount - 1; i >= 0; i--) {
             final View child = mParentView.getChildAt(mCallback.getOrderedChildIndex(i));
             if (x >= child.getX() && x < child.getX() + child.getWidth() &&
-                    y >= child.getY() && y < child.getBottom() + child.getHeight()) {
+                    y >= child.getY() && y < child.getY() + child.getHeight()) {
                 return child;
             }
         }
