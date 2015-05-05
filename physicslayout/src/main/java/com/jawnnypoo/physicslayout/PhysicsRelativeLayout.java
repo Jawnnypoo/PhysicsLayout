@@ -3,57 +3,55 @@ package com.jawnnypoo.physicslayout;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
 /**
- * Layout that simulates physics on its direct child views
+ * Typical LinearLayout with some physics added on. Call getPhysicsHelper() to get the
+ * physics component.
  * Created by Jawn on 4/9/2015.
  */
 public class PhysicsRelativeLayout extends RelativeLayout {
-
-    private static final String TAG = PhysicsRelativeLayout.class.getSimpleName();
 
     private Physics physics;
 
     public PhysicsRelativeLayout(Context context) {
         super(context);
-        init();
+        init(null);
     }
 
     public PhysicsRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(attrs);
     }
 
     public PhysicsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(attrs);
     }
 
     @TargetApi(21)
     public PhysicsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(attrs);
     }
 
-    private void init() {
+    private void init(AttributeSet attrs) {
         setWillNotDraw(false);
-        physics = new Physics(this);
+        physics = new Physics(this, attrs);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.d(TAG, "onSizeChanged");
         physics.onSizeChanged(w, h);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        Log.d(TAG, "onLayout");
         physics.onLayout(changed);
     }
 
@@ -63,8 +61,17 @@ public class PhysicsRelativeLayout extends RelativeLayout {
         physics.onDraw(canvas);
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return physics.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        return physics.onTouchEvent(event);
+    }
+
     public Physics getPhysics() {
         return physics;
     }
-
 }

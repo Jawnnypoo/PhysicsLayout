@@ -32,9 +32,15 @@ import android.view.animation.Interpolator;
 import java.util.Arrays;
 
 /**
+ *
+ * PhysicsViewDragHelper is derived from the Support lib version so that we can check the X and Y of the view
+ * instead of just the Left and Right.
+ *
+ *
  * ViewDragHelper is a utility class for writing custom ViewGroups. It offers a number
  * of useful operations and state tracking for allowing a user to drag and reposition
  * views within their parent ViewGroup.
+ *
  */
 public class PhysicsViewDragHelper {
     private static final String TAG = "ViewDragHelper";

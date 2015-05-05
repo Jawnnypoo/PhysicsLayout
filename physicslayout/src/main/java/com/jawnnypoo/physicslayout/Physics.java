@@ -89,7 +89,8 @@ public class Physics {
     private OnFlingListener onFlingListener;
     private OnCollisionListener onCollisionListener;
 
-    private boolean debugDraw = true;
+    private boolean debugDraw = false;
+    private boolean debugLog = false;
 
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
@@ -148,11 +149,9 @@ public class Physics {
      * respond to this change.
      */
     public void onLayout(boolean changed) {
-        Log.d(TAG, "onLayout");
-        if (world == null || changed) {
-            createWorld();
-            createAllViewBodies();
-        }
+        if (debugLog) { Log.d(TAG, "onLayout"); }
+        createWorld();
+        createAllViewBodies();
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -217,9 +216,7 @@ public class Physics {
             viewGroup.getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
         }
         bounds.clear();
-        Log.d(TAG, "createWorld");
-        //TODO do we need to remove the old views from the world?
-        //bodies.clear();
+        if (debugLog) { Log.d(TAG, "createWorld"); }
         world = new World(new Vec2(gravityX, gravityY));
         world.setContactListener(contactListener);
         if (hasBounds) {
@@ -383,17 +380,6 @@ public class Physics {
         return enablePhysics;
     }
 
-    public void resetPhysics() {
-        View view;
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            view = viewGroup.getChildAt(i);
-            view.setTranslationX(0);
-            view.setTranslationY(0);
-        }
-        createWorld();
-        createAllViewBodies();
-    }
-
     public void giveRandomImpulse() {
         Body body;
         Vec2 impulse;
@@ -456,9 +442,9 @@ public class Physics {
             viewBeingDragged = capturedChild;
             Body body = (Body) viewBeingDragged.getTag(R.id.physics_layout_body_tag);
             if (body != null) {
-                body.setAwake(false);
                 body.setAngularVelocity(0);
-                body.setLinearVelocity(new Vec2(0,0));
+                body.setLinearVelocity(new Vec2(0, 0));
+                body.setAwake(false);
             }
             if (onFlingListener != null) {
                 onFlingListener.onGrabbed();
@@ -475,9 +461,7 @@ public class Physics {
                         pxToM(releasedChild.getY() + releasedChild.getHeight() / 2)),
                         body.getAngle());
                 body.setAwake(true);
-                if (xvel != 0 || yvel != 0) {
-                    body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
-                }
+                body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
             }
             if (onFlingListener != null) {
                 onFlingListener.onReleased();
