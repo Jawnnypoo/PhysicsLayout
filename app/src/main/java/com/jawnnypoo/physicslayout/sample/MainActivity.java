@@ -1,29 +1,28 @@
 package com.jawnnypoo.physicslayout.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.jawnnypoo.physicslayout.PhysicsConfig;
-import com.jawnnypoo.physicslayout.PhysicsLinearLayout;
+import com.jawnnypoo.physicslayout.PhysicsRelativeLayout;
+import com.squareup.picasso.Picasso;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     Toolbar toolbar;
-    PhysicsLinearLayout physicsRelativeLayout;
+    PhysicsRelativeLayout physicsLayout;
     SwitchCompat physicsSwitch;
     SwitchCompat flingSwitch;
     View impulseButton;
     View addViewButton;
+
+    int catIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +31,23 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
 
-        physicsRelativeLayout = (PhysicsLinearLayout) findViewById(R.id.physics_layout);
+        physicsLayout = (PhysicsRelativeLayout) findViewById(R.id.physics_layout);
         physicsSwitch = (SwitchCompat) findViewById(R.id.physics_switch);
         flingSwitch = (SwitchCompat) findViewById(R.id.fling_switch);
         impulseButton = findViewById(R.id.impulse_button);
         addViewButton = findViewById(R.id.add_view_button);
-        physicsSwitch.setChecked(physicsRelativeLayout.getPhysics().isPhysicsEnabled());
+        physicsSwitch.setChecked(physicsLayout.getPhysics().isPhysicsEnabled());
         physicsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    physicsRelativeLayout.getPhysics().enablePhysics();
+                    physicsLayout.getPhysics().enablePhysics();
                 } else {
-                    physicsRelativeLayout.getPhysics().disablePhysics();
+                    physicsLayout.getPhysics().disablePhysics();
+                    for (int i=0; i<physicsLayout.getChildCount(); i++) {
+                        physicsLayout.getChildAt(i)
+                                .animate().translationY(0).translationX(0).rotation(0);
+                    }
                 }
             }
         });
@@ -52,16 +55,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    physicsRelativeLayout.getPhysics().enableFling();
+                    physicsLayout.getPhysics().enableFling();
                 } else {
-                    physicsRelativeLayout.getPhysics().disableFling();
+                    physicsLayout.getPhysics().disableFling();
                 }
             }
         });
         impulseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                physicsRelativeLayout.getPhysics().giveRandomImpulse();
+                physicsLayout.getPhysics().giveRandomImpulse();
             }
         });
         final View circleView = findViewById(R.id.circle);
@@ -71,36 +74,32 @@ public class MainActivity extends AppCompatActivity {
 
                 ImageView imageView = new ImageView(MainActivity.this);
                 imageView.setImageResource(R.drawable.ic_launcher);
-                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                        getResources().getDimensionPixelSize(R.dimen.square_size),
+                        getResources().getDimensionPixelSize(R.dimen.square_size));
                 imageView.setLayoutParams(llp);
-                physicsRelativeLayout.addView(imageView);
+                physicsLayout.addView(imageView);
+                Picasso.with(MainActivity.this)
+                        .load("http://lorempixel.com/200/200/cats/" + ((catIndex % 10) + 1))
+                        .placeholder(R.drawable.ic_launcher)
+                        .into(imageView);
+                catIndex++;
             }
         });
         PhysicsConfig config = new PhysicsConfig.Builder()
                 .setShapeType(PhysicsConfig.ShapeType.CIRCLE)
                 .build();
-        physicsRelativeLayout.getPhysics().setPhysicsConfig(circleView, config);
+        physicsLayout.getPhysics().setPhysicsConfig(circleView, config);
 
 
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_reset) {
-            physicsRelativeLayout.getPhysics().resetPhysics();
-            return true;
+        for (int i=0; i<physicsLayout.getChildCount(); i++) {
+            ImageView view = (ImageView) physicsLayout.getChildAt(i);
+            Picasso.with(this)
+                    .load("http://lorempixel.com/200/200/cats/" + (i + 1))
+                    .placeholder(R.drawable.ic_launcher)
+                    .into(view);
         }
+        catIndex = physicsLayout.getChildCount();
 
-        return super.onOptionsItemSelected(item);
     }
 }

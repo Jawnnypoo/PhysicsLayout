@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">PhysicsLayoutSample</string>
+    <string name="app_name">PhysicsLayout Sample</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="reset">Reset</string>
 </resources>

@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jawnnypoo.physicslayout.sample" >
 
+    <!-- Picasso permissions -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,11 +24,6 @@
 
         </activity>
 
-        <activity android:name=".TypicalActivity">
-
-
-
-        </activity>
     </application>
 
 </manifest>

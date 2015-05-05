@@ -22,7 +22,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.jpardogo.materialtabstrip:library:1.0.9'
     compile 'de.hdodenhof:circleimageview:1.2.2'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile project(':physicslayout')
 }

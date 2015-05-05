@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,64 +6,103 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <include layout="@layout/toolbar"/>
-
-    <com.jawnnypoo.physicslayout.PhysicsLinearLayout
-        android:id="@+id/physics_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:orientation="horizontal"
-        app:physics="false">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="?attr/actionBarSize">
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <com.jawnnypoo.physicslayout.PhysicsRelativeLayout
+            android:id="@+id/physics_layout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <ImageView
+                android:layout_width="@dimen/square_size"
+                android:layout_height="@dimen/square_size"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_launcher" />
+
+            <ImageView
+                android:layout_width="@dimen/square_size"
+                android:layout_height="@dimen/square_size"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_launcher" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circle"
+                android:layout_width="@dimen/circle_size"
+                android:layout_height="@dimen/circle_size"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_launcher"
+                app:border_color="#FF000000"
+                app:border_width="2dp" />
+
+            <ImageView
+                android:layout_width="@dimen/square_size"
+                android:layout_height="@dimen/square_size"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_launcher" />
+
+            <ImageView
+                android:layout_width="@dimen/square_size"
+                android:layout_height="@dimen/square_size"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_launcher" />
+
+
+        </com.jawnnypoo.physicslayout.PhysicsRelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher"/>
+            android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/physics_switch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="Physics"
+                android:textSize="22sp" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/fling_switch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="Fling"
+                android:textSize="22sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/circle"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:src="@drawable/ic_launcher"
-            app:border_width="2dp"
-            app:border_color="#FF000000"/>
+            android:orientation="horizontal">
 
 
-        </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
+            <Button
+                android:id="@+id/impulse_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="Random Impulse" />
 
-    <android.support.v7.widget.SwitchCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Physics"
-        android:textSize="22sp"
-        android:id="@+id/physics_switch" />
+            <Button
+                android:id="@+id/add_view_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:text="Add View" />
+        </LinearLayout>
+    </LinearLayout>
 
-    <android.support.v7.widget.SwitchCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Fling"
-        android:textSize="22sp"
-        android:id="@+id/fling_switch" />
+    <include layout="@layout/toolbar" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Random Impulse"
-        android:id="@+id/impulse_button" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="Add View"
-        android:id="@+id/add_view_button" />
-
-</LinearLayout>
+</merge>

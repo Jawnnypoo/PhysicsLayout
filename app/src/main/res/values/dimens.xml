@@ -3,6 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="square_size">50dp</dimen>
     <dimen name="circle_size">96dp</dimen>
 
     <dimen name="elevation_large">8dp</dimen>
