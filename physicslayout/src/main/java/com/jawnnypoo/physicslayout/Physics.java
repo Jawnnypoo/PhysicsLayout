@@ -10,6 +10,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
@@ -18,6 +21,7 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -63,7 +67,27 @@ public class Physics {
         void onReleased();
     }
 
+    public interface OnCollisionListener {
+        /**
+         * Called when a collision is entered between two bodies. ViewId can also be R.id.physics_layout_bound_top,
+         * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or R.id.physics_layout_bound_right.
+         * If view was not assigned an id, the return value will be View.NO_ID (-1).
+         * @param viewIdA view id of body A
+         * @param viewIdB view id of body B
+         */
+        void onCollisionEntered(int viewIdA, int viewIdB);
+        /**
+         * Called when a collision is exited between two bodies. ViewId can also be R.id.physics_layout_bound_top,
+         * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or R.id.physics_layout_bound_right.
+         * If view was not assigned an id, the return value will be View.NO_ID (-1).
+         * @param viewIdA view id of body A
+         * @param viewIdB view id of body B
+         */
+        void onCollisionExited(int viewIdA, int viewIdB);
+    }
+
     private OnFlingListener onFlingListener;
+    private OnCollisionListener onCollisionListener;
 
     private boolean debugDraw = true;
 
@@ -132,7 +156,6 @@ public class Physics {
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "onIntercepTouchEvent");
         if (!allowFling) {
             return false;
         }
@@ -145,7 +168,6 @@ public class Physics {
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "onTouchEvent");
         if (!allowFling) {
             return false;
         }
@@ -199,6 +221,7 @@ public class Physics {
         //TODO do we need to remove the old views from the world?
         //bodies.clear();
         world = new World(new Vec2(gravityX, gravityY));
+        world.setContactListener(contactListener);
         if (hasBounds) {
             enableBounds();
         }
@@ -227,7 +250,7 @@ public class Physics {
     private void createTopAndBottomBounds() {
         int boundSize = Math.round((float)BOUND_SIZE_DP * density);
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.STATIC; //movable
+        bodyDef.type = BodyType.STATIC;
         PolygonShape box = new PolygonShape();
         int boxWidth = (int) pxToM(width);
         int boxHeight = (int) pxToM(boundSize);
@@ -238,11 +261,13 @@ public class Physics {
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.5f;
 
+        fixtureDef.userData = R.id.physics_layout_bound_top;
         bodyDef.position.set(0, -boxHeight / 2);
         Body topBody = world.createBody(bodyDef);
         topBody.createFixture(fixtureDef);
         bounds.add(topBody);
 
+        fixtureDef.userData = R.id.physics_layout_body_bottom;
         bodyDef.position.set(0, pxToM(height) - boxHeight / 2);
         Body bottomBody = world.createBody(bodyDef);
         bottomBody.createFixture(fixtureDef);
@@ -263,11 +288,13 @@ public class Physics {
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.5f;
 
+        fixtureDef.userData = R.id.physics_layout_body_left;
         bodyDef.position.set(-boxWidth / 2, 0);
         Body leftBody = world.createBody(bodyDef);
         leftBody.createFixture(fixtureDef);
         bounds.add(leftBody);
 
+        fixtureDef.userData = R.id.physics_layout_body_right;
         bodyDef.position.set(pxToM(width), pxToM(-boundSize / 2));
         Body rightBody = world.createBody(bodyDef);
         rightBody.createFixture(fixtureDef);
@@ -286,6 +313,7 @@ public class Physics {
         FixtureDef fixtureDef = config.getFixtureDef();
         fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE ? getBoxShape(view) :
                 getCircleShape(view, config);
+        fixtureDef.userData = view.getId();
 
         Body body  = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
@@ -377,10 +405,33 @@ public class Physics {
         }
     }
 
-    PhysicsViewDragHelper.Callback viewDragHelperCallback = new PhysicsViewDragHelper.Callback() {
+    private final ContactListener contactListener = new ContactListener() {
+        @Override
+        public void beginContact(Contact contact) {
+            if (onCollisionListener != null) {
+                onCollisionListener.onCollisionEntered((int) contact.getFixtureA().m_userData,
+                        (int) contact.getFixtureB().m_userData);
+            }
+        }
+
+        @Override
+        public void endContact(Contact contact) {
+            if (onCollisionListener != null) {
+                onCollisionListener.onCollisionExited((int) contact.getFixtureA().m_userData,
+                        (int) contact.getFixtureB().m_userData);
+            }
+        }
+
+        @Override
+        public void preSolve(Contact contact, Manifold oldManifold) { }
+
+        @Override
+        public void postSolve(Contact contact, ContactImpulse impulse) { }
+    };
+
+    private final PhysicsViewDragHelper.Callback viewDragHelperCallback = new PhysicsViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            Log.d(TAG, "tryCaptureView");
             return true;
         }
 
@@ -403,6 +454,12 @@ public class Physics {
         public void onViewCaptured(View capturedChild, int activePointerId) {
             super.onViewCaptured(capturedChild, activePointerId);
             viewBeingDragged = capturedChild;
+            Body body = (Body) viewBeingDragged.getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                body.setAwake(false);
+                body.setAngularVelocity(0);
+                body.setLinearVelocity(new Vec2(0,0));
+            }
             if (onFlingListener != null) {
                 onFlingListener.onGrabbed();
             }
@@ -417,7 +474,10 @@ public class Physics {
                 body.setTransform(new Vec2(pxToM(releasedChild.getX() + releasedChild.getWidth() / 2),
                         pxToM(releasedChild.getY() + releasedChild.getHeight() / 2)),
                         body.getAngle());
-                body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
+                body.setAwake(true);
+                if (xvel != 0 || yvel != 0) {
+                    body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
+                }
             }
             if (onFlingListener != null) {
                 onFlingListener.onReleased();
