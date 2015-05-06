@@ -133,6 +133,7 @@ public class Physics {
             gravityX = a.getFloat(R.styleable.Physics_gravityX, gravityX);
             gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
             hasBounds = a.getBoolean(R.styleable.Physics_bounds, hasBounds);
+            allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
             a.recycle();
         }
     }
@@ -507,6 +508,14 @@ public class Physics {
      */
     public void disableFling() {
         allowFling = false;
+    }
+
+    /**
+     * Is fling enabled for this ViewGroup?
+     * @return physics enabled or not
+     */
+    public boolean isFlingEnabled() {
+        return allowFling;
     }
 
     /**
