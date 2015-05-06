@@ -11,6 +11,16 @@ The gif is choppy, see it in action with the sample app:
        src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
 </a>
 
+# Gradle Dependency (jCenter)
+
+Easily reference the library in your Android projects using this dependency in your module's `build.gradle` file:
+
+```Gradle
+dependencies {
+    compile 'com.jawnnypoo:physicslayout:1.0.0'
+}
+```
+
 # Basic Usage
 If you want to see what your layout looks like when physics is applied to it, simply change your root layout to a physics layout. 
 ```xml
