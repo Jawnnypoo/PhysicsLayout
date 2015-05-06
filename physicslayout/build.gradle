@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'bintray-release'
 
 android {
     compileSdkVersion 22
@@ -10,11 +11,8 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    lintOptions {
+        abortOnError false
     }
 }
 
@@ -22,4 +20,15 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.jbox2d:jbox2d-library:2.2.1.1'
     compile 'com.android.support:support-v4:22.1.1'
+}
+
+publish {
+    userOrg = 'jawnnypoo'
+    groupId = 'com.jawnnypoo'
+    artifactId = 'physicslayout'
+    version = '1.0.0'
+    description = 'Android layout that simulates physics using JBox2D.'
+    website = 'https://github.com/Jawnnypoo/PhysicsLayout'
+    issueTracker = "https://github.com/Jawnnypoo/PhysicsLayout/issues"
+    repository = "https://github.com/Jawnnypoo/PhysicsLayout.git"
 }
