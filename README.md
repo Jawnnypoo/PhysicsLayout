@@ -1,7 +1,11 @@
 # PhysicsLayout
+
+![Sample Gif](http://fat.gfycat.com/TotalCheerfulDromedary.gif)
+
 Android layout that simulates physics using JBox2D. Simply add views, enable physics, and watch them fall!
 
-See it in action with the sample app
+The gif is choppy, see it in action with the sample app:
+  
 <a href="https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample">
   <img alt="Get it on Google Play"
        src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
@@ -10,40 +14,40 @@ See it in action with the sample app
 # Basic Usage
 If you want to see what your layout looks like when physics is applied to it, simply change your root layout to a physics layout. 
 ```xml
-        <com.jawnnypoo.physicslayout.PhysicsLinearLayout
-            android:id="@+id/physics_layout"
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
+  <com.jawnnypoo.physicslayout.PhysicsLinearLayout
+    android:id="@+id/physics_layout"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
             
-            <ImageView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:src="@drawable/ic_launcher"/>
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"/>
 
-            <ImageView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:src="@drawable/ic_launcher"/>
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"/>
               
-            <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Hello world, I have physics!"/>
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello world, I have physics!"/>
             
-        </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
+  </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
 ```     
 # Custom XML Attributes
 You can also further customize the behaviour of your PhysicsLayout
     
 ```xml  
-      <com.jawnnypoo.physicslayout.PhysicsLinearLayout
-            android:id="@+id/physics_layout"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:physics="true"
-            app:gravityX="0.0"
-            app:gravityY="9.8"
-            app:bounds="true"/>
+  <com.jawnnypoo.physicslayout.PhysicsLinearLayout
+    android:id="@+id/physics_layout"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    app:physics="true"
+    app:gravityX="0.0"
+    app:gravityY="9.8"
+    app:bounds="true"/>
 ```            
 
  * `physics` boolean, Determines if physics will be applied to the layout (Default true)
