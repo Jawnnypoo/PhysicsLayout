@@ -6,34 +6,34 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 /**
- * Typical RelativeLayout with some physics added on. Call {@link #getPhysics()} to get the
+ * Typical FrameLayout with some physics added on. Call {@link #getPhysics()} to get the
  * physics component.
  * Created by Jawn on 4/9/2015.
  */
-public class PhysicsRelativeLayout extends RelativeLayout {
+public class PhysicsFrameLayout extends FrameLayout {
 
     private Physics physics;
 
-    public PhysicsRelativeLayout(Context context) {
+    public PhysicsFrameLayout(Context context) {
         super(context);
         init(null);
     }
 
-    public PhysicsRelativeLayout(Context context, AttributeSet attrs) {
+    public PhysicsFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public PhysicsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PhysicsFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     @TargetApi(21)
-    public PhysicsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public PhysicsFrameLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }

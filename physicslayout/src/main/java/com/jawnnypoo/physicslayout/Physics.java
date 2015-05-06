@@ -63,15 +63,15 @@ public class Physics {
      * A controller that will receive the drag events.
      */
     public interface OnFlingListener {
-        void onGrabbed();
-        void onReleased();
+        void onGrabbed(View grabbedView);
+        void onReleased(View releasedView);
     }
 
     public interface OnCollisionListener {
         /**
          * Called when a collision is entered between two bodies. ViewId can also be R.id.physics_layout_bound_top,
          * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or R.id.physics_layout_bound_right.
-         * If view was not assigned an id, the return value will be View.NO_ID (-1).
+         * If view was not assigned an id, the return value will be {@link View#NO_ID}.
          * @param viewIdA view id of body A
          * @param viewIdB view id of body B
          */
@@ -79,7 +79,7 @@ public class Physics {
         /**
          * Called when a collision is exited between two bodies. ViewId can also be R.id.physics_layout_bound_top,
          * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or R.id.physics_layout_bound_right.
-         * If view was not assigned an id, the return value will be View.NO_ID (-1).
+         * If view was not assigned an id, the return value will be {@link View#NO_ID}.
          * @param viewIdA view id of body A
          * @param viewIdB view id of body B
          */
@@ -116,6 +116,10 @@ public class Physics {
         this(viewGroup, null);
     }
 
+    /**
+     * Call this when your view is created (remember to call from each possible constructor). Pass
+     * the layout (extends ViewGroup) that you want to apply physics to.
+     */
     public Physics(ViewGroup viewGroup, AttributeSet attrs) {
         this.viewGroup = viewGroup;
         viewDragHelper = PhysicsViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
@@ -154,6 +158,11 @@ public class Physics {
         createAllViewBodies();
     }
 
+    /**
+     * Call this in your ViewGroup if you plan on using fling
+     * @param ev
+     * @return
+     */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (!allowFling) {
             return false;
@@ -166,6 +175,11 @@ public class Physics {
         return viewDragHelper.shouldInterceptTouchEvent(ev);
     }
 
+    /**
+     * Call this in your ViewGroup if you plan on using fling
+     * @param ev
+     * @return
+     */
     public boolean onTouchEvent(MotionEvent ev) {
         if (!allowFling) {
             return false;
@@ -286,13 +300,13 @@ public class Physics {
         fixtureDef.restitution = 0.5f;
 
         fixtureDef.userData = R.id.physics_layout_body_left;
-        bodyDef.position.set(-boxWidth / 2, 0);
+        bodyDef.position.set((-boxWidth / 2) - pxToM(2), 0);
         Body leftBody = world.createBody(bodyDef);
         leftBody.createFixture(fixtureDef);
         bounds.add(leftBody);
 
         fixtureDef.userData = R.id.physics_layout_body_right;
-        bodyDef.position.set(pxToM(width), pxToM(-boundSize / 2));
+        bodyDef.position.set(pxToM(width + 2), pxToM(-boundSize / 2));
         Body rightBody = world.createBody(bodyDef);
         rightBody.createFixture(fixtureDef);
         bounds.add(rightBody);
@@ -335,7 +349,7 @@ public class Physics {
     }
 
     /**
-     * Finds the physics body that corresponds to the view. Requires the view to have an id.
+     * Finds the physics {@link Body} that corresponds to the view. Requires the view to have an id.
      * Returns null if no body exists for the view
      * @param id the view's id of the body you want to retrieve
      * @return body that determines the views physics
@@ -351,22 +365,25 @@ public class Physics {
     /**
      * Set the configuration that will be used when creating the view Body.
      * Changing view's configuration after layout has been performed will require you to call
-     * requestLayout() so that the body can be created with the new configuration.
-     * @param view
-     * @param config
+     * {@link ViewGroup#requestLayout()} so that the body can be created with the new configuration.
+     * @param view view that contains the physics body
+     * @param config the new configuration for the body
      */
-    public void setPhysicsConfig(View view, PhysicsConfig config) {
+    public static void setPhysicsConfig(View view, PhysicsConfig config) {
         view.setTag(R.id.physics_layout_config_tag, config);
     }
 
     /**
-     * Get the current Box2D world controlling the physics of this view
-     * @return The Box2D world
+     * Get the current Box2D {@link World} controlling the physics of this view
+     * @return The Box2D {@link World}
      */
     public World getWorld() {
         return world;
     }
 
+    /**
+     * Enables physics on the view
+     */
     public void enablePhysics() {
         enablePhysics = true;
         viewGroup.invalidate();
@@ -376,10 +393,18 @@ public class Physics {
         enablePhysics = false;
     }
 
+    /**
+     * Does physics effect this view?
+     * @return physics enabled or not
+     */
     public boolean isPhysicsEnabled() {
         return enablePhysics;
     }
 
+    /**
+     * Gives a random impulse to all the view bodies in the layout. Really just useful for testing, but
+     * try it out if you want :)
+     */
     public void giveRandomImpulse() {
         Body body;
         Vec2 impulse;
@@ -447,7 +472,7 @@ public class Physics {
                 body.setAwake(false);
             }
             if (onFlingListener != null) {
-                onFlingListener.onGrabbed();
+                onFlingListener.onGrabbed(capturedChild);
             }
         }
 
@@ -464,21 +489,40 @@ public class Physics {
                 body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
             }
             if (onFlingListener != null) {
-                onFlingListener.onReleased();
+                onFlingListener.onReleased(releasedChild);
             }
         }
     };
 
+    /**
+     * Allows the user to touch and fling views around the screen. Flinging will not be enabled if a
+     * view already has an {@link android.view.View.OnClickListener}
+     */
     public void enableFling() {
         allowFling = true;
     }
 
+    /**
+     * Disable flinging on the layout
+     */
     public void disableFling() {
         allowFling = false;
     }
 
+    /**
+     * Sets the fling listener
+     * @param onFlingListener listener that will respond to fling events
+     */
     public void setOnFlingListener(OnFlingListener onFlingListener) {
         this.onFlingListener = onFlingListener;
+    }
+
+    /**
+     * Sets the collision listener
+     * @param onCollisionListener listener that will listen for collisions
+     */
+    public void setOnCollisionListener(OnCollisionListener onCollisionListener) {
+        this.onCollisionListener = onCollisionListener;
     }
 
 }

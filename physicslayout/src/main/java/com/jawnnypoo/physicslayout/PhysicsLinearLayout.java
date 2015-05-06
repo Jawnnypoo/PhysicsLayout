@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
 /**
- * Typical LinearLayout with some physics added on. Call getPhysicsHelper() to get the
+ * Typical LinearLayout with some physics added on. Call {@link #getPhysics()} to get the
  * physics component.
  * Created by Jawn on 4/9/2015.
  */
