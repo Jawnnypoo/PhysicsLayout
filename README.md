@@ -1,9 +1,15 @@
 # PhysicsLayout
-Android layout that simulates physics using JBox2D. Simply add views, enable gravity, and watch them fly!
+Android layout that simulates physics using JBox2D. Simply add views, enable physics, and watch them fall!
+
+See it in action with the sample app
+<a href="https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
+</a>
 
 # Basic Usage
 If you want to see what your layout looks like when physics is applied to it, simply change your root layout to a physics layout. 
-
+```xml
         <com.jawnnypoo.physicslayout.PhysicsLinearLayout
             android:id="@+id/physics_layout"
             android:layout_width="match_parent"
@@ -25,10 +31,11 @@ If you want to see what your layout looks like when physics is applied to it, si
               android:text="Hello world, I have physics!"/>
             
         </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
-            
+```     
 # Custom XML Attributes
 You can also further customize the behaviour of your PhysicsLayout
-      
+    
+```xml  
       <com.jawnnypoo.physicslayout.PhysicsLinearLayout
             android:id="@+id/physics_layout"
             android:layout_width="match_parent"
@@ -37,7 +44,7 @@ You can also further customize the behaviour of your PhysicsLayout
             app:gravityX="0.0"
             app:gravityY="9.8"
             app:bounds="true"/>
-            
+```            
 
  * `physics` boolean, Determines if physics will be applied to the layout (Default true)
  * `gravityX` float, Sets the gravity in the X direction (positive is right, negative is left) (Default 0)
