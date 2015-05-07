@@ -85,3 +85,7 @@ physicsLayout.getPhysics().setPhysicsConfig(circleView, config);
 This is useful especially if you have view that would be considered circular, as the default for all views is a RETANGLE shape type. Most of the time, if you are just dealing with rectangular views, the defaults will work for you and you will not have to worry about this. 
 
 Check out the sample app to see most of these things in action.
+
+## Using this library?
+
+I wanna see the cool ideas and stuff you guys have made with this. If you're using this library in one of your projects just [send me a tweet](https://twitter.com/Jawnnypoo) and I'll add your project to the list.
