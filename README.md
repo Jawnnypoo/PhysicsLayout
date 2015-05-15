@@ -2,7 +2,7 @@
 
 ![Sample Gif](http://fat.gfycat.com/TotalCheerfulDromedary.gif)
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PhysicsLayout-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1762)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PhysicsLayout-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1762) [![Build Status](https://travis-ci.org/Jawnnypoo/PhysicsLayout.svg?branch=master)](https://travis-ci.org/Jawnnypoo/PhysicsLayout)
 
 Android layout that simulates physics using JBox2D. Simply add views, enable physics, and watch them fall!
 
