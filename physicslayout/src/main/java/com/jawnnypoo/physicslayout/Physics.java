@@ -159,7 +159,6 @@ public class Physics {
     public void onLayout(boolean changed) {
         if (debugLog) { Log.d(TAG, "onLayout"); }
         createWorld();
-        createAllViewBodies();
     }
 
     /**
