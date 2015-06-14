@@ -39,23 +39,19 @@ public class Physics {
     public static final float MOON_GRAVITY = 1.6f;
     public static final float EARTH_GRAVITY = 9.8f;
     public static final float JUPITER_GRAVITY = 24.8f;
-    //50 pixels for every meter
-    private static final float RENDER_TO_PHYSICS_RATIO = 50.0f;
     //Size in DP of the bounds (world walls) of the view
     private static final int BOUND_SIZE_DP = 20;
     private static final float FRAME_RATE = 1/60f;
-    private static final int VELOCITY_ITERATIONS = 8;
-    private static final int POSITION_ITERATIONS = 5;
 
-    private static float mToPx(float meters) {
-        return meters * RENDER_TO_PHYSICS_RATIO;
+    private float mToPx(float meters) {
+        return meters * pixelsPerMeter;
     }
 
-    private static float pxToM(float pixels) {
-        return pixels / RENDER_TO_PHYSICS_RATIO;
+    private float pxToM(float pixels) {
+        return pixels / pixelsPerMeter;
     }
 
-    private static float radiansToDegrees(float radians) {
+    private float radiansToDegrees(float radians) {
         return radians/3.14f*180f;
     }
 
@@ -91,6 +87,10 @@ public class Physics {
 
     private boolean debugDraw = false;
     private boolean debugLog = false;
+
+    private int velocityIterations = 8;
+    private int positionIterations = 5;
+    private float pixelsPerMeter = 50.0f;
 
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
@@ -134,6 +134,9 @@ public class Physics {
             gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
             hasBounds = a.getBoolean(R.styleable.Physics_bounds, hasBounds);
             allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
+            velocityIterations = a.getInt(R.styleable.Physics_velocityIterations, velocityIterations);
+            positionIterations = a.getInt(R.styleable.Physics_positionIterations, positionIterations);
+            pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, pixelsPerMeter);
             a.recycle();
         }
     }
@@ -198,7 +201,7 @@ public class Physics {
             return;
         }
         //TODO do this on a different thread. Has potential to cause ANRs
-        world.step(FRAME_RATE, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        world.step(FRAME_RATE, velocityIterations, positionIterations);
         View view;
         Body body;
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
@@ -225,7 +228,11 @@ public class Physics {
         viewGroup.invalidate();
     }
 
-    private void createWorld() {
+    /**
+     * Recreate the physics world. Will traverse all views in the hierarchy, get their current PhysicsConfigs
+     * and create a body in the world. This will override the current world if it exists.
+     */
+    public void createWorld() {
         //Null out all the bodies
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             viewGroup.getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
@@ -237,9 +244,6 @@ public class Physics {
         if (hasBounds) {
             enableBounds();
         }
-    }
-
-    private void createAllViewBodies() {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             createBody(viewGroup.getChildAt(i));
         }
@@ -323,8 +327,8 @@ public class Physics {
         bodyDef.position.set(pxToM(view.getX() + view.getWidth() / 2), pxToM(view.getY() + view.getHeight() / 2));
 
         FixtureDef fixtureDef = config.getFixtureDef();
-        fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE ? getBoxShape(view) :
-                getCircleShape(view, config);
+        fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE ? createBoxShape(view) :
+                createCircleShape(view, config);
         fixtureDef.userData = view.getId();
 
         Body body  = world.createBody(bodyDef);
@@ -332,7 +336,7 @@ public class Physics {
         view.setTag(R.id.physics_layout_body_tag, body);
     }
 
-    private PolygonShape getBoxShape(View view) {
+    private PolygonShape createBoxShape(View view) {
         PolygonShape box = new PolygonShape();
         float boxWidth = pxToM(view.getWidth() / 2);
         float boxHeight = pxToM(view.getHeight() / 2);
@@ -340,7 +344,7 @@ public class Physics {
         return box;
     }
 
-    private CircleShape getCircleShape(View view, PhysicsConfig config) {
+    private CircleShape createCircleShape(View view, PhysicsConfig config) {
         CircleShape circle = new CircleShape();
         float radius = config.getRadius();
         //radius was not set, set it to max of the width and height
@@ -534,4 +538,90 @@ public class Physics {
         this.onCollisionListener = onCollisionListener;
     }
 
+    /**
+     * Sets if the physics world has bounds or not
+     * @param hasBounds true if you want bounds, false if not
+     */
+    public void setHasBounds(boolean hasBounds) {
+        this.hasBounds = hasBounds;
+    }
+
+    public boolean hasBounds() {
+        return hasBounds;
+    }
+
+    /**
+     * Sets the gravity in the x direction for the world. Positive is right, negative is left.
+     */
+    public void setGravityX(float newGravityX) {
+        setGravity(newGravityX, gravityY);
+    }
+
+    public float getGravityX() {
+        return gravityX;
+    }
+
+    /**
+     * Sets the gravity in the y direction for the world. Positive is down, negative is up.
+     */
+    public void setGravityY(float newGravityY) {
+        setGravity(gravityX, newGravityY);
+    }
+
+    public float getGravityY() {
+        return gravityY;
+    }
+
+    /**
+     * Sets the gravity for the world. Positive x is right, negative is left. Positive
+     * y is down, negative is up.
+     */
+    public void setGravity(float gravityX, float gravityY) {
+        this.gravityX = gravityX;
+        this.gravityY = gravityY;
+        world.setGravity(new Vec2(gravityX, gravityY));
+    }
+
+    public Vec2 getGravity() {
+        return world.getGravity();
+    }
+
+    /**
+     * Set the number of velocity iterations the world will perform at each step.
+     * Default is 8
+     * @param velocityIterations number of iterations
+     */
+    public void setVelocityIterations(int velocityIterations) {
+        this.velocityIterations = velocityIterations;
+    }
+
+    public int getVelocityIterations() {
+        return velocityIterations;
+    }
+
+    /**
+     * Set the number of position iterations the world will perform at each step.
+     * Default is 5
+     * @param positionIterations number of iterations
+     */
+    public void setPositionIterations(int positionIterations) {
+        this.positionIterations = positionIterations;
+    }
+
+    public int getPositionIterations() {
+        return positionIterations;
+    }
+
+    /**
+     * Set the number of pixels per meter. Basically makes the world feel bigger or smaller
+     * Default is 5
+     * @param pixelsPerMeter number of pixels on screen per meter in box2d world
+     */
+    public void setPixelsPerMeter(float pixelsPerMeter) {
+        this.pixelsPerMeter = pixelsPerMeter;
+    }
+
+    public float getPixelsPerMeter() {
+        return pixelsPerMeter;
+    }
 }

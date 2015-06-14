@@ -13,6 +13,12 @@
         <attr name="bounds" format="boolean"/>
         <!--Turn on and off flinging-->
         <attr name="fling" format="boolean"/>
+        <!--Set the number of velocity iterations-->
+        <attr name="velocityIterations" format="integer"/>
+        <!--Set the number of position iterations-->
+        <attr name="positionIterations" format="integer"/>
+        <!--Set the number of pixels per meter-->
+        <attr name="pixelsPerMeter" format="float"/>
 
     </declare-styleable>
 
