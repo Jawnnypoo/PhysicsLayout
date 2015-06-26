@@ -91,3 +91,10 @@ Check out the sample app to see most of these things in action.
 ## Using this library?
 
 I wanna see the cool ideas and stuff you guys have made with this. If you're using this library in one of your projects just [send me a tweet](https://twitter.com/Jawnnypoo) and I'll add your project to the list.
+
+
+Icon | Application
+------------ | -------------
+<img src="https://lh6.ggpht.com/bD8GKGQKsT-QD7vk6eV74I1JvOUOdDv7dxHN2_RghjigfStO7_kjk4PRqOb2XohG2Q=w300-rw" width="48" height="48" /> | [DejaVu]
+
+[DejaVu]:https://play.google.com/store/apps/details?id=vincorp.in.dejavu
