@@ -111,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
         //Customizing the physics of the view
         PhysicsConfig config = new PhysicsConfig.Builder()
                 .setShapeType(PhysicsConfig.ShapeType.CIRCLE)
-                .setDensity(1.2f)
-                .setFriction(1.2f)
-                .setRestitution(1.2f)
+                .setDensity(0.6f)
+                .setFriction(0.4f)
+                .setRestitution(0.4f)
                 .build();
         Physics.setPhysicsConfig(circleView, config);
 
