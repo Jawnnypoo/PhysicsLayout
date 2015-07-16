@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">PhysicsLayout Sample</string>
+    <string name="app_name">PhysicsLayout</string>
 
     <string name="reset">Reset</string>
+    <string name="contributors">Contributors</string>
+    <string name="see_the_sauce">See the Sauce</string>
 </resources>

@@ -5,6 +5,8 @@
 
     <dimen name="square_size">50dp</dimen>
     <dimen name="circle_size">96dp</dimen>
+    <dimen name="border_size">2dp</dimen>
 
+    <dimen name="padding_medium">8dp</dimen>
     <dimen name="elevation_large">8dp</dimen>
 </resources>

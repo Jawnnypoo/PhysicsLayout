@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/action_contributors"
+        android:title="@string/contributors"
+        android:icon="@drawable/ic_github"
+        app:showAsAction="ifRoom" />
+
+</menu>
