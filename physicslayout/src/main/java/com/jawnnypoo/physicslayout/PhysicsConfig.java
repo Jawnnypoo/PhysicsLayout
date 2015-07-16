@@ -60,8 +60,8 @@ public class PhysicsConfig {
             return this;
         }
 
-        public Builder setRestitution(float density) {
-            config.fixtureDef.density = density;
+        public Builder setRestitution(float restitution) {
+            config.fixtureDef.restitution = restitution;
             return this;
         }
 
