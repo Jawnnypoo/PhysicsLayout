@@ -39,17 +39,29 @@
 
     </com.jawnnypoo.physicslayout.PhysicsFrameLayout>
 
-    <TextView
+    <LinearLayout
         android:id="@+id/sauce"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:drawableLeft="@drawable/ic_github"
-        android:drawablePadding="@dimen/activity_horizontal_margin"
-        android:gravity="center"
-        android:text="@string/see_the_sauce"
-        android:textSize="22sp"
-        android:background="?attr/selectableItemBackground"/>
+        android:orientation="horizontal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_github"
+            android:contentDescription="@null"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:text="@string/see_the_sauce"
+            android:textSize="22sp" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
