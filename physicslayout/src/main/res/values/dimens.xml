@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="physics_layout_dp_per_meter">50dp</dimen>
+</resources>

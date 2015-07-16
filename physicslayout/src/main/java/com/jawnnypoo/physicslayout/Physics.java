@@ -89,8 +89,8 @@ public class Physics {
     private boolean debugLog = false;
 
     private int velocityIterations = 8;
-    private int positionIterations = 5;
-    private float pixelsPerMeter = 50.0f;
+    private int positionIterations = 3;
+    private float pixelsPerMeter;
 
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
@@ -136,7 +136,7 @@ public class Physics {
             allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
             velocityIterations = a.getInt(R.styleable.Physics_velocityIterations, velocityIterations);
             positionIterations = a.getInt(R.styleable.Physics_positionIterations, positionIterations);
-            pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, pixelsPerMeter);
+            pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, viewGroup.getResources().getDimensionPixelSize(R.dimen.physics_layout_dp_per_meter));
             a.recycle();
         }
     }
@@ -600,7 +600,7 @@ public class Physics {
 
     /**
      * Set the number of position iterations the world will perform at each step.
-     * Default is 5
+     * Default is 3
      * @param positionIterations number of iterations
      */
     public void setPositionIterations(int positionIterations) {
@@ -613,7 +613,7 @@ public class Physics {
 
     /**
      * Set the number of pixels per meter. Basically makes the world feel bigger or smaller
-     * Default is 5
+     * Default is 20dp. More pixels per meter = ui feeling bigger in the world (faster movement)
      * @param pixelsPerMeter number of pixels on screen per meter in box2d world
      */
     public void setPixelsPerMeter(float pixelsPerMeter) {
