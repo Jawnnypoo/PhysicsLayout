@@ -104,6 +104,7 @@ public class Physics {
     private int velocityIterations = 8;
     private int positionIterations = 3;
     private float pixelsPerMeter;
+    private float boundsSize;
 
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
@@ -147,6 +148,7 @@ public class Physics {
             gravityX = a.getFloat(R.styleable.Physics_gravityX, gravityX);
             gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
             hasBounds = a.getBoolean(R.styleable.Physics_bounds, hasBounds);
+            boundsSize = a.getFloat(R.styleable.Physics_boundsSize, BOUND_SIZE_DP);
             allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
             velocityIterations = a
                 .getInt(R.styleable.Physics_velocityIterations, velocityIterations);
@@ -295,7 +297,7 @@ public class Physics {
     }
 
     private void createTopAndBottomBounds() {
-        int boundSize = Math.round((float) BOUND_SIZE_DP * density);
+        int boundSize = Math.round(boundsSize * density);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         PolygonShape box = new PolygonShape();
@@ -322,7 +324,7 @@ public class Physics {
     }
 
     private void createLeftAndRightBounds() {
-        int boundSize = Math.round((float) BOUND_SIZE_DP * density);
+        int boundSize = Math.round(boundsSize * density);
         int boxWidth = (int) pxToM(boundSize);
         int boxHeight = (int) pxToM(height);
         BodyDef bodyDef = new BodyDef();
@@ -596,6 +598,20 @@ public class Physics {
      */
     public void setOnCollisionListener(OnCollisionListener onCollisionListener) {
         this.onCollisionListener = onCollisionListener;
+    }
+    
+    /**
+     * Sets the size of the bounds and enables the bounds
+     *
+     * @param size the size of the bounds in dp
+     */
+    public void setBoundsSize(float size) {
+        boundsSize = size;
+
+        if (hasBounds()) {
+            disableBounds();
+        }
+        enableBounds();
     }
 
     /**
