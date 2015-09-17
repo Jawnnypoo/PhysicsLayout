@@ -214,14 +214,15 @@ public class Physics {
         Body body;
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             view = viewGroup.getChildAt(i);
+            body = (Body) view.getTag(R.id.physics_layout_body_tag);
+
             if (view == viewBeingDragged) {
                 continue;
             }
-            body = (Body) view.getTag(R.id.physics_layout_body_tag);
             if (body != null) {
                 view.setX(mToPx(body.getPosition().x) - view.getWidth() / 2);
                 view.setY(mToPx(body.getPosition().y) - view.getHeight() / 2);
-                view.setRotation(radiansToDegrees(body.getAngle()));
+                view.setRotation(radiansToDegrees(body.getAngle()) % 360);
                 if (debugDraw) {
                     //TODO figure out if circle or rect and draw accordingly
                     canvas.drawRect(mToPx(body.getPosition().x) - view.getWidth() / 2,
@@ -241,7 +242,15 @@ public class Physics {
      */
     public void createWorld() {
         //Null out all the bodies
+        ArrayList<Body> oldBodiesArray = new ArrayList<>();
+
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            Body body = (Body) viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                oldBodiesArray.add(body);
+            } else {
+                oldBodiesArray.add(null);
+            }
             viewGroup.getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
         }
         bounds.clear();
@@ -254,7 +263,7 @@ public class Physics {
             enableBounds();
         }
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            createBody(viewGroup.getChildAt(i));
+            createBody(viewGroup.getChildAt(i), oldBodiesArray.get(i));
         }
     }
 
@@ -326,7 +335,7 @@ public class Physics {
         bounds.add(rightBody);
     }
 
-    private void createBody(View view) {
+    private void createBody(View view, Body oldBody) {
         PhysicsConfig config = (PhysicsConfig) view.getTag(R.id.physics_layout_config_tag);
         if (config == null) {
             config = PhysicsConfig.getDefaultConfig();
@@ -335,6 +344,16 @@ public class Physics {
         BodyDef bodyDef = config.getBodyDef();
         bodyDef.position.set(pxToM(view.getX() + view.getWidth() / 2),
             pxToM(view.getY() + view.getHeight() / 2));
+
+        if (oldBody != null) {
+            bodyDef.angle = oldBody.getAngle();
+            bodyDef.angularVelocity = oldBody.getAngularVelocity();
+            bodyDef.linearVelocity = oldBody.getLinearVelocity();
+            bodyDef.angularDamping = oldBody.getAngularDamping();
+            bodyDef.linearDamping = oldBody.getLinearDamping();
+        } else {
+            bodyDef.angularVelocity = degreesToRadians(view.getRotation());
+        }
 
         FixtureDef fixtureDef = config.getFixtureDef();
         fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE
