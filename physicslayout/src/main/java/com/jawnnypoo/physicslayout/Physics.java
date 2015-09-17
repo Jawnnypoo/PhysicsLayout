@@ -148,7 +148,7 @@ public class Physics {
             gravityX = a.getFloat(R.styleable.Physics_gravityX, gravityX);
             gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
             hasBounds = a.getBoolean(R.styleable.Physics_bounds, hasBounds);
-            boundsSize = a.getFloat(R.styleable.Physics_boundsSize, BOUND_SIZE_DP);
+            boundsSize = a.getDimension(R.styleable.Physics_boundsSize, BOUND_SIZE_DP * density);
             allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
             velocityIterations = a
                 .getInt(R.styleable.Physics_velocityIterations, velocityIterations);
@@ -297,7 +297,7 @@ public class Physics {
     }
 
     private void createTopAndBottomBounds() {
-        int boundSize = Math.round(boundsSize * density);
+        int boundSize = Math.round(boundsSize);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         PolygonShape box = new PolygonShape();
@@ -311,20 +311,20 @@ public class Physics {
         fixtureDef.restitution = 0.5f;
 
         fixtureDef.userData = R.id.physics_layout_bound_top;
-        bodyDef.position.set(0, -boxHeight / 2);
+        bodyDef.position.set(0, -boxHeight);
         Body topBody = world.createBody(bodyDef);
         topBody.createFixture(fixtureDef);
         bounds.add(topBody);
 
         fixtureDef.userData = R.id.physics_layout_body_bottom;
-        bodyDef.position.set(0, pxToM(height) - boxHeight / 2);
+        bodyDef.position.set(0, pxToM(height) + boxHeight);
         Body bottomBody = world.createBody(bodyDef);
         bottomBody.createFixture(fixtureDef);
         bounds.add(bottomBody);
     }
 
     private void createLeftAndRightBounds() {
-        int boundSize = Math.round(boundsSize * density);
+        int boundSize = Math.round(boundsSize);
         int boxWidth = (int) pxToM(boundSize);
         int boxHeight = (int) pxToM(height);
         BodyDef bodyDef = new BodyDef();
@@ -338,13 +338,13 @@ public class Physics {
         fixtureDef.restitution = 0.5f;
 
         fixtureDef.userData = R.id.physics_layout_body_left;
-        bodyDef.position.set((-boxWidth / 2) - pxToM(2), 0);
+        bodyDef.position.set(-boxWidth, 0);
         Body leftBody = world.createBody(bodyDef);
         leftBody.createFixture(fixtureDef);
         bounds.add(leftBody);
 
         fixtureDef.userData = R.id.physics_layout_body_right;
-        bodyDef.position.set(pxToM(width + 2), pxToM(-boundSize / 2));
+        bodyDef.position.set(pxToM(width) + boxWidth, 0);
         Body rightBody = world.createBody(bodyDef);
         rightBody.createFixture(fixtureDef);
         bounds.add(rightBody);
@@ -599,14 +599,14 @@ public class Physics {
     public void setOnCollisionListener(OnCollisionListener onCollisionListener) {
         this.onCollisionListener = onCollisionListener;
     }
-    
+
     /**
      * Sets the size of the bounds and enables the bounds
      *
      * @param size the size of the bounds in dp
      */
     public void setBoundsSize(float size) {
-        boundsSize = size;
+        boundsSize = size * density;
 
         if (hasBounds()) {
             disableBounds();

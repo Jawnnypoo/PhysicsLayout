@@ -16,18 +16,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary" />
 
         </android.support.design.widget.AppBarLayout>
 
         <com.jawnnypoo.physicslayout.PhysicsRelativeLayout
             android:id="@+id/physics_layout"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="300dp"
+            app:boundsSize="100dp">
 
             <ImageView
                 android:layout_width="@dimen/square_size"
