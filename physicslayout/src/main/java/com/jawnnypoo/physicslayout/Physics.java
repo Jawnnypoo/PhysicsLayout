@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -40,6 +41,8 @@ public class Physics {
     //Size in DP of the bounds (world walls) of the view
     private static final int BOUND_SIZE_DP = 20;
     private static final float FRAME_RATE = 1 / 60f;
+
+    private HashMap<Integer, Float> mRotationQueue = new HashMap<>();
 
     private float mToPx(float meters) {
         return meters * pixelsPerMeter;
@@ -215,6 +218,16 @@ public class Physics {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             view = viewGroup.getChildAt(i);
             body = (Body) view.getTag(R.id.physics_layout_body_tag);
+
+            if (body != null && (body.getType() == BodyType.KINEMATIC
+                || body.getType() == BodyType.DYNAMIC)) {
+                if (mRotationQueue.containsKey(view.getId())) {
+                    float rotationDegrees = mRotationQueue.get(view.getId());
+
+                    body.setTransform(body.getPosition(), degreesToRadians(rotationDegrees));
+                    mRotationQueue.remove(view.getId());
+                }
+            }
 
             if (view == viewBeingDragged) {
                 continue;
@@ -674,5 +687,15 @@ public class Physics {
 
     public float getPixelsPerMeter() {
         return pixelsPerMeter;
+    }
+
+    /**
+     * Forces the rotation of a {@link BodyType#DYNAMIC} or a {@link BodyType#KINEMATIC} view
+     *
+     * @param viewId  The unique id of the view
+     * @param degrees the degrees to set the rotate to
+     */
+    public void rotateView(int viewId, float degrees) {
+        mRotationQueue.put(viewId, degrees);
     }
 }
