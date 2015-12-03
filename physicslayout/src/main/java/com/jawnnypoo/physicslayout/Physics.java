@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -22,9 +24,6 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Implementation for physics layout is found here, since we want to offer the main
@@ -41,7 +40,9 @@ public class Physics {
     public static final float JUPITER_GRAVITY = 24.8f;
     //Size in DP of the bounds (world walls) of the view
     private static final int BOUND_SIZE_DP = 20;
-    private static final float FRAME_RATE = 1/60f;
+    private static final float FRAME_RATE = 1 / 60f;
+
+    private HashMap<Integer, Float> mRotationQueue = new HashMap<>();
 
     private float mToPx(float meters) {
         return meters * pixelsPerMeter;
@@ -52,7 +53,11 @@ public class Physics {
     }
 
     private float radiansToDegrees(float radians) {
-        return radians/3.14f*180f;
+        return radians / 3.14f * 180f;
+    }
+
+    private float degreesToRadians(float degrees) {
+        return (degrees / 180f) * 3.14f;
     }
 
     /**
@@ -60,22 +65,30 @@ public class Physics {
      */
     public interface OnFlingListener {
         void onGrabbed(View grabbedView);
+
         void onReleased(View releasedView);
     }
 
     public interface OnCollisionListener {
         /**
-         * Called when a collision is entered between two bodies. ViewId can also be R.id.physics_layout_bound_top,
-         * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or R.id.physics_layout_bound_right.
+         * Called when a collision is entered between two bodies. ViewId can also be
+         * R.id.physics_layout_bound_top,
+         * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or
+         * R.id.physics_layout_bound_right.
          * If view was not assigned an id, the return value will be {@link View#NO_ID}.
+         *
          * @param viewIdA view id of body A
          * @param viewIdB view id of body B
          */
         void onCollisionEntered(int viewIdA, int viewIdB);
+
         /**
-         * Called when a collision is exited between two bodies. ViewId can also be R.id.physics_layout_bound_top,
-         * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or R.id.physics_layout_bound_right.
+         * Called when a collision is exited between two bodies. ViewId can also be
+         * R.id.physics_layout_bound_top,
+         * R.id.physics_layout_bound_bottom, R.id.physics_layout_bound_left, or
+         * R.id.physics_layout_bound_right.
          * If view was not assigned an id, the return value will be {@link View#NO_ID}.
+         *
          * @param viewIdA view id of body A
          * @param viewIdB view id of body B
          */
@@ -91,6 +104,7 @@ public class Physics {
     private int velocityIterations = 8;
     private int positionIterations = 3;
     private float pixelsPerMeter;
+    private float boundsSize;
 
     private World world;
     private ArrayList<Body> bounds = new ArrayList<>();
@@ -128,15 +142,20 @@ public class Physics {
         debugPaint.setStyle(Paint.Style.STROKE);
         density = viewGroup.getResources().getDisplayMetrics().density;
         if (attrs != null) {
-            TypedArray a = viewGroup.getContext().obtainStyledAttributes(attrs, R.styleable.Physics);
+            TypedArray a = viewGroup.getContext()
+                .obtainStyledAttributes(attrs, R.styleable.Physics);
             enablePhysics = a.getBoolean(R.styleable.Physics_physics, enablePhysics);
             gravityX = a.getFloat(R.styleable.Physics_gravityX, gravityX);
             gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
             hasBounds = a.getBoolean(R.styleable.Physics_bounds, hasBounds);
+            boundsSize = a.getDimension(R.styleable.Physics_boundsSize, BOUND_SIZE_DP * density);
             allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
-            velocityIterations = a.getInt(R.styleable.Physics_velocityIterations, velocityIterations);
-            positionIterations = a.getInt(R.styleable.Physics_positionIterations, positionIterations);
-            pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, viewGroup.getResources().getDimensionPixelSize(R.dimen.physics_layout_dp_per_meter));
+            velocityIterations = a
+                .getInt(R.styleable.Physics_velocityIterations, velocityIterations);
+            positionIterations = a
+                .getInt(R.styleable.Physics_positionIterations, positionIterations);
+            pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, viewGroup.getResources()
+                .getDimensionPixelSize(R.dimen.physics_layout_dp_per_meter));
             a.recycle();
         }
     }
@@ -144,8 +163,6 @@ public class Physics {
     /**
      * Call this every time your view gets a call to onSizeChanged so that the world can
      * respond to this change.
-     * @param width
-     * @param height
      */
     public void onSizeChanged(int width, int height) {
         this.width = width;
@@ -157,14 +174,14 @@ public class Physics {
      * respond to this change.
      */
     public void onLayout(boolean changed) {
-        if (debugLog) { Log.d(TAG, "onLayout"); }
+        if (debugLog) {
+            Log.d(TAG, "onLayout");
+        }
         createWorld();
     }
 
     /**
      * Call this in your ViewGroup if you plan on using fling
-     * @param ev
-     * @return
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (!allowFling) {
@@ -180,8 +197,6 @@ public class Physics {
 
     /**
      * Call this in your ViewGroup if you plan on using fling
-     * @param ev
-     * @return
      */
     public boolean onTouchEvent(MotionEvent ev) {
         if (!allowFling) {
@@ -193,7 +208,6 @@ public class Physics {
 
     /**
      * Call this when your view calls onDraw so that physics can be processed
-     * @param canvas
      */
     public void onDraw(Canvas canvas) {
         if (!enablePhysics) {
@@ -205,22 +219,31 @@ public class Physics {
         Body body;
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             view = viewGroup.getChildAt(i);
+            body = (Body) view.getTag(R.id.physics_layout_body_tag);
+
+            if (body != null && (body.getType() == BodyType.KINEMATIC
+                || body.getType() == BodyType.DYNAMIC)) {
+                if (mRotationQueue.containsKey(view.getId())) {
+                    float rotationDegrees = mRotationQueue.get(view.getId());
+
+                    body.setTransform(body.getPosition(), degreesToRadians(rotationDegrees));
+                    mRotationQueue.remove(view.getId());
+                }
+            }
+
             if (view == viewBeingDragged) {
                 continue;
             }
-            body = (Body) view.getTag(R.id.physics_layout_body_tag);
             if (body != null) {
                 view.setX(mToPx(body.getPosition().x) - view.getWidth() / 2);
                 view.setY(mToPx(body.getPosition().y) - view.getHeight() / 2);
-                view.setRotation(radiansToDegrees(body.getAngle()));
+                view.setRotation(radiansToDegrees(body.getAngle()) % 360);
                 if (debugDraw) {
                     //TODO figure out if circle or rect and draw accordingly
-                    canvas.drawRect(
-                            mToPx(body.getPosition().x) - view.getWidth()/2,
-                            mToPx(body.getPosition().y) - view.getHeight()/2,
-                            mToPx(body.getPosition().x) + view.getWidth()/2,
-                            mToPx(body.getPosition().y) + view.getHeight()/2,
-                            debugPaint);
+                    canvas.drawRect(mToPx(body.getPosition().x) - view.getWidth() / 2,
+                        mToPx(body.getPosition().y) - view.getHeight() / 2,
+                        mToPx(body.getPosition().x) + view.getWidth() / 2,
+                        mToPx(body.getPosition().y) + view.getHeight() / 2, debugPaint);
                 }
             }
         }
@@ -228,23 +251,34 @@ public class Physics {
     }
 
     /**
-     * Recreate the physics world. Will traverse all views in the hierarchy, get their current PhysicsConfigs
+     * Recreate the physics world. Will traverse all views in the hierarchy, get their current
+     * PhysicsConfigs
      * and create a body in the world. This will override the current world if it exists.
      */
     public void createWorld() {
         //Null out all the bodies
+        ArrayList<Body> oldBodiesArray = new ArrayList<>();
+
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            Body body = (Body) viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                oldBodiesArray.add(body);
+            } else {
+                oldBodiesArray.add(null);
+            }
             viewGroup.getChildAt(i).setTag(R.id.physics_layout_body_tag, null);
         }
         bounds.clear();
-        if (debugLog) { Log.d(TAG, "createWorld"); }
+        if (debugLog) {
+            Log.d(TAG, "createWorld");
+        }
         world = new World(new Vec2(gravityX, gravityY));
         world.setContactListener(contactListener);
         if (hasBounds) {
             enableBounds();
         }
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            createBody(viewGroup.getChildAt(i));
+            createBody(viewGroup.getChildAt(i), oldBodiesArray.get(i));
         }
     }
 
@@ -263,7 +297,7 @@ public class Physics {
     }
 
     private void createTopAndBottomBounds() {
-        int boundSize = Math.round((float)BOUND_SIZE_DP * density);
+        int boundSize = Math.round(boundsSize);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         PolygonShape box = new PolygonShape();
@@ -277,20 +311,20 @@ public class Physics {
         fixtureDef.restitution = 0.5f;
 
         fixtureDef.userData = R.id.physics_layout_bound_top;
-        bodyDef.position.set(0, -boxHeight / 2);
+        bodyDef.position.set(0, -boxHeight);
         Body topBody = world.createBody(bodyDef);
         topBody.createFixture(fixtureDef);
         bounds.add(topBody);
 
         fixtureDef.userData = R.id.physics_layout_body_bottom;
-        bodyDef.position.set(0, pxToM(height) - boxHeight / 2);
+        bodyDef.position.set(0, pxToM(height) + boxHeight);
         Body bottomBody = world.createBody(bodyDef);
         bottomBody.createFixture(fixtureDef);
         bounds.add(bottomBody);
     }
 
     private void createLeftAndRightBounds() {
-        int boundSize = Math.round((float)BOUND_SIZE_DP * density);
+        int boundSize = Math.round(boundsSize);
         int boxWidth = (int) pxToM(boundSize);
         int boxHeight = (int) pxToM(height);
         BodyDef bodyDef = new BodyDef();
@@ -304,33 +338,44 @@ public class Physics {
         fixtureDef.restitution = 0.5f;
 
         fixtureDef.userData = R.id.physics_layout_body_left;
-        bodyDef.position.set((-boxWidth / 2) - pxToM(2), 0);
+        bodyDef.position.set(-boxWidth, 0);
         Body leftBody = world.createBody(bodyDef);
         leftBody.createFixture(fixtureDef);
         bounds.add(leftBody);
 
         fixtureDef.userData = R.id.physics_layout_body_right;
-        bodyDef.position.set(pxToM(width + 2), pxToM(-boundSize / 2));
+        bodyDef.position.set(pxToM(width) + boxWidth, 0);
         Body rightBody = world.createBody(bodyDef);
         rightBody.createFixture(fixtureDef);
         bounds.add(rightBody);
     }
 
-    private void createBody(View view) {
+    private void createBody(View view, Body oldBody) {
         PhysicsConfig config = (PhysicsConfig) view.getTag(R.id.physics_layout_config_tag);
         if (config == null) {
             config = PhysicsConfig.getDefaultConfig();
             view.setTag(R.id.physics_layout_config_tag, config);
         }
         BodyDef bodyDef = config.getBodyDef();
-        bodyDef.position.set(pxToM(view.getX() + view.getWidth() / 2), pxToM(view.getY() + view.getHeight() / 2));
+        bodyDef.position.set(pxToM(view.getX() + view.getWidth() / 2),
+            pxToM(view.getY() + view.getHeight() / 2));
+
+        if (oldBody != null) {
+            bodyDef.angle = oldBody.getAngle();
+            bodyDef.angularVelocity = oldBody.getAngularVelocity();
+            bodyDef.linearVelocity = oldBody.getLinearVelocity();
+            bodyDef.angularDamping = oldBody.getAngularDamping();
+            bodyDef.linearDamping = oldBody.getLinearDamping();
+        } else {
+            bodyDef.angularVelocity = degreesToRadians(view.getRotation());
+        }
 
         FixtureDef fixtureDef = config.getFixtureDef();
-        fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE ? createBoxShape(view) :
-                createCircleShape(view, config);
+        fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE
+            ? createBoxShape(view) : createCircleShape(view, config);
         fixtureDef.userData = view.getId();
 
-        Body body  = world.createBody(bodyDef);
+        Body body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         view.setTag(R.id.physics_layout_body_tag, body);
     }
@@ -347,15 +392,20 @@ public class Physics {
         CircleShape circle = new CircleShape();
         float radius = config.getRadius();
         //radius was not set, set it to max of the width and height
-        if (radius == -1) { radius = Math.max(view.getWidth() / 2, view.getHeight() / 2); }
+        if (radius == -1) {
+            radius = Math.max(view.getWidth() / 2, view.getHeight() / 2);
+        }
         circle.m_radius = pxToM(radius);
         return circle;
     }
 
     /**
-     * Finds the physics {@link Body} that corresponds to the view. Requires the view to have an id.
+     * Finds the physics {@link Body} that corresponds to the view. Requires the view to have an
+     * id.
      * Returns null if no body exists for the view
+     *
      * @param id the view's id of the body you want to retrieve
+     *
      * @return body that determines the views physics
      */
     public Body findBodyById(int id) {
@@ -369,8 +419,10 @@ public class Physics {
     /**
      * Set the configuration that will be used when creating the view Body.
      * Changing view's configuration after layout has been performed will require you to call
-     * {@link ViewGroup#requestLayout()} so that the body can be created with the new configuration.
-     * @param view view that contains the physics body
+     * {@link ViewGroup#requestLayout()} so that the body can be created with the new
+     * configuration.
+     *
+     * @param view   view that contains the physics body
      * @param config the new configuration for the body
      */
     public static void setPhysicsConfig(View view, PhysicsConfig config) {
@@ -379,6 +431,7 @@ public class Physics {
 
     /**
      * Get the current Box2D {@link World} controlling the physics of this view
+     *
      * @return The Box2D {@link World}
      */
     public World getWorld() {
@@ -399,6 +452,7 @@ public class Physics {
 
     /**
      * Does physics effect this view?
+     *
      * @return physics enabled or not
      */
     public boolean isPhysicsEnabled() {
@@ -406,7 +460,8 @@ public class Physics {
     }
 
     /**
-     * Gives a random impulse to all the view bodies in the layout. Really just useful for testing, but
+     * Gives a random impulse to all the view bodies in the layout. Really just useful for testing,
+     * but
      * try it out if you want :)
      */
     public void giveRandomImpulse() {
@@ -425,7 +480,7 @@ public class Physics {
         public void beginContact(Contact contact) {
             if (onCollisionListener != null) {
                 onCollisionListener.onCollisionEntered((int) contact.getFixtureA().m_userData,
-                        (int) contact.getFixtureB().m_userData);
+                    (int) contact.getFixtureB().m_userData);
             }
         }
 
@@ -433,18 +488,21 @@ public class Physics {
         public void endContact(Contact contact) {
             if (onCollisionListener != null) {
                 onCollisionListener.onCollisionExited((int) contact.getFixtureA().m_userData,
-                        (int) contact.getFixtureB().m_userData);
+                    (int) contact.getFixtureB().m_userData);
             }
         }
 
         @Override
-        public void preSolve(Contact contact, Manifold oldManifold) { }
+        public void preSolve(Contact contact, Manifold oldManifold) {
+        }
 
         @Override
-        public void postSolve(Contact contact, ContactImpulse impulse) { }
+        public void postSolve(Contact contact, ContactImpulse impulse) {
+        }
     };
 
-    private final PhysicsViewDragHelper.Callback viewDragHelperCallback = new PhysicsViewDragHelper.Callback() {
+    private final PhysicsViewDragHelper.Callback viewDragHelperCallback
+        = new PhysicsViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return true;
@@ -484,11 +542,12 @@ public class Physics {
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
             viewBeingDragged = null;
-            Body body = (Body)releasedChild.getTag(R.id.physics_layout_body_tag);
+            Body body = (Body) releasedChild.getTag(R.id.physics_layout_body_tag);
             if (body != null) {
-                body.setTransform(new Vec2(pxToM(releasedChild.getX() + releasedChild.getWidth() / 2),
+                body.setTransform(
+                    new Vec2(pxToM(releasedChild.getX() + releasedChild.getWidth() / 2),
                         pxToM(releasedChild.getY() + releasedChild.getHeight() / 2)),
-                        body.getAngle());
+                    body.getAngle());
                 body.setAwake(true);
                 body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
             }
@@ -499,7 +558,8 @@ public class Physics {
     };
 
     /**
-     * Allows the user to touch and fling views around the screen. Flinging will not be enabled if a
+     * Allows the user to touch and fling views around the screen. Flinging will not be enabled if
+     * a
      * view already has an {@link android.view.View.OnClickListener}
      */
     public void enableFling() {
@@ -515,6 +575,7 @@ public class Physics {
 
     /**
      * Is fling enabled for this ViewGroup?
+     *
      * @return physics enabled or not
      */
     public boolean isFlingEnabled() {
@@ -523,6 +584,7 @@ public class Physics {
 
     /**
      * Sets the fling listener
+     *
      * @param onFlingListener listener that will respond to fling events
      */
     public void setOnFlingListener(OnFlingListener onFlingListener) {
@@ -531,6 +593,7 @@ public class Physics {
 
     /**
      * Sets the collision listener
+     *
      * @param onCollisionListener listener that will listen for collisions
      */
     public void setOnCollisionListener(OnCollisionListener onCollisionListener) {
@@ -538,7 +601,22 @@ public class Physics {
     }
 
     /**
+     * Sets the size of the bounds and enables the bounds
+     *
+     * @param size the size of the bounds in dp
+     */
+    public void setBoundsSize(float size) {
+        boundsSize = size * density;
+
+        if (hasBounds()) {
+            disableBounds();
+        }
+        enableBounds();
+    }
+
+    /**
      * Sets if the physics world has bounds or not
+     *
      * @param hasBounds true if you want bounds, false if not
      */
     public void setHasBounds(boolean hasBounds) {
@@ -588,6 +666,7 @@ public class Physics {
     /**
      * Set the number of velocity iterations the world will perform at each step.
      * Default is 8
+     *
      * @param velocityIterations number of iterations
      */
     public void setVelocityIterations(int velocityIterations) {
@@ -601,6 +680,7 @@ public class Physics {
     /**
      * Set the number of position iterations the world will perform at each step.
      * Default is 3
+     *
      * @param positionIterations number of iterations
      */
     public void setPositionIterations(int positionIterations) {
@@ -614,6 +694,7 @@ public class Physics {
     /**
      * Set the number of pixels per meter. Basically makes the world feel bigger or smaller
      * Default is 20dp. More pixels per meter = ui feeling bigger in the world (faster movement)
+     *
      * @param pixelsPerMeter number of pixels on screen per meter in box2d world
      */
     public void setPixelsPerMeter(float pixelsPerMeter) {
@@ -622,5 +703,15 @@ public class Physics {
 
     public float getPixelsPerMeter() {
         return pixelsPerMeter;
+    }
+
+    /**
+     * Forces the rotation of a {@link BodyType#DYNAMIC} or a {@link BodyType#KINEMATIC} view
+     *
+     * @param viewId  The unique id of the view
+     * @param degrees the degrees to set the rotate to
+     */
+    public void rotateView(int viewId, float degrees) {
+        mRotationQueue.put(viewId, degrees);
     }
 }

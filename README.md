@@ -59,13 +59,15 @@ You can also further customize the behaviour of your PhysicsLayout
     app:physics="true"
     app:gravityX="0.0"
     app:gravityY="9.8"
-    app:bounds="true"/>
+    app:bounds="true"
+    app:boundsSize="50dp"/>
 ```            
 
  * `physics` boolean, Determines if physics will be applied to the layout (Default true)
  * `gravityX` float, Sets the gravity in the X direction (positive is right, negative is left) (Default 0)
  * `gravityY` float, Sets the gravity in the Y direction (positive is down, negative is up) (Default 9.8)
  * `bounds` boolean, Determines if the layout should have bounds on the edges of itself (Default true)
+ * `boundsSize` dimenstion, Sets the width/height of the bounds on the edges (Default 20dp)
 
 # Custom Physics Configuration
 Each view contained within the layout has a physics configuration that it uses to create itself in the Box2D world. This defines its shape, mass, restitutaion, and other physics related variables. A custom configuration can be applied to each view as well, using the PhysicsConfiguration builder:

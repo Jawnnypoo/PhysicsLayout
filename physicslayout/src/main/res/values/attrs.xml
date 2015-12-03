@@ -11,6 +11,8 @@
         <attr name="gravityY" format="float"/>
         <!--Define if the view should have outer boundaries-->
         <attr name="bounds" format="boolean"/>
+        <!--Set the width of the boundaries-->
+        <attr name="boundsSize" format="dimension"/>
         <!--Turn on and off flinging-->
         <attr name="fling" format="boolean"/>
         <!--Set the number of velocity iterations-->
