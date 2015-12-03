@@ -7,11 +7,7 @@
 Android layout that simulates physics using JBox2D. Simply add views, enable physics, and watch them fall!
 
 The gif is choppy, see it in action with the sample app:
-  
-<a href="https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample">
-  <img alt="Get it on Google Play"
-       src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
-</a>
+[![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
 # Gradle Dependency (jCenter)
 
