@@ -26,7 +26,7 @@ publish {
     userOrg = 'jawnnypoo'
     groupId = 'com.jawnnypoo'
     artifactId = 'physicslayout'
-    version = '1.0.0'
+    version = '1.0.1'
     description = 'Android layout that simulates physics using JBox2D.'
     website = 'https://github.com/Jawnnypoo/PhysicsLayout'
     issueTracker = "https://github.com/Jawnnypoo/PhysicsLayout/issues"
