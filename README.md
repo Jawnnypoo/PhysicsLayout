@@ -95,5 +95,8 @@ I wanna see the cool ideas and stuff you guys have made with this. If you're usi
 Icon | Application
 ------------ | -------------
 <img src="https://lh6.ggpht.com/bD8GKGQKsT-QD7vk6eV74I1JvOUOdDv7dxHN2_RghjigfStO7_kjk4PRqOb2XohG2Q=w300-rw" width="48" height="48" /> | [DejaVu]
-
+<img src="https://lh3.googleusercontent.com/yUX513TrmvL7qnpCeyGsnw5ydjGVokY2ZKqOgc5pGD60F4JkVE4smmJyKVb8H-IZsw=w300-rw" width="48" height="48" /> | [Y'U]
+<img src="https://lh3.googleusercontent.com/kI_H1o6q1ug7YcsD6B0BPkq0DUxdLYTOAEvny7wRE4fEPa130rFlzZS-6viGBumzhw=w300-rw" width="48" height="48" /> | [LabCoat]
 [DejaVu]:https://play.google.com/store/apps/details?id=vincorp.in.dejavu
+[Y'U]:https://play.google.com/store/apps/details?id=com.brounie.yumultimedia
+[LabCoat]:https://play.google.com/store/apps/details?id=com.commit451.gitlab
