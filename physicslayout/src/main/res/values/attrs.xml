@@ -29,8 +29,12 @@
             <enum name="rectangle" value="0"/>
             <enum name="circle" value="1"/>
         </attr>
-        <attr name="layout_allowRotation" format="boolean"/>
+        <attr name="layout_fixedRotation" format="boolean"/>
         <attr name="layout_circleRadius" format="dimension"/>
+        <attr name="layout_density" format="float"/>
+        <attr name="layout_friction" format="float"/>
+        <attr name="layout_restitution" format="float"/>
+
     </declare-styleable>
 
 </resources>

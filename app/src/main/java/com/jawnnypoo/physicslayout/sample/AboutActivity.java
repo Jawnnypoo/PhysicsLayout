@@ -114,11 +114,8 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void addContributors(List<Contributor> contributors) {
-        PhysicsConfig config = new PhysicsConfig.Builder()
-                .setShapeType(PhysicsConfig.SHAPE_TYPE_CIRCLE)
-                .setDensity(1.0f)
-                .setRestitution(0.0f)
-                .build();
+        PhysicsConfig config = PhysicsConfig.create();
+        config.shapeType = PhysicsConfig.SHAPE_TYPE_CIRCLE;
         int borderSize = getResources().getDimensionPixelSize(R.dimen.border_size);
         int imageSize = getResources().getDimensionPixelSize(R.dimen.circle_size);
         for (int i=0; i<contributors.size(); i++) {

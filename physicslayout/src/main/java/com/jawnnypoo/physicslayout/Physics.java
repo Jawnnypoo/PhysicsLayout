@@ -360,11 +360,11 @@ public class Physics {
                 config = ((PhysicsLayoutParams) view.getLayoutParams()).getConfig();
             }
             if (config == null) {
-                config = PhysicsConfig.getDefaultConfig();
+                config = PhysicsConfig.create();
             }
             view.setTag(R.id.physics_layout_config_tag, config);
         }
-        BodyDef bodyDef = config.getBodyDef();
+        BodyDef bodyDef = config.bodyDef;
         bodyDef.position.set(pxToM(view.getX() + view.getWidth() / 2),
             pxToM(view.getY() + view.getHeight() / 2));
 
@@ -378,8 +378,8 @@ public class Physics {
             bodyDef.angularVelocity = degreesToRadians(view.getRotation());
         }
 
-        FixtureDef fixtureDef = config.getFixtureDef();
-        fixtureDef.shape = config.getShapeType() == PhysicsConfig.SHAPE_TYPE_RECTANGLE
+        FixtureDef fixtureDef = config.fixtureDef;
+        fixtureDef.shape = config.shapeType == PhysicsConfig.SHAPE_TYPE_RECTANGLE
             ? createBoxShape(view) : createCircleShape(view, config);
         fixtureDef.userData = view.getId();
 
@@ -398,7 +398,7 @@ public class Physics {
 
     private CircleShape createCircleShape(View view, PhysicsConfig config) {
         CircleShape circle = new CircleShape();
-        float radius = config.getRadius();
+        float radius = config.radius;
         //radius was not set, set it to max of the width and height
         if (radius == -1) {
             radius = Math.max(view.getWidth() / 2, view.getHeight() / 2);
