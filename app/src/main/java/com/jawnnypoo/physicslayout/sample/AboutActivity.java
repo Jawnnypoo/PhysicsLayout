@@ -117,9 +117,7 @@ public class AboutActivity extends AppCompatActivity {
         PhysicsConfig config = new PhysicsConfig.Builder()
                 .setShapeType(PhysicsConfig.ShapeType.CIRCLE)
                 .setDensity(1.0f)
-                .setFriction(0.0f)
                 .setRestitution(0.0f)
-                .setAllowRotation(false)
                 .build();
         int borderSize = getResources().getDimensionPixelSize(R.dimen.border_size);
         int imageSize = getResources().getDimensionPixelSize(R.dimen.circle_size);
