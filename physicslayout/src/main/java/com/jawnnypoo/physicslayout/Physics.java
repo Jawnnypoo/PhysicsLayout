@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.commit451.translationviewdraghelper.TranslationViewDragHelper;
+
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -120,7 +122,7 @@ public class Physics {
     private float density;
     private int width;
     private int height;
-    private PhysicsViewDragHelper viewDragHelper;
+    private TranslationViewDragHelper viewDragHelper;
     private View viewBeingDragged;
 
     /**
@@ -137,7 +139,7 @@ public class Physics {
      */
     public Physics(ViewGroup viewGroup, AttributeSet attrs) {
         this.viewGroup = viewGroup;
-        viewDragHelper = PhysicsViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
+        viewDragHelper = TranslationViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
         debugPaint.setStyle(Paint.Style.STROKE);
@@ -502,8 +504,8 @@ public class Physics {
         }
     };
 
-    private final PhysicsViewDragHelper.Callback viewDragHelperCallback
-        = new PhysicsViewDragHelper.Callback() {
+    private final TranslationViewDragHelper.Callback viewDragHelperCallback
+        = new TranslationViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return true;
