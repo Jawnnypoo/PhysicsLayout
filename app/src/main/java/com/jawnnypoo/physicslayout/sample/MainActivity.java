@@ -12,8 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jawnnypoo.physicslayout.Physics;
-import com.jawnnypoo.physicslayout.PhysicsConfig;
-import com.jawnnypoo.physicslayout.PhysicsRelativeLayout;
+import com.jawnnypoo.physicslayout.PhysicsFrameLayout;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -25,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.physics_layout)
-    PhysicsRelativeLayout physicsLayout;
+    PhysicsFrameLayout physicsLayout;
     @Bind(R.id.physics_switch)
     SwitchCompat physicsSwitch;
     @Bind(R.id.fling_switch)
@@ -109,13 +108,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Customizing the physics of the view
-        PhysicsConfig config = new PhysicsConfig.Builder()
-                .setShapeType(PhysicsConfig.ShapeType.CIRCLE)
-                .setDensity(0.6f)
-                .setFriction(0.4f)
-                .setRestitution(0.4f)
-                .build();
-        Physics.setPhysicsConfig(circleView, config);
+//        PhysicsConfig config = new PhysicsConfig.Builder()
+//                .setShapeType(PhysicsConfig.SHAPE_TYPE_CIRCLE)
+//                .setDensity(0.6f)
+//                .setFriction(0.4f)
+//                .setRestitution(0.4f)
+//                .build();
+//        Physics.setPhysicsConfig(circleView, config);
 
 
         for (int i=0; i<physicsLayout.getChildCount(); i++) {

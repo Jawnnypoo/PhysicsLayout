@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'bintray-release'
 
 android {
     compileSdkVersion 23
@@ -23,13 +22,4 @@ dependencies {
     compile 'com.github.Commit451:TranslationViewDragHelper:1.0.0'
 }
 
-publish {
-    userOrg = 'jawnnypoo'
-    groupId = 'com.jawnnypoo'
-    artifactId = 'physicslayout'
-    version = '1.0.1'
-    description = 'Android layout that simulates physics using JBox2D.'
-    website = 'https://github.com/Jawnnypoo/PhysicsLayout'
-    issueTracker = "https://github.com/Jawnnypoo/PhysicsLayout/issues"
-    repository = "https://github.com/Jawnnypoo/PhysicsLayout.git"
-}
+apply from: 'https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.0.0/gradle-android-javadocs.gradle'

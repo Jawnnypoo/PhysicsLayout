@@ -115,7 +115,7 @@ public class AboutActivity extends AppCompatActivity {
 
     private void addContributors(List<Contributor> contributors) {
         PhysicsConfig config = new PhysicsConfig.Builder()
-                .setShapeType(PhysicsConfig.ShapeType.CIRCLE)
+                .setShapeType(PhysicsConfig.SHAPE_TYPE_CIRCLE)
                 .setDensity(1.0f)
                 .setRestitution(0.0f)
                 .build();

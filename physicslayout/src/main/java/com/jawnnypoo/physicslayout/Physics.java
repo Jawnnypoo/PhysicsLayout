@@ -356,7 +356,12 @@ public class Physics {
     private void createBody(View view, Body oldBody) {
         PhysicsConfig config = (PhysicsConfig) view.getTag(R.id.physics_layout_config_tag);
         if (config == null) {
-            config = PhysicsConfig.getDefaultConfig();
+            if (view.getLayoutParams() instanceof PhysicsLayoutParams) {
+                config = ((PhysicsLayoutParams) view.getLayoutParams()).getConfig();
+            }
+            if (config == null) {
+                config = PhysicsConfig.getDefaultConfig();
+            }
             view.setTag(R.id.physics_layout_config_tag, config);
         }
         BodyDef bodyDef = config.getBodyDef();
@@ -374,7 +379,7 @@ public class Physics {
         }
 
         FixtureDef fixtureDef = config.getFixtureDef();
-        fixtureDef.shape = config.getShapeType() == PhysicsConfig.ShapeType.RECTANGLE
+        fixtureDef.shape = config.getShapeType() == PhysicsConfig.SHAPE_TYPE_RECTANGLE
             ? createBoxShape(view) : createCircleShape(view, config);
         fixtureDef.userData = view.getId();
 
