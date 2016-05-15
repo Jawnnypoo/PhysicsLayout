@@ -235,6 +235,9 @@ public class Physics {
             }
 
             if (view == viewBeingDragged) {
+                //TODO if we want the body being dragged to interact with other views
+                //then we need to process the opposite way here, where the physics bodies are
+                //updated based on the x and y of the view
                 continue;
             }
             if (body != null) {
@@ -242,11 +245,19 @@ public class Physics {
                 view.setY(mToPx(body.getPosition().y) - view.getHeight() / 2);
                 view.setRotation(radiansToDegrees(body.getAngle()) % 360);
                 if (debugDraw) {
-                    //TODO figure out if circle or rect and draw accordingly
-                    canvas.drawRect(mToPx(body.getPosition().x) - view.getWidth() / 2,
-                        mToPx(body.getPosition().y) - view.getHeight() / 2,
-                        mToPx(body.getPosition().x) + view.getWidth() / 2,
-                        mToPx(body.getPosition().y) + view.getHeight() / 2, debugPaint);
+                    PhysicsConfig config = (PhysicsConfig) view.getTag(R.id.physics_layout_config_tag);
+                    if (config.shapeType == PhysicsConfig.SHAPE_TYPE_RECTANGLE) {
+                        canvas.drawRect(mToPx(body.getPosition().x) - view.getWidth() / 2,
+                                mToPx(body.getPosition().y) - view.getHeight() / 2,
+                                mToPx(body.getPosition().x) + view.getWidth() / 2,
+                                mToPx(body.getPosition().y) + view.getHeight() / 2, debugPaint);
+                    } else if (config.shapeType == PhysicsConfig.SHAPE_TYPE_CIRCLE) {
+                        canvas.drawCircle(
+                                mToPx(body.getPosition().x),
+                                mToPx(body.getPosition().y),
+                                config.radius, //already defined in terms of pixels
+                                debugPaint);
+                    }
                 }
             }
         }
@@ -398,12 +409,11 @@ public class Physics {
 
     private CircleShape createCircleShape(View view, PhysicsConfig config) {
         CircleShape circle = new CircleShape();
-        float radius = config.radius;
         //radius was not set, set it to max of the width and height
-        if (radius == -1) {
-            radius = Math.max(view.getWidth() / 2, view.getHeight() / 2);
+        if (config.radius == -1) {
+            config.radius = Math.max(view.getWidth() / 2, view.getHeight() / 2);
         }
-        circle.m_radius = pxToM(radius);
+        circle.m_radius = pxToM(config.radius);
         return circle;
     }
 

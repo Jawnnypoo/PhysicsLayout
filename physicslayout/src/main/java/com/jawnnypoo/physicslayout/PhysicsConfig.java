@@ -10,7 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Configuration used when creating the body for each of the views in the view group
+ * Configuration used when creating the {@link org.jbox2d.dynamics.Body} for each of the views in the view group
  */
 public class PhysicsConfig {
 
@@ -35,6 +35,10 @@ public class PhysicsConfig {
     }
 
     public static FixtureDef createDefaultFixtureDef() {
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.friction = 0.3f;
+        fixtureDef.restitution = 0.2f;
+        fixtureDef.density = 0.2f;
         return new FixtureDef();
     }
 
@@ -49,7 +53,7 @@ public class PhysicsConfig {
     public BodyDef bodyDef;
 
     /**
-     * Only used if ShapeType == CIRCLE, otherwise it is ignored
+     * Only used if ShapeType == CIRCLE, otherwise it is ignored. The radius of the circle in pixels
      */
     public float radius;
 
