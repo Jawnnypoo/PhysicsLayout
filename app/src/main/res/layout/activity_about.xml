@@ -28,16 +28,14 @@
         android:text="@string/contributors"
         android:textSize="22sp"/>
 
-    <com.jawnnypoo.physicslayout.PhysicsFrameLayout
+    <com.jawnnypoo.physicslayout.sample.PhysicsFlowLayout
         android:id="@+id/physics_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         app:gravityX="0"
         app:gravityY="0"
-        app:fling="true">
-
-    </com.jawnnypoo.physicslayout.PhysicsFrameLayout>
+        app:fling="true"/>
 
     <LinearLayout
         android:id="@+id/sauce"

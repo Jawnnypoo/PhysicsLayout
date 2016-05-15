@@ -6,7 +6,6 @@ import org.jbox2d.dynamics.FixtureDef;
 
 /**
  * Configuration used when creating the body for each of the views in the view group
- * Created by Jawn on 4/30/2015.
  */
 public class PhysicsConfig {
 

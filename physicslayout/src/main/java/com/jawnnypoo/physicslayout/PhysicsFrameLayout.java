@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 /**
  * Typical FrameLayout with some physics added on. Call {@link #getPhysics()} to get the
  * physics component.
- * Created by Jawn on 4/9/2015.
  */
 public class PhysicsFrameLayout extends FrameLayout {
 

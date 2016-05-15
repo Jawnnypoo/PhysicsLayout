@@ -47,9 +47,7 @@
                 android:layout_width="@dimen/circle_size"
                 android:layout_height="@dimen/circle_size"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_launcher"
-                app:border_color="#FF000000"
-                app:border_width="2dp" />
+                android:src="@drawable/ic_launcher" />
 
             <ImageView
                 android:layout_width="@dimen/square_size"

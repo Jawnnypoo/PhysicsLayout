@@ -13,15 +13,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.jawnnypoo.physicslayout.Physics;
 import com.jawnnypoo.physicslayout.PhysicsConfig;
-import com.jawnnypoo.physicslayout.PhysicsFrameLayout;
 import com.jawnnypoo.physicslayout.sample.github.Contributor;
 import com.jawnnypoo.physicslayout.sample.github.GithubClient;
 import com.squareup.picasso.Picasso;
+import com.wefika.flowlayout.FlowLayout;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class AboutActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.physics_layout)
-    PhysicsFrameLayout physicsLayout;
+    PhysicsFlowLayout physicsLayout;
     @OnClick(R.id.sauce)
     void onSauceClick() {
         openPage("https://github.com/Jawnnypoo/PhysicsLayout");
@@ -120,15 +119,14 @@ public class AboutActivity extends AppCompatActivity {
                 .setDensity(1.0f)
                 .setFriction(0.0f)
                 .setRestitution(0.0f)
+                .setAllowRotation(false)
                 .build();
         int borderSize = getResources().getDimensionPixelSize(R.dimen.border_size);
-        int x = 0;
-        int y = 0;
         int imageSize = getResources().getDimensionPixelSize(R.dimen.circle_size);
         for (int i=0; i<contributors.size(); i++) {
             Contributor contributor = contributors.get(i);
             CircleImageView imageView = new CircleImageView(this);
-            FrameLayout.LayoutParams llp = new FrameLayout.LayoutParams(
+            FlowLayout.LayoutParams llp = new FlowLayout.LayoutParams(
                     imageSize,
                     imageSize);
             imageView.setLayoutParams(llp);
@@ -136,19 +134,12 @@ public class AboutActivity extends AppCompatActivity {
             imageView.setBorderColor(Color.BLACK);
             Physics.setPhysicsConfig(imageView, config);
             physicsLayout.addView(imageView);
-            imageView.setX(x);
-            imageView.setY(y);
 
-            x = (x + imageSize);
-            if (x > physicsLayout.getWidth()) {
-                x = 0;
-                y = (y + imageSize) % physicsLayout.getHeight();
-            }
             Picasso.with(this)
                     .load(contributor.avatarUrl)
                     .into(imageView);
         }
-        physicsLayout.getPhysics().onLayout(true);
+        physicsLayout.requestLayout();
     }
 
     public void openPage(String url) {

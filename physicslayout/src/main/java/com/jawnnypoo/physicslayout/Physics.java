@@ -9,9 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -25,10 +23,13 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 /**
  * Implementation for physics layout is found here, since we want to offer the main
  * layouts without requiring further extension (LinearLayout, RelativeLayout etc)
- * Created by Jawn on 4/29/2015.
  */
 public class Physics {
 

@@ -1,39 +1,34 @@
-package com.jawnnypoo.physicslayout;
+package com.jawnnypoo.physicslayout.sample;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.RelativeLayout;
+
+import com.jawnnypoo.physicslayout.Physics;
+import com.wefika.flowlayout.FlowLayout;
 
 /**
- * Typical RelativeLayout with some physics added on. Call {@link #getPhysics()} to get the
+ * Typical FrameLayout with some physics added on. Call {@link #getPhysics()} to get the
  * physics component.
  */
-public class PhysicsRelativeLayout extends RelativeLayout {
+public class PhysicsFlowLayout extends FlowLayout {
 
     private Physics physics;
 
-    public PhysicsRelativeLayout(Context context) {
+    public PhysicsFlowLayout(Context context) {
         super(context);
         init(null);
     }
 
-    public PhysicsRelativeLayout(Context context, AttributeSet attrs) {
+    public PhysicsFlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public PhysicsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PhysicsFlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
-    }
-
-    @TargetApi(21)
-    public PhysicsRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
 
