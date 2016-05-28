@@ -7,6 +7,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.jawnnypoo.physicslayout.Physics;
+import com.jawnnypoo.physicslayout.PhysicsConfig;
+import com.jawnnypoo.physicslayout.PhysicsLayoutParams;
+import com.jawnnypoo.physicslayout.PhysicsLayoutParamsProcessor;
 import com.wefika.flowlayout.FlowLayout;
 
 /**
@@ -65,7 +68,27 @@ public class PhysicsFlowLayout extends FlowLayout {
         return physics.onTouchEvent(event);
     }
 
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
+
     public Physics getPhysics() {
         return physics;
+    }
+
+    private static class LayoutParams extends FlowLayout.LayoutParams implements PhysicsLayoutParams {
+
+        PhysicsConfig config;
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            config = PhysicsLayoutParamsProcessor.process(c, attrs);
+        }
+
+        @Override
+        public PhysicsConfig getConfig() {
+            return config;
+        }
     }
 }

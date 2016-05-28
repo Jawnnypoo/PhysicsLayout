@@ -70,7 +70,27 @@ public class PhysicsLinearLayout extends LinearLayout {
         return physics.onTouchEvent(event);
     }
 
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
+
     public Physics getPhysics() {
         return physics;
+    }
+
+    private static class LayoutParams extends LinearLayout.LayoutParams implements PhysicsLayoutParams {
+
+        PhysicsConfig config;
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            config = PhysicsLayoutParamsProcessor.process(c, attrs);
+        }
+
+        @Override
+        public PhysicsConfig getConfig() {
+            return config;
+        }
     }
 }
