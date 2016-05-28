@@ -4,6 +4,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -146,7 +147,7 @@ public class Physics {
         density = viewGroup.getResources().getDisplayMetrics().density;
         if (attrs != null) {
             TypedArray a = viewGroup.getContext()
-                .obtainStyledAttributes(attrs, R.styleable.Physics);
+                    .obtainStyledAttributes(attrs, R.styleable.Physics);
             enablePhysics = a.getBoolean(R.styleable.Physics_physics, enablePhysics);
             gravityX = a.getFloat(R.styleable.Physics_gravityX, gravityX);
             gravityY = a.getFloat(R.styleable.Physics_gravityY, gravityY);
@@ -154,11 +155,11 @@ public class Physics {
             boundsSize = a.getDimension(R.styleable.Physics_boundsSize, BOUND_SIZE_DP * density);
             allowFling = a.getBoolean(R.styleable.Physics_fling, allowFling);
             velocityIterations = a
-                .getInt(R.styleable.Physics_velocityIterations, velocityIterations);
+                    .getInt(R.styleable.Physics_velocityIterations, velocityIterations);
             positionIterations = a
-                .getInt(R.styleable.Physics_positionIterations, positionIterations);
+                    .getInt(R.styleable.Physics_positionIterations, positionIterations);
             pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, viewGroup.getResources()
-                .getDimensionPixelSize(R.dimen.physics_layout_dp_per_meter));
+                    .getDimensionPixelSize(R.dimen.physics_layout_dp_per_meter));
             a.recycle();
         }
     }
@@ -225,7 +226,7 @@ public class Physics {
             body = (Body) view.getTag(R.id.physics_layout_body_tag);
 
             if (body != null && (body.getType() == BodyType.KINEMATIC
-                || body.getType() == BodyType.DYNAMIC)) {
+                    || body.getType() == BodyType.DYNAMIC)) {
                 if (mRotationQueue.containsKey(view.getId())) {
                     float rotationDegrees = mRotationQueue.get(view.getId());
 
@@ -235,11 +236,15 @@ public class Physics {
             }
 
             if (view == viewBeingDragged) {
-                //TODO if we want the body being dragged to interact with other views
-                //then we need to process the opposite way here, where the physics bodies are
-                //updated based on the x and y of the view
+                // If we are being dragged, we process in reverse, moving the body to where the view is
+                //instead of the reverse
+                if (body != null) {
+                    translateBodyToView(body, view);
+                    view.setRotation(radiansToDegrees(body.getAngle()) % 360);
+                }
                 continue;
             }
+
             if (body != null) {
                 view.setX(mToPx(body.getPosition().x) - view.getWidth() / 2);
                 view.setY(mToPx(body.getPosition().y) - view.getHeight() / 2);
@@ -378,7 +383,7 @@ public class Physics {
         }
         BodyDef bodyDef = config.bodyDef;
         bodyDef.position.set(pxToM(view.getX() + view.getWidth() / 2),
-            pxToM(view.getY() + view.getHeight() / 2));
+                pxToM(view.getY() + view.getHeight() / 2));
 
         if (oldBody != null) {
             bodyDef.angle = oldBody.getAngle();
@@ -392,7 +397,7 @@ public class Physics {
 
         FixtureDef fixtureDef = config.fixtureDef;
         fixtureDef.shape = config.shapeType == PhysicsConfig.SHAPE_TYPE_RECTANGLE
-            ? createBoxShape(view) : createCircleShape(view, config);
+                ? createBoxShape(view) : createCircleShape(view, config);
         fixtureDef.userData = view.getId();
 
         Body body = world.createBody(bodyDef);
@@ -424,7 +429,6 @@ public class Physics {
      * Returns null if no body exists for the view
      *
      * @param id the view's id of the body you want to retrieve
-     *
      * @return body that determines the views physics
      */
     public Body findBodyById(int id) {
@@ -499,7 +503,7 @@ public class Physics {
         public void beginContact(Contact contact) {
             if (onCollisionListener != null) {
                 onCollisionListener.onCollisionEntered((int) contact.getFixtureA().m_userData,
-                    (int) contact.getFixtureB().m_userData);
+                        (int) contact.getFixtureB().m_userData);
             }
         }
 
@@ -507,7 +511,7 @@ public class Physics {
         public void endContact(Contact contact) {
             if (onCollisionListener != null) {
                 onCollisionListener.onCollisionExited((int) contact.getFixtureA().m_userData,
-                    (int) contact.getFixtureB().m_userData);
+                        (int) contact.getFixtureB().m_userData);
             }
         }
 
@@ -521,7 +525,7 @@ public class Physics {
     };
 
     private final TranslationViewDragHelper.Callback viewDragHelperCallback
-        = new TranslationViewDragHelper.Callback() {
+            = new TranslationViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             return true;
@@ -546,12 +550,6 @@ public class Physics {
         public void onViewCaptured(View capturedChild, int activePointerId) {
             super.onViewCaptured(capturedChild, activePointerId);
             viewBeingDragged = capturedChild;
-            Body body = (Body) viewBeingDragged.getTag(R.id.physics_layout_body_tag);
-            if (body != null) {
-                body.setAngularVelocity(0);
-                body.setLinearVelocity(new Vec2(0, 0));
-                body.setAwake(false);
-            }
             if (onFlingListener != null) {
                 onFlingListener.onGrabbed(capturedChild);
             }
@@ -563,11 +561,7 @@ public class Physics {
             viewBeingDragged = null;
             Body body = (Body) releasedChild.getTag(R.id.physics_layout_body_tag);
             if (body != null) {
-                body.setTransform(
-                    new Vec2(pxToM(releasedChild.getX() + releasedChild.getWidth() / 2),
-                        pxToM(releasedChild.getY() + releasedChild.getHeight() / 2)),
-                    body.getAngle());
-                body.setAwake(true);
+                translateBodyToView(body, releasedChild);
                 body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
             }
             if (onFlingListener != null) {
@@ -575,6 +569,13 @@ public class Physics {
             }
         }
     };
+
+    private void translateBodyToView(@NonNull Body body, @NonNull View view) {
+        body.setTransform(
+                new Vec2(pxToM(view.getX() + view.getWidth() / 2),
+                        pxToM(view.getY() + view.getHeight() / 2)),
+                body.getAngle());
+    }
 
     /**
      * Allows the user to touch and fling views around the screen. Flinging will not be enabled if
