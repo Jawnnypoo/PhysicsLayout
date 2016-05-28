@@ -4,19 +4,29 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PhysicsLayout-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1762) [![Build Status](https://travis-ci.org/Jawnnypoo/PhysicsLayout.svg?branch=master)](https://travis-ci.org/Jawnnypoo/PhysicsLayout)
 
-Android layout that simulates physics using JBox2D. Simply add views, enable physics, and watch them fall!
+Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/jbox2d). Simply add views, enable physics, and watch them fall!
 
 The gif is choppy, see it in action with the sample app:
 
 [![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
-# Gradle Dependency (jCenter)
+# Gradle Dependency
 
-Easily reference the library in your Android projects using this dependency in your module's `build.gradle` file:
+Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
 
-```Gradle
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url "https://jitpack.io" }
+	}
+}
+```
+
+Then, add the library to your project `build.gradle`
+```gradle
 dependencies {
-    compile 'com.jawnnypoo:physicslayout:1.0.1'
+    compile 'com.github.Jawnnypoo:PhysicsLayout:2.0.0'
 }
 ```
 
@@ -67,20 +77,29 @@ You can also further customize the behaviour of your PhysicsLayout
  * `boundsSize` dimenstion, Sets the width/height of the bounds on the edges (Default 20dp)
 
 # Custom Physics Configuration
-Each view contained within the layout has a physics configuration that it uses to create itself in the Box2D world. This defines its shape, mass, restitutaion, and other physics related variables. A custom configuration can be applied to each view as well, using the PhysicsConfiguration builder:
-
+Each view contained within the layout has a physics configuration that it uses to create itself in the Box2D world. This defines its shape, mass, restitutaion, and other physics related variables. A custom configuration can be applied to each view as well:
+```xml
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_shape="circle"
+        app:layout_circleRadius="20dp"
+        app:layout_bodyType="kinematic"
+        app:layout_fixedRotation="true"
+        app:layout_friction="0.8"
+        app:layout_restitution="0.3"
+        app:layout_density="0.5" />
+```
+or alternatively, the Physics definition can be made programmatically:
 ```java
 final View circleView = findViewById(R.id.circle);
-PhysicsConfig config = new PhysicsConfig.Builder()
-                .setShapeType(PhysicsConfig.ShapeType.CIRCLE)
-                .setRadius(100)
-                .setAllowRotation(true)
-                .setBodyDefType(BodyType.STATIC)
-                .setDensity(1.0f)
-                .setFriction(1.0f)
-                .setRestitution(1.0f)
-                .build();
-physicsLayout.getPhysics().setPhysicsConfig(circleView, config);
+PhysicsConfig config = PhysicsConfig.create();
+        config.shapeType = PhysicsConfig.SHAPE_TYPE_CIRCLE;
+        config.radius = dpToPx(30);
+        config.fixtureDef = fixtureDef;
+        config.bodyDef = bodyDef;
+Physics.setPhysicsConfig(circleView, config);
 ```
 
 This is useful especially if you have view that would be considered circular, as the default for all views is a RETANGLE shape type. Most of the time, if you are just dealing with rectangular views, the defaults will work for you and you will not have to worry about this. 
