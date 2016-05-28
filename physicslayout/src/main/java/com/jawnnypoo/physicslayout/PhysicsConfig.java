@@ -39,7 +39,7 @@ public class PhysicsConfig {
         fixtureDef.friction = 0.3f;
         fixtureDef.restitution = 0.2f;
         fixtureDef.density = 0.2f;
-        return new FixtureDef();
+        return fixtureDef;
     }
 
     public static BodyDef createDefaultBodyDef() {
