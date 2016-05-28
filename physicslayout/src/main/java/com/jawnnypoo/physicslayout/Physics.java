@@ -550,6 +550,12 @@ public class Physics {
         public void onViewCaptured(View capturedChild, int activePointerId) {
             super.onViewCaptured(capturedChild, activePointerId);
             viewBeingDragged = capturedChild;
+            Body body = (Body) viewBeingDragged.getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                body.setAngularVelocity(0);
+                body.setLinearVelocity(new Vec2(0, 0));
+            }
+
             if (onFlingListener != null) {
                 onFlingListener.onGrabbed(capturedChild);
             }
@@ -563,6 +569,7 @@ public class Physics {
             if (body != null) {
                 translateBodyToView(body, releasedChild);
                 body.setLinearVelocity(new Vec2(pxToM(xvel), pxToM(yvel)));
+                body.setAwake(true);
             }
             if (onFlingListener != null) {
                 onFlingListener.onReleased(releasedChild);
