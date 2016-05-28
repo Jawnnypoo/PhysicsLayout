@@ -40,7 +40,6 @@
                 android:layout_width="@dimen/square_size"
                 android:layout_height="@dimen/square_size"
                 android:layout_gravity="right"
-                app:layout_fixedRotation="false"
                 android:src="@drawable/ic_launcher" />
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -49,7 +48,6 @@
                 android:layout_height="@dimen/circle_size"
                 android:layout_gravity="center"
                 app:layout_shape="circle"
-                app:layout_fixedRotation="true"
                 android:src="@drawable/ic_launcher" />
 
             <ImageView

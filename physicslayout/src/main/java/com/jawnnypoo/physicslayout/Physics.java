@@ -244,6 +244,7 @@ public class Physics {
                 view.setX(mToPx(body.getPosition().x) - view.getWidth() / 2);
                 view.setY(mToPx(body.getPosition().y) - view.getHeight() / 2);
                 view.setRotation(radiansToDegrees(body.getAngle()) % 360);
+
                 if (debugDraw) {
                     PhysicsConfig config = (PhysicsConfig) view.getTag(R.id.physics_layout_config_tag);
                     if (config.shapeType == PhysicsConfig.SHAPE_TYPE_RECTANGLE) {
