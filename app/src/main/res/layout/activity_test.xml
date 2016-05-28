@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jawnnypoo.physicslayout.PhysicsLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/physics_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:physics="true"
+    app:gravityX="1.0"
+    app:gravityY="2.0"
+    app:bounds="false"
+    app:boundsSize="60dp"
+    app:velocityIterations="4"
+    app:positionIterations="7">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_shape="circle"
+        app:layout_circleRadius="3dp"
+        app:layout_bodyType="kinematic"
+        app:layout_fixedRotation="true"
+        app:layout_friction="0.8"
+        app:layout_restitution="0.3"
+        app:layout_density="0.5" />
+
+</com.jawnnypoo.physicslayout.PhysicsLinearLayout>
