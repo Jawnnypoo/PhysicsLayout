@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import org.jbox2d.dynamics.BodyType;
+
 /**
  * Processes attributes from any PhysicsLayout and returns a {@link com.jawnnypoo.physicslayout.PhysicsConfig}
  */
@@ -39,10 +41,10 @@ public class PhysicsLayoutParamsProcessor {
     }
 
     private static void processBodyDef(TypedArray array, PhysicsConfig config) {
-//        if (array.hasValue(R.styleable.Physics_Layout_layout_bodyType)) {
-//            int type = array.getInt(R.styleable.Physics_Layout_layout_bodyType, BodyType.DYNAMIC.ordinal());
-//            config.bodyDef.type = BodyType.values()[type];
-//        }
+        if (array.hasValue(R.styleable.Physics_Layout_layout_bodyType)) {
+            int type = array.getInt(R.styleable.Physics_Layout_layout_bodyType, BodyType.DYNAMIC.ordinal());
+            config.bodyDef.type = BodyType.values()[type];
+        }
         if (array.hasValue(R.styleable.Physics_Layout_layout_fixedRotation)) {
             boolean fixedRotation = array.getBoolean(R.styleable.Physics_Layout_layout_fixedRotation, false);
             config.bodyDef.fixedRotation = fixedRotation;

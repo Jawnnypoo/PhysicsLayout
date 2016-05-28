@@ -35,6 +35,11 @@
         </attr>
         <attr name="layout_circleRadius" format="dimension" />
         <!-- BodyDef -->
+        <attr name="layout_bodyType" format="enum">
+            <enum name="statik" value="0" />
+            <enum name="kinematic" value="1" />
+            <enum name="dynamic" value="2" />
+        </attr>
         <attr name="layout_fixedRotation" format="boolean" />
         <!-- FixtureDef -->
         <attr name="layout_friction" format="float" />
