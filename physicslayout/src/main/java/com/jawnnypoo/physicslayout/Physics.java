@@ -683,7 +683,6 @@ public class Physics {
     public void setGravity(float gravityX, float gravityY) {
         this.gravityX = gravityX;
         this.gravityY = gravityY;
-        world.setGravity(new Vec2(gravityX, gravityY));
     }
 
     public Vec2 getGravity() {
