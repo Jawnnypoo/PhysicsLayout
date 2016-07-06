@@ -11,10 +11,12 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.commit451.gitbal.Gimbal;
 import com.jawnnypoo.physicslayout.Physics;
 import com.jawnnypoo.physicslayout.PhysicsConfig;
 import com.jawnnypoo.physicslayout.sample.github.Contributor;
@@ -56,12 +58,13 @@ public class AboutActivity extends AppCompatActivity {
 
     SensorManager sensorManager;
     Sensor gravitySensor;
+    Gimbal gimbal;
 
     private final SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
-                WindowUtil.normalizeForOrientation(getWindow(), event);
+                gimbal.normalizeGravityEvent(event);
                 physicsLayout.getPhysics().setGravity(-event.values[0], event.values[1]);
             }
         }
@@ -85,11 +88,14 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WindowUtil.lockToCurrentOrientation(this);
+        gimbal = new Gimbal(this);
+        gimbal.lock();
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
         toolbar.setTitle(R.string.app_name);
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        DrawerArrowDrawable drawerArrowDrawable = new DrawerArrowDrawable(this);
+        drawerArrowDrawable.setProgress(1.0f);
+        toolbar.setNavigationIcon(drawerArrowDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

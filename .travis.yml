@@ -1,20 +1,14 @@
 language: android
+
+jdk:
+  - oraclejdk8
+
 android:
   components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
     - platform-tools
     - tools
-
-    # The BuildTools version used by your project
-    - build-tools-23.0.3
-
-    # The SDK version used to compile your project
-    - android-23
-
-    # Additional components
-    # - extra-google-google_play_services
-    # - extra-google-m2repository
+    - build-tools-24.0.0
+    - android-24
     - extra-android-m2repository
 
 before_script:
