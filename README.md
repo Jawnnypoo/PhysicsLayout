@@ -10,7 +10,7 @@ The gif is choppy, see it in action with the sample app:
 
 [![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
-# Gradle Dependency
+## Gradle Dependency
 
 Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
 
@@ -26,11 +26,11 @@ allprojects {
 Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
-    compile 'com.github.Jawnnypoo:PhysicsLayout:2.0.0'
+    compile 'com.github.Jawnnypoo:PhysicsLayout:2.1.0'
 }
 ```
 
-# Basic Usage
+## Basic Usage
 If you want to see what your layout looks like when physics is applied to it, simply change your root layout to a physics layout. 
 ```xml
   <com.jawnnypoo.physicslayout.PhysicsLinearLayout
@@ -55,7 +55,7 @@ If you want to see what your layout looks like when physics is applied to it, si
             
   </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
 ```     
-# Custom XML Attributes
+## Custom XML Attributes
 You can also further customize the behaviour of your PhysicsLayout
     
 ```xml  
@@ -76,7 +76,7 @@ You can also further customize the behaviour of your PhysicsLayout
  * `bounds` boolean, Determines if the layout should have bounds on the edges of itself (Default true)
  * `boundsSize` dimenstion, Sets the width/height of the bounds on the edges (Default 20dp)
 
-# Custom Physics Configuration
+## Custom Physics Configuration
 Each view contained within the layout has a physics configuration that it uses to create itself in the Box2D world. This defines its shape, mass, restitutaion, and other physics related variables. A custom configuration can be applied to each view as well:
 ```xml
     <TextView
@@ -119,3 +119,23 @@ Icon | Application
 [DejaVu]:https://play.google.com/store/apps/details?id=vincorp.in.dejavu
 [Y'U]:https://play.google.com/store/apps/details?id=com.brounie.yumultimedia
 [LabCoat]:https://play.google.com/store/apps/details?id=com.commit451.gitlab
+
+## Making a Game?
+This library was designed with the intention of allowing for playful animations within normal Android apps. It is not built to be a game engine or meant to compete with the likes. If you are looking to do more intense mobile games, we recommend libraries such as [libGDX](https://libgdx.badlogicgames.com/) or [Unity](https://unity3d.com/)
+
+License
+--------
+
+    Copyright 2016 John Carlson
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
