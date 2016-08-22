@@ -48,7 +48,7 @@
                 android:layout_height="@dimen/circle_size"
                 android:layout_gravity="center"
                 app:layout_shape="circle"
-                app:layout_bodyType="statik"
+                app:layout_bodyType="dynamic"
                 android:src="@drawable/ic_launcher" />
 
             <ImageView

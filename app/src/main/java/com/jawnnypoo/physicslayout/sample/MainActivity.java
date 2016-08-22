@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -15,11 +16,16 @@ import com.jawnnypoo.physicslayout.Physics;
 import com.jawnnypoo.physicslayout.PhysicsFrameLayout;
 import com.squareup.picasso.Picasso;
 
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.World;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "TESTING";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -127,6 +133,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCollisionExited(int viewIdA, int viewIdB) {
 
+            }
+        });
+
+        physicsLayout.getPhysics().addOnPhysicsProcessedListener(new Physics.OnPhysicsProcessedListener() {
+            @Override
+            public void onPhysicsProcessed(Physics physics, World world) {
+                Body body = Physics.getPhysicsBody(circleView);
+                if (body != null) {
+                    body.applyAngularImpulse(0.001f);
+                } else {
+                    Log.e(TAG, "Cannot rotate, body was null");
+                }
             }
         });
     }
