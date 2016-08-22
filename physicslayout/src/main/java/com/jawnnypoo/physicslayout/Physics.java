@@ -60,11 +60,6 @@ public class Physics {
         view.setTag(R.id.physics_layout_config_tag, config);
     }
 
-    @Nullable
-    public static Body getPhysicsBody(@NonNull View view) {
-        return (Body) view.getTag(R.id.physics_layout_body_tag);
-    }
-
     private boolean debugDraw = false;
     private boolean debugLog = false;
 
@@ -92,6 +87,7 @@ public class Physics {
     private OnFlingListener onFlingListener;
     private OnCollisionListener onCollisionListener;
     private ArrayList<OnPhysicsProcessedListener> onPhysicsProcessedListeners;
+    private OnBodyCreatedListener onBodyCreatedListener;
 
     private final ContactListener contactListener = new ContactListener() {
         @Override
@@ -353,7 +349,10 @@ public class Physics {
             enableBounds();
         }
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            createBody(viewGroup.getChildAt(i), oldBodiesArray.get(i));
+            Body body = createBody(viewGroup.getChildAt(i), oldBodiesArray.get(i));
+            if (onBodyCreatedListener != null) {
+                onBodyCreatedListener.onBodyCreated(viewGroup.getChildAt(i), body);
+            }
         }
     }
 
@@ -425,7 +424,7 @@ public class Physics {
         bounds.add(rightBody);
     }
 
-    private void createBody(View view, Body oldBody) {
+    private Body createBody(View view, Body oldBody) {
         PhysicsConfig config = (PhysicsConfig) view.getTag(R.id.physics_layout_config_tag);
         if (config == null) {
             if (view.getLayoutParams() instanceof PhysicsLayoutParams) {
@@ -458,6 +457,7 @@ public class Physics {
         Body body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         view.setTag(R.id.physics_layout_body_tag, body);
+        return body;
     }
 
     private PolygonShape createBoxShape(View view) {
@@ -486,6 +486,7 @@ public class Physics {
      * @param id the view's id of the body you want to retrieve
      * @return body that determines the views physics
      */
+    @Nullable
     public Body findBodyById(int id) {
         View view = viewGroup.findViewById(id);
         if (view != null) {
@@ -708,6 +709,10 @@ public class Physics {
         }
     }
 
+    public void setOnBodyCreatedListener(OnBodyCreatedListener listener) {
+        this.onBodyCreatedListener = listener;
+    }
+
     /**
      * Interface that allows hooks into the layout so that you can process or modify physics bodies each time that JBox2D processes physics
      */
@@ -729,6 +734,9 @@ public class Physics {
         void onReleased(View releasedView);
     }
 
+    /**
+     * Alerts you to collisions between views within the layout
+     */
     public interface OnCollisionListener {
         /**
          * Called when a collision is entered between two bodies. ViewId can also be
@@ -753,5 +761,18 @@ public class Physics {
          * @param viewIdB view id of body B
          */
         void onCollisionExited(int viewIdA, int viewIdB);
+    }
+
+    /**
+     * Allows listening to when bodies are created for their respective views.
+     */
+    public interface OnBodyCreatedListener {
+
+        /**
+         * A body has been created for this view
+         * @param view the view associated with the body
+         * @param body the body associated with the view
+         */
+        void onBodyCreated(View view, Body body);
     }
 }

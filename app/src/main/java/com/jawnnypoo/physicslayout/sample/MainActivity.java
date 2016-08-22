@@ -139,12 +139,19 @@ public class MainActivity extends AppCompatActivity {
         physicsLayout.getPhysics().addOnPhysicsProcessedListener(new Physics.OnPhysicsProcessedListener() {
             @Override
             public void onPhysicsProcessed(Physics physics, World world) {
-                Body body = Physics.getPhysicsBody(circleView);
+                Body body = physics.findBodyById(circleView.getId());
                 if (body != null) {
                     body.applyAngularImpulse(0.001f);
                 } else {
                     Log.e(TAG, "Cannot rotate, body was null");
                 }
+            }
+        });
+
+        physicsLayout.getPhysics().setOnBodyCreatedListener(new Physics.OnBodyCreatedListener() {
+            @Override
+            public void onBodyCreated(View view, Body body) {
+                Log.d(TAG, "Body created for view " + view.getId());
             }
         });
     }
