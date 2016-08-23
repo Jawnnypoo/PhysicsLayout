@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 ImageView imageView = new ImageView(MainActivity.this);
-                imageView.setImageResource(R.drawable.ic_launcher);
+                imageView.setImageResource(R.drawable.ic_logo);
                 LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
                         getResources().getDimensionPixelSize(R.dimen.square_size),
                         getResources().getDimensionPixelSize(R.dimen.square_size));
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 physicsLayout.addView(imageView);
                 Picasso.with(MainActivity.this)
                         .load("http://lorempixel.com/200/200/cats/" + ((catIndex % 10) + 1))
-                        .placeholder(R.drawable.ic_launcher)
+                        .placeholder(R.drawable.ic_logo)
                         .into(imageView);
                 catIndex++;
             }
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             imageView.setId(i);
             Picasso.with(this)
                     .load("http://lorempixel.com/200/200/cats/" + (i + 1))
-                    .placeholder(R.drawable.ic_launcher)
+                    .placeholder(R.drawable.ic_logo)
                     .into(imageView);
         }
         catIndex = physicsLayout.getChildCount();
