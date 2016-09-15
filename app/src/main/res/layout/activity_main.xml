@@ -28,6 +28,7 @@
             android:id="@+id/physics_layout"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            app:gravitateWithCapturedSpeed="0.005"
             app:boundsSize="100dp">
 
             <ImageView

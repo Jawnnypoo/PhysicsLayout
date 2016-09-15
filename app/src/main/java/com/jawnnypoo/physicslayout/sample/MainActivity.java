@@ -1,6 +1,7 @@
 package com.jawnnypoo.physicslayout.sample;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -113,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        physicsLayout.getPhysics().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Clicked: " + view.getId(), Snackbar.LENGTH_SHORT).show();
+            }
+        });
 
         for (int i=0; i<physicsLayout.getChildCount(); i++) {
             ImageView imageView = (ImageView) physicsLayout.getChildAt(i);

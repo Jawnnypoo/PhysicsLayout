@@ -7,4 +7,6 @@
     <item name="physics_layout_body_bottom" type="id"/>
     <item name="physics_layout_body_left" type="id"/>
     <item name="physics_layout_body_right" type="id"/>
+    <item name="physics_layout_extra_tag" type="id"/>
+    <item name="physics_layout_filter_tag" type="id"/>
 </resources>

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -75,6 +77,11 @@ public class Physics {
     private boolean enablePhysics = true;
     private boolean hasBounds = true;
     private boolean allowFling = false;
+    private boolean gravitateToTouch = false;
+    private Vec2 gravityPoint;
+
+    private float linearDamping = 0;
+    private float gravitateWithCapturedSpeed = 0f;
 
     private ViewGroup viewGroup;
     private Paint debugPaint;
@@ -83,11 +90,17 @@ public class Physics {
     private int height;
     private TranslationViewDragHelper viewDragHelper;
     private View viewBeingDragged;
+    private View touchedView;
 
     private OnFlingListener onFlingListener;
     private OnCollisionListener onCollisionListener;
     private ArrayList<OnPhysicsProcessedListener> onPhysicsProcessedListeners;
     private OnBodyCreatedListener onBodyCreatedListener;
+    private View.OnClickListener onClickListener;
+    private View.OnClickListener onDoubleClickListener;
+    private View.OnLongClickListener onLongClickListener;
+
+    private final GestureDetector gestureDetector;
 
     private final ContactListener contactListener = new ContactListener() {
         @Override
@@ -124,6 +137,28 @@ public class Physics {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
+            Body body = (Body) changedView.getTag(R.id.physics_layout_body_tag);
+            if (body != null) {
+                body.setTransform(
+                        new Vec2(pixelsToMeters(viewBeingDragged.getX() + viewBeingDragged.getWidth() / 2),
+                                pixelsToMeters(viewBeingDragged.getY() + viewBeingDragged.getHeight() / 2)),
+                        body.getAngle());
+
+                float xVel = body.getLinearVelocity().x;
+                float yVel = body.getLinearVelocity().y;
+                body.setLinearVelocity(new Vec2(pixelsToMeters(xVel), pixelsToMeters(yVel)));
+                if (gravitateWithCapturedSpeed > 0) {
+                    for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                        Body bodyB = (Body) viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag);
+                        if (bodyB != body && bodyB != null && body != null) {
+                            Vec2 impulse = new Vec2(dx * gravitateWithCapturedSpeed, dy * gravitateWithCapturedSpeed);
+
+                            bodyB.applyLinearImpulse(impulse, bodyB.getPosition());
+
+                        }
+                    }
+                }
+            }
         }
 
         @Override
@@ -198,6 +233,45 @@ public class Physics {
     public Physics(ViewGroup viewGroup, AttributeSet attrs) {
         this.viewGroup = viewGroup;
         viewDragHelper = TranslationViewDragHelper.create(viewGroup, 1.0f, viewDragHelperCallback);
+        gestureDetector = new GestureDetector(viewGroup.getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onContextClick(MotionEvent e) {
+                return super.onContextClick(e);
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                if (onClickListener != null && touchedView != null)
+                    onClickListener.onClick(touchedView);
+                return super.onSingleTapUp(e);
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (onDoubleClickListener != null && touchedView != null)
+                    onDoubleClickListener.onClick(touchedView);
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+                if (onLongClickListener != null && touchedView != null)
+                    onLongClickListener.onLongClick(touchedView);
+                super.onLongPress(e);
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (onDoubleClickListener != null && touchedView != null)
+                    onDoubleClickListener.onClick(touchedView);
+                return super.onDoubleTap(e);
+            }
+        });
         debugPaint = new Paint();
         debugPaint.setColor(Color.MAGENTA);
         debugPaint.setStyle(Paint.Style.STROKE);
@@ -217,6 +291,8 @@ public class Physics {
                     .getInt(R.styleable.Physics_positionIterations, positionIterations);
             pixelsPerMeter = a.getFloat(R.styleable.Physics_pixelsPerMeter, viewGroup.getResources()
                     .getDimensionPixelSize(R.dimen.physics_layout_dp_per_meter));
+            linearDamping = a.getFloat(R.styleable.Physics_linearDamping, linearDamping);
+            gravitateWithCapturedSpeed = a.getFloat(R.styleable.Physics_gravitateWithCapturedSpeed, gravitateWithCapturedSpeed);
             a.recycle();
         }
     }
@@ -263,6 +339,8 @@ public class Physics {
         if (!allowFling) {
             return false;
         }
+        touchedView = viewDragHelper.findTopChildUnder((int) ev.getX(), (int) ev.getY());
+        gestureDetector.onTouchEvent(ev);
         viewDragHelper.processTouchEvent(ev);
         return true;
     }
@@ -288,10 +366,15 @@ public class Physics {
                     translateBodyToView(body, view);
                     view.setRotation(radiansToDegrees(body.getAngle()) % 360);
                 }
-                continue;
+                if (!gravitateToTouch)
+                    continue;
             }
 
             if (body != null) {
+                if (gravityPoint != null && viewBeingDragged == null) {
+                    body.applyForce(gravityPoint.sub(body.getPosition()).mul(body.getMass()), body.getPosition());
+                }
+
                 view.setX(metersToPixels(body.getPosition().x) - view.getWidth() / 2);
                 view.setY(metersToPixels(body.getPosition().y) - view.getHeight() / 2);
                 view.setRotation(radiansToDegrees(body.getAngle()) % 360);
@@ -449,10 +532,16 @@ public class Physics {
             bodyDef.angularVelocity = degreesToRadians(view.getRotation());
         }
 
+        if (linearDamping != 0)
+            bodyDef.linearDamping = linearDamping;
+
         FixtureDef fixtureDef = config.fixtureDef;
         fixtureDef.shape = config.shapeType == PhysicsConfig.SHAPE_TYPE_RECTANGLE
                 ? createBoxShape(view) : createCircleShape(view, config);
         fixtureDef.userData = view.getId();
+
+        if (view.getTag(R.id.physics_layout_filter_tag) != null)
+            fixtureDef.filter = (Filter) view.getTag(R.id.physics_layout_filter_tag);
 
         Body body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
@@ -531,13 +620,18 @@ public class Physics {
      * try it out if you want :)
      */
     public void giveRandomImpulse() {
+        giveRandomImpulse(20);
+    }
+
+    public void giveRandomImpulse(int seed) {
         Body body;
         Vec2 impulse;
         Random random = new Random();
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            impulse = new Vec2(random.nextInt(1000) - 1000, random.nextInt(1000) - 1000);
+            impulse = new Vec2((random.nextInt(seed) - 10) * 0.04f, (random.nextInt(seed) - 10) * 0.04f);
             body = (Body) viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag);
-            body.applyLinearImpulse(impulse, body.getPosition());
+            if (body != null && body.getAngularVelocity() == 0)
+                body.applyLinearImpulse(impulse, body.getPosition());
         }
     }
 
@@ -647,7 +741,8 @@ public class Physics {
     public void setGravity(float gravityX, float gravityY) {
         this.gravityX = gravityX;
         this.gravityY = gravityY;
-        world.setGravity(new Vec2(gravityX, gravityY));
+        if (world != null)
+            world.setGravity(new Vec2(gravityX, gravityY));
     }
 
     public Vec2 getGravity() {
@@ -713,14 +808,55 @@ public class Physics {
         this.onBodyCreatedListener = listener;
     }
 
+    public View.OnClickListener getOnDoubleClickListener() {
+        return onDoubleClickListener;
+    }
+
+    public void setOnDoubleClickListener(View.OnClickListener onDoubleClickListener) {
+        this.onDoubleClickListener = onDoubleClickListener;
+    }
+
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
+    public View.OnLongClickListener getOnLongClickListener() {
+        return onLongClickListener;
+    }
+
+    public void setOnLongClickListener(View.OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
+
+    public void setGravityPoint(Vec2 gravityPoint) {
+        this.gravityPoint = gravityPoint;
+    }
+
+    public void enableGravitateToTouch(boolean gravitateToTouch) {
+        this.gravitateToTouch = gravitateToTouch;
+    }
+
+    public void setLinearDamping(float linearDamping) {
+        this.linearDamping = linearDamping;
+    }
+
+    public float getLinearDamping() {
+        return linearDamping;
+    }
+
     /**
      * Interface that allows hooks into the layout so that you can process or modify physics bodies each time that JBox2D processes physics
      */
     public interface OnPhysicsProcessedListener {
         /**
          * Physics has been processed. Commence doing things that you want to do such as applying additional forces
+         *
          * @param physics the {@link Physics} that belongs to the view
-         * @param world the Box2d world
+         * @param world   the Box2d world
          */
         void onPhysicsProcessed(Physics physics, World world);
     }
@@ -770,6 +906,7 @@ public class Physics {
 
         /**
          * A body has been created for this view
+         *
          * @param view the view associated with the body
          * @param body the body associated with the view
          */

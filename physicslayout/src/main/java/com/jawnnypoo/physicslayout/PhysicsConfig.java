@@ -63,4 +63,54 @@ public class PhysicsConfig {
     private PhysicsConfig() {
 
     }
+
+    public static class Builder {
+        private PhysicsConfig config;
+
+        public Builder() {
+            config = create();
+        }
+
+        public Builder setDensity(float density) {
+            config.fixtureDef.density = density;
+            return this;
+        }
+
+        public Builder setFriction(float friction) {
+            config.fixtureDef.friction = friction;
+            return this;
+        }
+
+        public Builder setRestitution(float restitution) {
+            config.fixtureDef.restitution = restitution;
+            return this;
+        }
+
+        public Builder setShapeType(@ShapeType int shapeType) {
+            config.shapeType = shapeType;
+            return this;
+        }
+
+        public Builder setBodyDefType(BodyType type) {
+            config.bodyDef.type = type;
+            return this;
+        }
+
+        public Builder setAllowRotation(boolean allowRotation) {
+            config.bodyDef.fixedRotation = !allowRotation;
+            return this;
+        }
+
+        public Builder setRadius(float radius) {
+            if (config.shapeType != SHAPE_TYPE_CIRCLE) {
+                throw new IllegalStateException("Can only set the radius if the shape is a circle");
+            }
+            config.radius = radius;
+            return this;
+        }
+
+        public PhysicsConfig build() {
+            return config;
+        }
+    }
 }
