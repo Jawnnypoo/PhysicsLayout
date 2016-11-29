@@ -258,6 +258,7 @@ public class Physics {
 
     /**
      * Call this in your ViewGroup if you plan on using fling
+     * @return true if consumed, false otherwise
      */
     public boolean onTouchEvent(MotionEvent ev) {
         if (!allowFling) {
@@ -323,10 +324,9 @@ public class Physics {
 
     /**
      * Recreate the physics world. Will traverse all views in the hierarchy, get their current
-     * PhysicsConfigs
-     * and create a body in the world. This will override the current world if it exists.
+     * PhysicsConfigs and create a body in the world. This will override the current world if it exists.
      */
-    public void createWorld() {
+    private void createWorld() {
         //Null out all the bodies
         ArrayList<Body> oldBodiesArray = new ArrayList<>();
 
