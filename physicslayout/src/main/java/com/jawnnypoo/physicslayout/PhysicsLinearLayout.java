@@ -75,6 +75,7 @@ public class PhysicsLinearLayout extends LinearLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
+    @NonNull
     public Physics getPhysics() {
         return physics;
     }

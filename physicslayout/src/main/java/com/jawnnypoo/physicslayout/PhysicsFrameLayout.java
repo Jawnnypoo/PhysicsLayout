@@ -75,6 +75,7 @@ public class PhysicsFrameLayout extends FrameLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
+    @NonNull
     public Physics getPhysics() {
         return physics;
     }

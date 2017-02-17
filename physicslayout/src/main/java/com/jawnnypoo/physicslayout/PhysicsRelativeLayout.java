@@ -75,6 +75,7 @@ public class PhysicsRelativeLayout extends RelativeLayout {
         return new LayoutParams(getContext(), attrs);
     }
 
+    @NonNull
     public Physics getPhysics() {
         return physics;
     }

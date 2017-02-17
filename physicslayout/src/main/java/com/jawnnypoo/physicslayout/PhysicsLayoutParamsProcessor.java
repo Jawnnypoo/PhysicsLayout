@@ -11,7 +11,6 @@ import org.jbox2d.dynamics.BodyType;
  */
 public class PhysicsLayoutParamsProcessor {
 
-
     /**
      * Processes the attributes on children
      * @param c context
