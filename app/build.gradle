@@ -43,8 +43,4 @@ dependencies {
     implementation 'com.github.Commit451:Gimbal:2.0.2'
 
     implementation project(':physicslayout')
-
-    testImplementation 'junit:junit:4.12'
-
-    testImplementation 'org.robolectric:robolectric:3.5.1'
 }
