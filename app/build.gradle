@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.0"
 
     defaultConfig {
         applicationId "com.jawnnypoo.physicslayout.sample"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 101
         versionName "1.0.1"
     }
@@ -22,17 +22,29 @@ android {
     }
 }
 
+ext {
+    supportLibVersion = '27.0.1'
+    butterknifeVersion = '8.8.1'
+}
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.robolectric:robolectric:3.1'
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile "com.wefika:flowlayout:0.4.1"
-    compile 'com.github.Commit451:Gimbal:1.0.0'
-    compile project(':physicslayout')
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
+
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+
+    implementation "com.jakewharton:butterknife:$butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+
+    implementation "com.wefika:flowlayout:0.4.1"
+
+    implementation 'com.github.Commit451:Gimbal:2.0.2'
+
+    implementation project(':physicslayout')
+
+    testImplementation 'junit:junit:4.12'
+
+    testImplementation 'org.robolectric:robolectric:3.5.1'
 }

@@ -16,7 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.commit451.gitbal.Gimbal;
+import com.commit451.gimbal.Gimbal;
 import com.jawnnypoo.physicslayout.Physics;
 import com.jawnnypoo.physicslayout.PhysicsConfig;
 import com.jawnnypoo.physicslayout.sample.github.Contributor;
@@ -26,7 +26,7 @@ import com.wefika.flowlayout.FlowLayout;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,9 +34,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by Jawn on 7/15/2015.
- */
 public class AboutActivity extends AppCompatActivity {
 
     private static final String REPO_USER = "Jawnnypoo";
@@ -47,14 +44,10 @@ public class AboutActivity extends AppCompatActivity {
         return intent;
     }
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.physics_layout)
+    @BindView(R.id.physics_layout)
     PhysicsFlowLayout physicsLayout;
-    @OnClick(R.id.sauce)
-    void onSauceClick() {
-        openPage("https://github.com/Jawnnypoo/PhysicsLayout");
-    }
 
     SensorManager sensorManager;
     Sensor gravitySensor;
@@ -84,6 +77,11 @@ public class AboutActivity extends AppCompatActivity {
             error.printStackTrace();
         }
     };
+
+    @OnClick(R.id.sauce)
+    void onSauceClick() {
+        openPage("https://github.com/Jawnnypoo/PhysicsLayout");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

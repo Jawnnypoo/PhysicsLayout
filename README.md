@@ -26,7 +26,7 @@ allprojects {
 Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
-    compile 'com.github.Jawnnypoo:PhysicsLayout:2.1.0'
+    implementation 'com.github.Jawnnypoo:PhysicsLayout:2.1.0'
 }
 ```
 

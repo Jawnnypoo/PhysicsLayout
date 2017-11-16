@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -27,19 +27,19 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "TESTING";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.physics_layout)
+    @BindView(R.id.physics_layout)
     PhysicsFrameLayout physicsLayout;
-    @Bind(R.id.physics_switch)
+    @BindView(R.id.physics_switch)
     SwitchCompat physicsSwitch;
-    @Bind(R.id.fling_switch)
+    @BindView(R.id.fling_switch)
     SwitchCompat flingSwitch;
-    @Bind(R.id.impulse_button)
+    @BindView(R.id.impulse_button)
     View impulseButton;
-    @Bind(R.id.add_view_button)
+    @BindView(R.id.add_view_button)
     View addViewButton;
-    @Bind(R.id.collision)
+    @BindView(R.id.collision)
     TextView collisionView;
 
     int catIndex;

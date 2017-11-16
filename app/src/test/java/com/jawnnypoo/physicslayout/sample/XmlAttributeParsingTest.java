@@ -13,14 +13,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 /**
  * Test to make sure that xml attributes are parsed properly
  */
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class XmlAttributeParsingTest {
 
@@ -34,8 +34,8 @@ public class XmlAttributeParsingTest {
     @Test
     public void testXmlParsing() throws Exception {
         TestActivity activity = Robolectric.buildActivity(TestActivity.class).create().get();
-        PhysicsLinearLayout physicsLinearLayout = (PhysicsLinearLayout) activity.findViewById(R.id.physics_layout);
-        TextView view = (TextView) activity.findViewById(R.id.text);
+        PhysicsLinearLayout physicsLinearLayout = activity.findViewById(R.id.physics_layout);
+        TextView view = activity.findViewById(R.id.text);
         Physics physics = physicsLinearLayout.getPhysics();
         Assert.assertEquals(4, physics.getVelocityIterations());
         Assert.assertEquals(7, physics.getPositionIterations());
