@@ -3,10 +3,11 @@ package com.jawnnypoo.physicslayout;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 
 /**
  * Typical FrameLayout with some physics added on. Call {@link #getPhysics()} to get the

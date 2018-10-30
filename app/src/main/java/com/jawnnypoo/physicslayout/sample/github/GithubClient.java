@@ -10,9 +10,6 @@ import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-/**
- * Created by Jawn on 6/30/2015.
- */
 public class GithubClient {
 
     public static final String API_URL = "https://api.github.com";

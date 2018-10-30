@@ -1,12 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.0"
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -17,7 +16,7 @@ android {
 
 dependencies {
     api 'org.jbox2d:jbox2d-library:2.2.1.1'
-    api 'com.github.Commit451:TranslationViewDragHelper:1.0.1'
+    api 'com.github.Commit451:TranslationViewDragHelper:1.1.0'
 }
 
 apply from: 'https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.0.0/gradle-android-javadocs.gradle'

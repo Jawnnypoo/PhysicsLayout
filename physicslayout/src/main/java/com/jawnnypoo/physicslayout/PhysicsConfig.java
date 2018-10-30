@@ -1,13 +1,13 @@
 package com.jawnnypoo.physicslayout;
 
-import android.support.annotation.IntDef;
-
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
 
 /**
  * Configuration used when creating the {@link org.jbox2d.dynamics.Body} for each of the views in the view group

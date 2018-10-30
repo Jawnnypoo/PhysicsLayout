@@ -2,7 +2,6 @@ package com.jawnnypoo.physicslayout.sample;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -11,6 +10,8 @@ import com.jawnnypoo.physicslayout.PhysicsConfig;
 import com.jawnnypoo.physicslayout.PhysicsLayoutParams;
 import com.jawnnypoo.physicslayout.PhysicsLayoutParamsProcessor;
 import com.wefika.flowlayout.FlowLayout;
+
+import androidx.annotation.NonNull;
 
 /**
  * Typical FrameLayout with some physics added on. Call {@link #getPhysics()} to get the

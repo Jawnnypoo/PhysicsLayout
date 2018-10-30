@@ -1,9 +1,6 @@
 package com.jawnnypoo.physicslayout.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,27 +16,21 @@ import com.squareup.picasso.Picasso;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "TESTING";
 
-    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.physics_layout)
     PhysicsFrameLayout physicsLayout;
-    @BindView(R.id.physics_switch)
     SwitchCompat physicsSwitch;
-    @BindView(R.id.fling_switch)
     SwitchCompat flingSwitch;
-    @BindView(R.id.impulse_button)
     View impulseButton;
-    @BindView(R.id.add_view_button)
     View addViewButton;
-    @BindView(R.id.collision)
     TextView collisionView;
 
     int catIndex;
@@ -48,7 +39,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        toolbar = findViewById(R.id.toolbar);
+        physicsLayout = findViewById(R.id.physics_layout);
+        physicsSwitch = findViewById(R.id.physics_switch);
+        flingSwitch = findViewById(R.id.fling_switch);
+        impulseButton = findViewById(R.id.impulse_button);
+        addViewButton = findViewById(R.id.add_view_button);
+        collisionView = findViewById(R.id.collision);
         toolbar.setTitle(R.string.app_name);
         toolbar.inflateMenu(R.menu.menu_main);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
