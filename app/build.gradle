@@ -1,39 +1,54 @@
-apply plugin: 'com.android.application'
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.jawnnypoo.physicslayout.sample"
         minSdkVersion 15
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 101
         versionName "1.0.1"
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
         abortOnError false
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.0.0"
+    implementation "androidx.appcompat:appcompat:1.1.0"
 
     implementation "com.google.android.material:material:1.0.0"
 
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation "de.hdodenhof:circleimageview:3.0.1"
 
-    implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation("io.coil-kt:coil:0.7.0")
+    implementation "com.squareup.retrofit:retrofit:1.9.0"
 
-    implementation "com.wefika:flowlayout:0.4.1"
+    implementation("com.wefika:flowlayout:0.4.1") {
+        exclude group: 'com.intellij', module: 'annotations'
+    }
 
-    implementation 'com.github.Commit451:Gimbal:2.0.2'
 
-    implementation project(':physicslayout')
+    implementation "com.github.Commit451:Gimbal:2.0.2"
+
+    implementation project(":physicslayout")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
