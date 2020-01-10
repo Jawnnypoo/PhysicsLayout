@@ -2,7 +2,7 @@
 
 ![Sample Gif](http://fat.gfycat.com/TotalCheerfulDromedary.gif)
 
-[![Build Status](https://travis-ci.org/Jawnnypoo/PhysicsLayout.svg?branch=master)](https://travis-ci.org/Jawnnypoo/PhysicsLayout) [![](https://jitpack.io/v/Jawnnypoo/PhysicsLayout.svg)](https://jitpack.io/#Jawnnypoo/PhysicsLayout) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PhysicsLayout-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1762)
+[![Build Status](https://travis-ci.org/Jawnnypoo/PhysicsLayout.svg?branch=master)](https://travis-ci.org/Jawnnypoo/PhysicsLayout) [![](https://jitpack.io/v/Jawnnypoo/PhysicsLayout.svg)](https://jitpack.io/#Jawnnypoo/PhysicsLayout)
 
 Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/jbox2d). Simply add views, enable physics, and watch them fall!
 
@@ -26,7 +26,7 @@ allprojects {
 Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
-    implementation 'com.github.Jawnnypoo:PhysicsLayout:2.1.0'
+    implementation("com.github.Jawnnypoo:PhysicsLayout:latest.version.here")
 }
 ```
 
@@ -93,32 +93,18 @@ Each view contained within the layout has a physics configuration that it uses t
 ```
 or alternatively, the Physics definition can be made programmatically:
 ```java
-final View circleView = findViewById(R.id.circle);
-PhysicsConfig config = PhysicsConfig.create();
-        config.shapeType = PhysicsConfig.SHAPE_TYPE_CIRCLE;
-        config.radius = dpToPx(30);
-        config.fixtureDef = fixtureDef;
-        config.bodyDef = bodyDef;
-Physics.setPhysicsConfig(circleView, config);
+val circleView = findViewById<View>(R.id.circle)
+val config = PhysicsConfig(
+    shape = Shape.CIRCLE,
+    fixtureDef = fixtureDef,
+    bodyDef = bodyDef
+)
+Physics.setPhysicsConfig(circleView, config)
 ```
 
-This is useful especially if you have view that would be considered circular, as the default for all views is a RETANGLE shape type. Most of the time, if you are just dealing with rectangular views, the defaults will work for you and you will not have to worry about this. 
+This is useful especially if you have view that would be considered circular, as the default for all views is a RECTANGLE shape. Most of the time, if you are just dealing with rectangular views, the defaults will work for you and you will not have to worry about this.
 
 Check out the sample app to see most of these things in action.
-
-## Using this library?
-
-I wanna see the cool ideas and stuff you guys have made with this. If you're using this library in one of your projects just [send me a tweet](https://twitter.com/Jawnnypoo) and I'll add your project to the list.
-
-
-Icon | Application
------------- | -------------
-<img src="https://lh6.ggpht.com/bD8GKGQKsT-QD7vk6eV74I1JvOUOdDv7dxHN2_RghjigfStO7_kjk4PRqOb2XohG2Q=w300-rw" width="48" height="48" /> | [DejaVu]
-<img src="https://lh3.googleusercontent.com/yUX513TrmvL7qnpCeyGsnw5ydjGVokY2ZKqOgc5pGD60F4JkVE4smmJyKVb8H-IZsw=w300-rw" width="48" height="48" /> | [Y'U]
-<img src="https://lh3.googleusercontent.com/kI_H1o6q1ug7YcsD6B0BPkq0DUxdLYTOAEvny7wRE4fEPa130rFlzZS-6viGBumzhw=w300-rw" width="48" height="48" /> | [LabCoat]
-[DejaVu]:https://play.google.com/store/apps/details?id=vincorp.in.dejavu
-[Y'U]:https://play.google.com/store/apps/details?id=com.brounie.yumultimedia
-[LabCoat]:https://play.google.com/store/apps/details?id=com.commit451.gitlab
 
 ## Making a Game?
 This library was designed with the intention of allowing for playful animations within normal Android apps. It is not built to be a game engine or meant to compete with the likes. If you are looking to do more intense mobile games, we recommend libraries such as [libGDX](https://libgdx.badlogicgames.com/) or [Unity](https://unity3d.com/)
@@ -126,7 +112,7 @@ This library was designed with the intention of allowing for playful animations 
 License
 --------
 
-    Copyright 2016 John Carlson
+    Copyright 2020 John Carlson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
