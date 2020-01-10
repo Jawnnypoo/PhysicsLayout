@@ -33,22 +33,22 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
+    implementation("androidx.appcompat:appcompat:1.1.0")
 
-    implementation "com.google.android.material:material:1.0.0"
+    implementation("com.google.android.material:material:1.0.0")
 
-    implementation "de.hdodenhof:circleimageview:3.0.1"
+    implementation("de.hdodenhof:circleimageview:3.0.1")
 
     implementation("io.coil-kt:coil:0.7.0")
-    implementation "com.squareup.retrofit:retrofit:1.9.0"
+    implementation("com.squareup.retrofit:retrofit:1.9.0")
 
     implementation("com.wefika:flowlayout:0.4.1") {
-        exclude group: 'com.intellij', module: 'annotations'
+        exclude group: "com.intellij", module: "annotations"
     }
 
 
-    implementation "com.github.Commit451:Gimbal:2.0.2"
+    implementation("com.github.Commit451:Gimbal:3.0.0")
 
-    implementation project(":physicslayout")
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation(project(":physicslayout"))
 }

@@ -1,5 +1,6 @@
 package com.jawnnypoo.physicslayout.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,7 +12,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.appcompat.widget.Toolbar
 import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsFrameLayout
-
+import org.jbox2d.dynamics.Body
+import org.jbox2d.dynamics.World
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,23 +51,17 @@ class MainActivity : AppCompatActivity() {
             false
         })
         physicsSwitch.isChecked = physicsLayout.physics.isPhysicsEnabled
-        physicsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                physicsLayout.physics.enablePhysics()
-            } else {
-                physicsLayout.physics.disablePhysics()
+        physicsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            physicsLayout.physics.isPhysicsEnabled = isChecked
+            if (!isChecked) {
                 for (i in 0 until physicsLayout.childCount) {
                     physicsLayout.getChildAt(i)
-                            .animate().translationY(0f).translationX(0f).rotation(0f)
+                        .animate().translationY(0f).translationX(0f).rotation(0f)
                 }
             }
         }
-        flingSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                physicsLayout.physics.enableFling()
-            } else {
-                physicsLayout.physics.disableFling()
-            }
+        flingSwitch.setOnCheckedChangeListener { _, isChecked ->
+            physicsLayout.physics.isFlingEnabled = isChecked
         }
         impulseButton.setOnClickListener { physicsLayout.physics.giveRandomImpulse() }
         val circleView = findViewById<View>(R.id.circle)
@@ -73,8 +69,8 @@ class MainActivity : AppCompatActivity() {
             val imageView = ImageView(this@MainActivity)
             imageView.setImageResource(R.drawable.ic_logo)
             val llp = LinearLayout.LayoutParams(
-                    resources.getDimensionPixelSize(R.dimen.square_size),
-                    resources.getDimensionPixelSize(R.dimen.square_size))
+                resources.getDimensionPixelSize(R.dimen.square_size),
+                resources.getDimensionPixelSize(R.dimen.square_size))
             imageView.layoutParams = llp
             imageView.id = index
             physicsLayout.addView(imageView)
@@ -90,6 +86,7 @@ class MainActivity : AppCompatActivity() {
         index = physicsLayout.childCount
 
         physicsLayout.physics.setOnCollisionListener(object : Physics.OnCollisionListener {
+            @SuppressLint("SetTextI18n")
             override fun onCollisionEntered(viewIdA: Int, viewIdB: Int) {
                 collisionView.text = "$viewIdA collided with $viewIdB"
             }
@@ -99,11 +96,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        physicsLayout.physics.addOnPhysicsProcessedListener { physics, world ->
-            val body = physics.findBodyById(circleView.id)
-            body?.applyAngularImpulse(0.001f) ?: Log.e(TAG, "Cannot rotate, body was null")
-        }
+        physicsLayout.physics.addOnPhysicsProcessedListener(object : Physics.OnPhysicsProcessedListener {
+            override fun onPhysicsProcessed(physics: Physics, world: World) {
+                val body = physics.findBodyById(circleView.id)
+                body?.applyAngularImpulse(0.001f) ?: Log.e(TAG, "Cannot rotate, body was null")
+            }
 
-        physicsLayout.physics.setOnBodyCreatedListener { view, body -> Log.d(TAG, "Body created for view " + view.id) }
+        })
+
+        physicsLayout.physics.setOnBodyCreatedListener(object : Physics.OnBodyCreatedListener {
+            override fun onBodyCreated(view: View, body: Body) {
+                Log.d(TAG, "Body created for view ${view.id}")
+            }
+
+        })
     }
 }

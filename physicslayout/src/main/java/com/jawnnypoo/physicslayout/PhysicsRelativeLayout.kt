@@ -1,21 +1,19 @@
-package com.jawnnypoo.physicslayout.sample
+package com.jawnnypoo.physicslayout
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
-
-import com.jawnnypoo.physicslayout.Physics
-import com.jawnnypoo.physicslayout.PhysicsConfig
-import com.jawnnypoo.physicslayout.PhysicsLayoutParams
-import com.jawnnypoo.physicslayout.PhysicsLayoutParamsProcessor
-import com.wefika.flowlayout.FlowLayout
+import android.widget.RelativeLayout
 
 /**
- * Typical FrameLayout with some physics added on. Call [physics] to get the
+ * Typical RelativeLayout with some physics added on. Call [physics] to get the
  * physics component.
  */
-class PhysicsFlowLayout : FlowLayout {
+@Suppress("unused")
+class PhysicsRelativeLayout : RelativeLayout {
 
     lateinit var physics: Physics
 
@@ -23,11 +21,16 @@ class PhysicsFlowLayout : FlowLayout {
         init(null)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
+    }
+
+    @TargetApi(21)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         init(attrs)
     }
 
@@ -55,6 +58,7 @@ class PhysicsFlowLayout : FlowLayout {
         return physics.onInterceptTouchEvent(ev)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return physics.onTouchEvent(event)
     }
@@ -63,7 +67,7 @@ class PhysicsFlowLayout : FlowLayout {
         return LayoutParams(context, attrs)
     }
 
-    class LayoutParams(c: Context, attrs: AttributeSet) : FlowLayout.LayoutParams(c, attrs), PhysicsLayoutParams {
+    class LayoutParams(c: Context, attrs: AttributeSet?) : RelativeLayout.LayoutParams(c, attrs), PhysicsLayoutParams {
         override var config: PhysicsConfig = PhysicsLayoutParamsProcessor.process(c, attrs)
     }
 }

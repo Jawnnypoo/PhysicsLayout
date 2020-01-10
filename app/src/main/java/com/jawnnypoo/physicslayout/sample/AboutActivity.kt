@@ -19,6 +19,7 @@ import coil.api.load
 import com.commit451.gimbal.Gimbal
 import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsConfig
+import com.jawnnypoo.physicslayout.Shape
 import com.jawnnypoo.physicslayout.sample.github.Contributor
 import com.jawnnypoo.physicslayout.sample.github.GithubClient
 import com.wefika.flowlayout.FlowLayout
@@ -50,7 +51,7 @@ class AboutActivity : AppCompatActivity() {
         override fun onSensorChanged(event: SensorEvent) {
             if (event.sensor.type == Sensor.TYPE_GRAVITY) {
                 gimbal.normalizeGravityEvent(event)
-                physicsLayout.physics?.setGravity(-event.values[0], event.values[1])
+                physicsLayout.physics.setGravity(-event.values[0], event.values[1])
             }
         }
 
@@ -96,8 +97,7 @@ class AboutActivity : AppCompatActivity() {
     }
 
     private fun addContributors(contributors: List<Contributor>) {
-        val config = PhysicsConfig.create()
-        config.shapeType = PhysicsConfig.SHAPE_TYPE_CIRCLE
+        val config = PhysicsConfig(shape = Shape.CIRCLE)
         val borderSize = resources.getDimensionPixelSize(R.dimen.border_size)
         val imageSize = resources.getDimensionPixelSize(R.dimen.circle_size)
         for (i in contributors.indices) {
