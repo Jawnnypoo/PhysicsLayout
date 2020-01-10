@@ -33,10 +33,10 @@ dependencies {
 ## Basic Usage
 If you want to see what your layout looks like when physics is applied to it, simply change your root layout to a physics layout. 
 ```xml
-  <com.jawnnypoo.physicslayout.PhysicsLinearLayout
-    android:id="@+id/physics_layout"
-    android:layout_width="match_parent"
-    android:layout_height="200dp">
+<com.jawnnypoo.physicslayout.PhysicsLinearLayout
+  android:id="@+id/physics_layout"
+  android:layout_width="match_parent"
+  android:layout_height="200dp">
             
       <ImageView
         android:layout_width="wrap_content"
@@ -53,21 +53,21 @@ If you want to see what your layout looks like when physics is applied to it, si
         android:layout_height="wrap_content"
         android:text="Hello world, I have physics!"/>
             
-  </com.jawnnypoo.physicslayout.PhysicsLinearLayout>
+</com.jawnnypoo.physicslayout.PhysicsLinearLayout>
 ```     
 ## Custom XML Attributes
 You can also further customize the behaviour of your PhysicsLayout
     
 ```xml  
-  <com.jawnnypoo.physicslayout.PhysicsLinearLayout
-    android:id="@+id/physics_layout"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    app:physics="true"
-    app:gravityX="0.0"
-    app:gravityY="9.8"
-    app:bounds="true"
-    app:boundsSize="50dp"/>
+<com.jawnnypoo.physicslayout.PhysicsLinearLayout
+  android:id="@+id/physics_layout"
+  android:layout_width="match_parent"
+  android:layout_height="200dp"
+  app:physics="true"
+  app:gravityX="0.0"
+  app:gravityY="9.8"
+  app:bounds="true"
+  app:boundsSize="50dp"/>
 ```            
 
  * `physics` boolean, Determines if physics will be applied to the layout (Default true)
@@ -79,17 +79,17 @@ You can also further customize the behaviour of your PhysicsLayout
 ## Custom Physics Configuration
 Each view contained within the layout has a physics configuration that it uses to create itself in the Box2D world. This defines its shape, mass, restitutaion, and other physics related variables. A custom configuration can be applied to each view as well:
 ```xml
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        app:layout_shape="circle"
-        app:layout_circleRadius="20dp"
-        app:layout_bodyType="kinematic"
-        app:layout_fixedRotation="true"
-        app:layout_friction="0.8"
-        app:layout_restitution="0.3"
-        app:layout_density="0.5" />
+<TextView
+  android:id="@+id/text"
+  android:layout_width="20dp"
+  android:layout_height="20dp"
+  app:layout_shape="circle"
+  app:layout_circleRadius="20dp"
+  app:layout_bodyType="kinematic"
+  app:layout_fixedRotation="true"
+  app:layout_friction="0.8"
+  app:layout_restitution="0.3"
+  app:layout_density="0.5" />
 ```
 or alternatively, the Physics definition can be made programmatically:
 ```java
