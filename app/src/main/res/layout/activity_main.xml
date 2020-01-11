@@ -34,34 +34,29 @@
                 android:layout_width="@dimen/square_size"
                 android:layout_height="@dimen/square_size"
                 android:layout_gravity="left"
-                android:src="@drawable/ic_logo" />
+                android:src="@drawable/ic_logo"
+                app:layout_shape="circle" />
 
             <ImageView
                 android:layout_width="@dimen/square_size"
                 android:layout_height="@dimen/square_size"
                 android:layout_gravity="right"
-                android:src="@drawable/ic_logo" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circle"
-                android:layout_width="@dimen/circle_size"
-                android:layout_height="@dimen/circle_size"
-                android:layout_gravity="center"
-                app:layout_shape="circle"
-                app:layout_bodyType="dynamic"
-                android:src="@drawable/ic_logo" />
+                android:src="@drawable/ic_logo"
+                app:layout_shape="circle" />
 
             <ImageView
                 android:layout_width="@dimen/square_size"
                 android:layout_height="@dimen/square_size"
                 android:layout_gravity="bottom|left"
-                android:src="@drawable/ic_logo" />
+                android:src="@drawable/ic_logo"
+                app:layout_shape="circle" />
 
             <ImageView
                 android:layout_width="@dimen/square_size"
                 android:layout_height="@dimen/square_size"
                 android:layout_gravity="bottom|right"
-                android:src="@drawable/ic_logo" />
+                android:src="@drawable/ic_logo"
+                app:layout_shape="circle" />
 
 
         </com.jawnnypoo.physicslayout.PhysicsFrameLayout>

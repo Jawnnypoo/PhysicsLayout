@@ -4,7 +4,7 @@
     <item name="physics_layout_config_tag" type="id" />
 
     <item name="physics_layout_bound_top" type="id" />
-    <item name="physics_layout_body_bottom" type="id" />
-    <item name="physics_layout_body_left" type="id" />
-    <item name="physics_layout_body_right" type="id" />
+    <item name="physics_layout_bound_bottom" type="id" />
+    <item name="physics_layout_bound_left" type="id" />
+    <item name="physics_layout_bound_right" type="id" />
 </resources>

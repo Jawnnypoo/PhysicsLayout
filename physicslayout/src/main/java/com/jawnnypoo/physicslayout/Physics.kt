@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.commit451.translationviewdraghelper.TranslationViewDragHelper
-import com.jawnnypoo.physicslayout.Physics
 import org.jbox2d.callbacks.ContactImpulse
 import org.jbox2d.callbacks.ContactListener
 import org.jbox2d.collision.Manifold
@@ -20,7 +19,6 @@ import org.jbox2d.dynamics.*
 import org.jbox2d.dynamics.contacts.Contact
 import java.util.*
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 /**
  * Implementation for physics layout is found here, since we want to offer the main
@@ -53,7 +51,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         }
     }
 
-    private val debugDraw = false
+    private val debugDraw = true
     private val debugLog = false
 
     /**
@@ -96,7 +94,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
     var hasBounds = true
 
     private var boundsSize = 0f
-    private val bounds = ArrayList<Body>()
+    private val bounds = mutableListOf<Bound>()
     private var gravityX = 0.0f
     private var gravityY = EARTH_GRAVITY
 
@@ -261,46 +259,68 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
      * Call this when your view calls onDraw so that physics can be processed
      */
     fun onDraw(canvas: Canvas) {
-        if (!isPhysicsEnabled) {
+        val world = world
+        if (!isPhysicsEnabled || world == null) {
             return
         }
-        world?.step(FRAME_RATE, velocityIterations, positionIterations)
+        world.step(FRAME_RATE, velocityIterations, positionIterations)
         var view: View
         var body: Body?
         for (i in 0 until viewGroup.childCount) {
             view = viewGroup.getChildAt(i)
             body = view.getTag(R.id.physics_layout_body_tag) as? Body
-            if (view === viewBeingDragged) { // If we are being dragged, we process in reverse, moving the body to where the view is
+            if (view == viewBeingDragged) { // If we are being dragged, we process in reverse, moving the body to where the view is
                 //instead of the reverse
                 if (body != null) {
                     translateBodyToView(body, view)
-                    view.rotation = radiansToDegrees(body.angle) % 360
+                    view.rotation = radiansToDegrees(body.angle) % 360f
                 }
                 continue
             }
             if (body != null) {
-                view.x = metersToPixels(body.position.x) - view.width / 2
-                view.y = metersToPixels(body.position.y) - view.height / 2
-                view.rotation = radiansToDegrees(body.angle) % 360
+                view.x = metersToPixels(body.position.x) - view.width / 2f
+                view.y = metersToPixels(body.position.y) - view.height / 2f
+                view.rotation = radiansToDegrees(body.angle) % 360f
                 if (debugDraw) {
                     val config = view.getTag(R.id.physics_layout_config_tag) as PhysicsConfig
-                    if (config.shape === Shape.RECTANGLE) {
-                        canvas.drawRect(metersToPixels(body.position.x) - view.width / 2,
-                            metersToPixels(body.position.y) - view.height / 2,
-                            metersToPixels(body.position.x) + view.width / 2,
-                            metersToPixels(body.position.y) + view.height / 2, debugPaint)
-                    } else if (config.shape === Shape.CIRCLE) {
-                        canvas.drawCircle(
-                            metersToPixels(body.position.x),
-                            metersToPixels(body.position.y),
-                            config.radius,  //already defined in terms of pixels
-                            debugPaint)
+                    when (config.shape) {
+                        Shape.RECTANGLE -> {
+                            canvas.drawRect(metersToPixels(body.position.x) - view.width / 2,
+                                metersToPixels(body.position.y) - view.height / 2,
+                                metersToPixels(body.position.x) + view.width / 2,
+                                metersToPixels(body.position.y) + view.height / 2,
+                                debugPaint
+                            )
+                        }
+                        Shape.CIRCLE -> {
+                            canvas.drawCircle(
+                                metersToPixels(body.position.x),
+                                metersToPixels(body.position.y),
+                                config.radius,
+                                debugPaint
+                            )
+                        }
                     }
                 }
             }
         }
-        onPhysicsProcessedListeners.forEach { it.onPhysicsProcessed(this, world!!) }
+        if (debugDraw) {
+            debugDrawBounds(canvas)
+        }
+        onPhysicsProcessedListeners.forEach { it.onPhysicsProcessed(this, world) }
         viewGroup.invalidate()
+    }
+
+    private fun debugDrawBounds(canvas: Canvas) {
+        bounds.forEach { bound ->
+            val body = bound.body
+            canvas.drawRect(metersToPixels(body.position.x) - bound.widthInPixels / 2,
+                metersToPixels(body.position.y) - bound.heightInPixels / 2,
+                metersToPixels(body.position.x) + bound.widthInPixels / 2,
+                metersToPixels(body.position.y) + bound.heightInPixels / 2,
+                debugPaint
+            )
+        }
     }
 
     /**
@@ -312,11 +332,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         val oldBodiesArray = ArrayList<Body?>()
         for (i in 0 until viewGroup.childCount) {
             val body = viewGroup.getChildAt(i).getTag(R.id.physics_layout_body_tag) as? Body
-            if (body != null) {
-                oldBodiesArray.add(body)
-            } else {
-                oldBodiesArray.add(null)
-            }
+            oldBodiesArray.add(body)
             viewGroup.getChildAt(i).setTag(R.id.physics_layout_body_tag, null)
         }
         bounds.clear()
@@ -336,66 +352,84 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
 
     private fun enableBounds() {
         hasBounds = true
-        createTopAndBottomBounds()
-        createLeftAndRightBounds()
+        createBounds()
     }
 
     private fun disableBounds() {
         hasBounds = false
         for (body in bounds) {
-            world?.destroyBody(body)
+            world?.destroyBody(body.body)
         }
         bounds.clear()
     }
 
-    private fun createTopAndBottomBounds() {
-        val boundSize = boundsSize.roundToInt()
-        val bodyDef = BodyDef()
-        bodyDef.type = BodyType.STATIC
-        val box = PolygonShape()
-        val boxWidth = pixelsToMeters(width.toFloat()).toInt()
-        val boxHeight = pixelsToMeters(boundSize.toFloat()).toInt()
-        box.setAsBox(boxWidth.toFloat(), boxHeight.toFloat())
-        val fixtureDef = FixtureDef()
-        fixtureDef.shape = box
-        fixtureDef.density = 0.5f
-        fixtureDef.friction = 0.3f
-        fixtureDef.restitution = 0.5f
-        fixtureDef.userData = R.id.physics_layout_bound_top
-        bodyDef.position[0f] = -boxHeight.toFloat()
-        val topBody = world!!.createBody(bodyDef)
-        topBody.createFixture(fixtureDef)
-        bounds.add(topBody)
-        fixtureDef.userData = R.id.physics_layout_body_bottom
-        bodyDef.position[0f] = pixelsToMeters(height.toFloat()) + boxHeight
-        val bottomBody = world!!.createBody(bodyDef)
-        bottomBody.createFixture(fixtureDef)
-        bounds.add(bottomBody)
+    private fun createBounds() {
+        val top = createBound(
+            widthInPixels = width.toFloat(),
+            heightInPixels = boundsSize,
+            id = R.id.physics_layout_bound_top,
+            side = Bound.Side.TOP
+        )
+        bounds.add(top)
+
+        val bottom = createBound(
+            widthInPixels = width.toFloat(),
+            heightInPixels = boundsSize,
+            id = R.id.physics_layout_bound_bottom,
+            side = Bound.Side.BOTTOM
+        )
+        bounds.add(bottom)
+
+        val left = createBound(
+            widthInPixels = boundsSize,
+            heightInPixels = height.toFloat(),
+            id = R.id.physics_layout_bound_left,
+            side = Bound.Side.LEFT
+        )
+        bounds.add(left)
+
+        val right = createBound(
+            widthInPixels = boundsSize,
+            heightInPixels = height.toFloat(),
+            id = R.id.physics_layout_bound_right,
+            side = Bound.Side.RIGHT
+        )
+        bounds.add(right)
     }
 
-    private fun createLeftAndRightBounds() {
-        val boundSize = boundsSize.roundToInt()
-        val boxWidth = pixelsToMeters(boundSize.toFloat()).toInt()
-        val boxHeight = pixelsToMeters(height.toFloat()).toInt()
+    private fun createBound(widthInPixels: Float, heightInPixels: Float, id: Int, side: Bound.Side): Bound {
         val bodyDef = BodyDef()
         bodyDef.type = BodyType.STATIC
         val box = PolygonShape()
-        box.setAsBox(boxWidth.toFloat(), boxHeight.toFloat())
+        val boxWidthMeters = pixelsToMeters(widthInPixels)
+        val boxHeightMeters = pixelsToMeters(heightInPixels)
+        box.setAsBox(boxWidthMeters, boxHeightMeters)
+        val fixtureDef = createBoundFixtureDef(box, id)
+        val pair = when (side) {
+            Bound.Side.TOP -> Pair(0f, -boxHeightMeters)
+            Bound.Side.BOTTOM -> Pair(0f, pixelsToMeters(height.toFloat()) + boxHeightMeters)
+            Bound.Side.LEFT -> Pair(-boxWidthMeters, 0f)
+            Bound.Side.RIGHT -> Pair(pixelsToMeters(width.toFloat()) + boxWidthMeters, 0f)
+        }
+        bodyDef.position[pair.first] = pair.second
+        val body = world!!.createBody(bodyDef)
+        body.createFixture(fixtureDef)
+        return Bound(
+            widthInPixels = widthInPixels,
+            heightInPixels = heightInPixels,
+            body = body,
+            side = side
+        )
+    }
+
+    private fun createBoundFixtureDef(box: PolygonShape, id: Int): FixtureDef {
         val fixtureDef = FixtureDef()
         fixtureDef.shape = box
         fixtureDef.density = 0.5f
         fixtureDef.friction = 0.3f
         fixtureDef.restitution = 0.5f
-        fixtureDef.userData = R.id.physics_layout_body_left
-        bodyDef.position[-boxWidth.toFloat()] = 0f
-        val leftBody = world!!.createBody(bodyDef)
-        leftBody.createFixture(fixtureDef)
-        bounds.add(leftBody)
-        fixtureDef.userData = R.id.physics_layout_body_right
-        bodyDef.position[pixelsToMeters(width.toFloat()) + boxWidth] = 0f
-        val rightBody = world!!.createBody(bodyDef)
-        rightBody.createFixture(fixtureDef)
-        bounds.add(rightBody)
+        fixtureDef.userData = id
+        return fixtureDef
     }
 
     private fun createBody(view: View, oldBody: Body?): Body {
@@ -421,7 +455,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
             bodyDef.angularVelocity = degreesToRadians(view.rotation)
         }
         val fixtureDef = config.fixtureDef
-        fixtureDef.shape = if (config.shape === Shape.RECTANGLE) createBoxShape(view) else createCircleShape(view, config)
+        fixtureDef.shape = if (config.shape == Shape.RECTANGLE) createBoxShape(view) else createCircleShape(view, config)
         fixtureDef.userData = view.id
         val body = world!!.createBody(bodyDef)
         body.createFixture(fixtureDef)
@@ -544,14 +578,15 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
     fun setGravity(gravityX: Float, gravityY: Float) {
         this.gravityX = gravityX
         this.gravityY = gravityY
-        world!!.gravity = Vec2(gravityX, gravityY)
+        world?.gravity = Vec2(gravityX, gravityY)
     }
 
     /**
-     * Returns the gravity of the world.
+     * Returns the gravity of the world. Returns null if the world doesn't exist yet (view hasn't
+     * called onLayout)
      */
-    fun getGravity(): Vec2 {
-        return world!!.gravity
+    fun getGravity(): Vec2? {
+        return world?.gravity
     }
 
     fun addOnPhysicsProcessedListener(listener: OnPhysicsProcessedListener) {
