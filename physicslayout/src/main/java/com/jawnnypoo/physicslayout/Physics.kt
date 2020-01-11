@@ -33,7 +33,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         const val MOON_GRAVITY = 1.6f
         const val EARTH_GRAVITY = 9.8f
         const val JUPITER_GRAVITY = 24.8f
-        //Size in DP of the bounds (world walls) of the view
+        // Size in DP of the bounds (world walls) of the view
         private const val BOUND_SIZE_DP = 20
         private const val FRAME_RATE = 1 / 60f
 
@@ -285,7 +285,8 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
                     val config = view.getTag(R.id.physics_layout_config_tag) as PhysicsConfig
                     when (config.shape) {
                         Shape.RECTANGLE -> {
-                            canvas.drawRect(metersToPixels(body.position.x) - view.width / 2,
+                            canvas.drawRect(
+                                metersToPixels(body.position.x) - view.width / 2,
                                 metersToPixels(body.position.y) - view.height / 2,
                                 metersToPixels(body.position.x) + view.width / 2,
                                 metersToPixels(body.position.y) + view.height / 2,
@@ -314,10 +315,11 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
     private fun debugDrawBounds(canvas: Canvas) {
         bounds.forEach { bound ->
             val body = bound.body
-            canvas.drawRect(metersToPixels(body.position.x) - bound.widthInPixels / 2,
-                metersToPixels(body.position.y) - bound.heightInPixels / 2,
-                metersToPixels(body.position.x) + bound.widthInPixels / 2,
-                metersToPixels(body.position.y) + bound.heightInPixels / 2,
+            canvas.drawRect(
+                metersToPixels(body.position.x),
+                metersToPixels(body.position.y),
+                metersToPixels(body.position.x) + bound.widthInPixels,
+                metersToPixels(body.position.y) + bound.heightInPixels,
                 debugPaint
             )
         }

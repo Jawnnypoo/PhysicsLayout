@@ -26,8 +26,10 @@
 
         <com.jawnnypoo.physicslayout.PhysicsFrameLayout
             android:id="@+id/physics_layout"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
             app:boundsSize="100dp">
 
             <ImageView
@@ -88,8 +90,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:orientation="horizontal">
-
 
             <Button
                 android:id="@+id/impulse_button"
@@ -106,12 +108,14 @@
                 android:layout_weight="1"
                 android:padding="16dp"
                 android:text="Add View" />
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/collision"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp" />
     </LinearLayout>
 
 </merge>
