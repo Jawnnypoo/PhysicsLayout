@@ -23,10 +23,9 @@
 
         <com.jawnnypoo.physicslayout.PhysicsFrameLayout
             android:id="@+id/physics_layout"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:layout_margin="16dp"
             app:boundsSize="100dp">
 
             <ImageView

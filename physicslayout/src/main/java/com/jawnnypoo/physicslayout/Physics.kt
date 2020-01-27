@@ -51,7 +51,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         }
     }
 
-    private val debugDraw = true
+    private val debugDraw = false
     private val debugLog = false
 
     /**
@@ -305,24 +305,8 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
                 }
             }
         }
-        if (debugDraw) {
-            debugDrawBounds(canvas)
-        }
         onPhysicsProcessedListeners.forEach { it.onPhysicsProcessed(this, world) }
         viewGroup.invalidate()
-    }
-
-    private fun debugDrawBounds(canvas: Canvas) {
-        bounds.forEach { bound ->
-            val body = bound.body
-            canvas.drawRect(
-                metersToPixels(body.position.x),
-                metersToPixels(body.position.y),
-                metersToPixels(body.position.x) + bound.widthInPixels,
-                metersToPixels(body.position.y) + bound.heightInPixels,
-                debugPaint
-            )
-        }
     }
 
     /**
