@@ -105,6 +105,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         paint.style = Paint.Style.STROKE
         paint
     }
+
     private val density: Float
     private var width = 0
     private var height = 0
@@ -114,6 +115,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
     private var onCollisionListener: OnCollisionListener? = null
     private var onPhysicsProcessedListeners = mutableListOf<OnPhysicsProcessedListener>()
     private var onBodyCreatedListener: OnBodyCreatedListener? = null
+
     private val contactListener: ContactListener = object : ContactListener {
         override fun beginContact(contact: Contact) {
             if (onCollisionListener != null) {
@@ -132,6 +134,7 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         override fun preSolve(contact: Contact, oldManifold: Manifold) {}
         override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
     }
+
     private val viewDragHelperCallback: TranslationViewDragHelper.Callback = object : TranslationViewDragHelper.Callback() {
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
             return true
@@ -192,11 +195,11 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         }
     }
 
-    fun metersToPixels(meters: Float): Float {
+    private fun metersToPixels(meters: Float): Float {
         return meters * pixelsPerMeter
     }
 
-    fun pixelsToMeters(pixels: Float): Float {
+    private fun pixelsToMeters(pixels: Float): Float {
         return pixels / pixelsPerMeter
     }
 
@@ -543,6 +546,9 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         setGravity(newGravityX, gravityY)
     }
 
+    /**
+     * The gravity in the x direction for the world. Positive is right, negative is left.
+     */
     fun getGravityX(): Float {
         return gravityX
     }
@@ -554,6 +560,9 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         setGravity(gravityX, newGravityY)
     }
 
+    /**
+     * The gravity in the x direction for the world. Positive is right, negative is left.
+     */
     fun getGravityY(): Float {
         return gravityY
     }
@@ -576,14 +585,23 @@ class Physics @JvmOverloads constructor(private val viewGroup: ViewGroup, attrs:
         return world?.gravity
     }
 
+    /**
+     * Add a physics process listener
+     */
     fun addOnPhysicsProcessedListener(listener: OnPhysicsProcessedListener) {
         onPhysicsProcessedListeners.add(listener)
     }
 
+    /**
+     * Remove a physics process listener
+     */
     fun removeOnPhysicsProcessedListener(listener: OnPhysicsProcessedListener?) {
         onPhysicsProcessedListeners.remove(listener)
     }
 
+    /**
+     * Listen to when bodies are created in the world.
+     */
     fun setOnBodyCreatedListener(listener: OnBodyCreatedListener?) {
         onBodyCreatedListener = listener
     }
