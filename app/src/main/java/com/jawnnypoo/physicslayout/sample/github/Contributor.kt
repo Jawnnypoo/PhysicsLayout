@@ -1,8 +1,8 @@
 package com.jawnnypoo.physicslayout.sample.github
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
-class Contributor {
-    @SerializedName("avatar_url")
+data class Contributor (
+    @Json(name = "avatar_url")
     var avatarUrl: String? = null
-}
+)

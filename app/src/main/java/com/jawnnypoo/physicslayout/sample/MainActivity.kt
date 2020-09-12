@@ -14,6 +14,7 @@ import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsConfig
 import com.jawnnypoo.physicslayout.PhysicsFrameLayout
 import com.jawnnypoo.physicslayout.Shape
+import kotlinx.android.synthetic.main.activity_main.*
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.World
 
@@ -23,26 +24,11 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "TESTING"
     }
 
-    private lateinit var toolbar: Toolbar
-    private lateinit var physicsLayout: PhysicsFrameLayout
-    private lateinit var physicsSwitch: SwitchCompat
-    private lateinit var flingSwitch: SwitchCompat
-    private lateinit var impulseButton: View
-    private lateinit var addViewButton: View
-    private lateinit var collisionView: TextView
-
     private var index: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        toolbar = findViewById(R.id.toolbar)
-        physicsLayout = findViewById(R.id.physics_layout)
-        physicsSwitch = findViewById(R.id.physics_switch)
-        flingSwitch = findViewById(R.id.fling_switch)
-        impulseButton = findViewById(R.id.impulse_button)
-        addViewButton = findViewById(R.id.add_view_button)
-        collisionView = findViewById(R.id.collision)
         toolbar.setTitle(R.string.app_name)
         toolbar.inflateMenu(R.menu.menu_main)
         toolbar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item ->

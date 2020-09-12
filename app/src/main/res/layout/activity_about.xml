@@ -29,7 +29,7 @@
         android:textSize="22sp"/>
 
     <com.jawnnypoo.physicslayout.sample.PhysicsFlowLayout
-        android:id="@+id/physics_layout"
+        android:id="@+id/physicsLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

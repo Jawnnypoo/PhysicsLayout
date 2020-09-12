@@ -22,7 +22,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.jawnnypoo.physicslayout.PhysicsFrameLayout
-            android:id="@+id/physics_layout"
+            android:id="@+id/physicsLayout"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_gravity="center"
@@ -65,7 +65,7 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/physics_switch"
+                android:id="@+id/physicsSwitch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -74,7 +74,7 @@
                 android:textSize="22sp" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/fling_switch"
+                android:id="@+id/flingSwitch"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -90,7 +90,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/impulse_button"
+                android:id="@+id/impulseButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -98,7 +98,7 @@
                 android:text="Random Impulse" />
 
             <Button
-                android:id="@+id/add_view_button"
+                android:id="@+id/addViewButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -108,7 +108,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/collision"
+            android:id="@+id/collisionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp" />

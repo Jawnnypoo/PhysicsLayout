@@ -12,36 +12,27 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
-import androidx.appcompat.widget.Toolbar
-import coil.api.load
+import coil.load
 import com.commit451.gimbal.Gimbal
 import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsConfig
 import com.jawnnypoo.physicslayout.Shape
 import com.jawnnypoo.physicslayout.sample.github.Contributor
-import com.jawnnypoo.physicslayout.sample.github.GithubClient
 import com.wefika.flowlayout.FlowLayout
 import de.hdodenhof.circleimageview.CircleImageView
-import retrofit.Callback
-import retrofit.RetrofitError
-import retrofit.client.Response
+import kotlinx.android.synthetic.main.activity_about.*
 
 class AboutActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val REPO_USER = "Jawnnypoo"
-        private const val REPO_NAME = "PhysicsLayout"
-
         fun newInstance(context: Context): Intent {
             return Intent(context, AboutActivity::class.java)
         }
     }
-
-    private lateinit var toolbar: Toolbar
-    private lateinit var physicsLayout: PhysicsFlowLayout
 
     private lateinit var sensorManager: SensorManager
     private lateinit var gravitySensor: Sensor
@@ -58,23 +49,11 @@ class AboutActivity : AppCompatActivity() {
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     }
 
-    private val contributorResponseCallback = object : Callback<List<Contributor>> {
-        override fun success(contributorList: List<Contributor>, response: Response) {
-            addContributors(contributorList)
-        }
-
-        override fun failure(error: RetrofitError) {
-            error.printStackTrace()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gimbal = Gimbal(this)
         gimbal.lock()
         setContentView(R.layout.activity_about)
-        toolbar = findViewById(R.id.toolbar)
-        physicsLayout = findViewById(R.id.physics_layout)
         findViewById<View>(R.id.sauce).setOnClickListener { openPage("https://github.com/Jawnnypoo/PhysicsLayout") }
         toolbar.setTitle(R.string.app_name)
         val drawerArrowDrawable = DrawerArrowDrawable(this)
@@ -83,7 +62,10 @@ class AboutActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
-        GithubClient.instance().contributors(REPO_USER, REPO_NAME, contributorResponseCallback)
+        val model: ContributorsViewModel by viewModels()
+        model.getContributors().observe(this, { contributors ->
+            addContributors(contributors)
+        })
     }
 
     override fun onResume() {
@@ -117,6 +99,7 @@ class AboutActivity : AppCompatActivity() {
         physicsLayout.requestLayout()
     }
 
+    @Suppress("SameParameterValue")
     private fun openPage(url: String) {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
