@@ -1,12 +1,10 @@
 # PhysicsLayout
 
-![Sample Gif](http://fat.gfycat.com/TotalCheerfulDromedary.gif)
-
 [![Build Status](https://travis-ci.org/Jawnnypoo/PhysicsLayout.svg?branch=master)](https://travis-ci.org/Jawnnypoo/PhysicsLayout) [![](https://jitpack.io/v/Jawnnypoo/PhysicsLayout.svg)](https://jitpack.io/#Jawnnypoo/PhysicsLayout)
 
 Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/jbox2d). Simply add views, enable physics, and watch them fall!
 
-The gif is choppy, see it in action with the sample app:
+See it in action with the sample app:
 
 [![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
