@@ -20,10 +20,10 @@ import com.commit451.gimbal.Gimbal
 import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsConfig
 import com.jawnnypoo.physicslayout.Shape
+import com.jawnnypoo.physicslayout.sample.databinding.ActivityAboutBinding
 import com.jawnnypoo.physicslayout.sample.github.Contributor
 import com.wefika.flowlayout.FlowLayout
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.activity_about.*
 
 class AboutActivity : AppCompatActivity() {
 
@@ -34,6 +34,7 @@ class AboutActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var binding: ActivityAboutBinding
     private lateinit var sensorManager: SensorManager
     private lateinit var gravitySensor: Sensor
     private lateinit var gimbal: Gimbal
@@ -42,7 +43,7 @@ class AboutActivity : AppCompatActivity() {
         override fun onSensorChanged(event: SensorEvent) {
             if (event.sensor.type == Sensor.TYPE_GRAVITY) {
                 gimbal.normalizeGravityEvent(event)
-                physicsLayout.physics.setGravity(-event.values[0], event.values[1])
+                binding.physicsLayout.physics.setGravity(-event.values[0], event.values[1])
             }
         }
 
@@ -53,13 +54,14 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         gimbal = Gimbal(this)
         gimbal.lock()
-        setContentView(R.layout.activity_about)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         findViewById<View>(R.id.sauce).setOnClickListener { openPage("https://github.com/Jawnnypoo/PhysicsLayout") }
-        toolbar.setTitle(R.string.app_name)
+        binding.toolbar.setTitle(R.string.app_name)
         val drawerArrowDrawable = DrawerArrowDrawable(this)
         drawerArrowDrawable.progress = 1.0f
-        toolbar.navigationIcon = drawerArrowDrawable
-        toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.navigationIcon = drawerArrowDrawable
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
         val model: ContributorsViewModel by viewModels()
@@ -92,11 +94,11 @@ class AboutActivity : AppCompatActivity() {
             imageView.borderWidth = borderSize
             imageView.borderColor = Color.BLACK
             Physics.setPhysicsConfig(imageView, config)
-            physicsLayout.addView(imageView)
+            binding.physicsLayout.addView(imageView)
 
             imageView.load(contributor.avatarUrl)
         }
-        physicsLayout.requestLayout()
+        binding.physicsLayout.requestLayout()
     }
 
     @Suppress("SameParameterValue")

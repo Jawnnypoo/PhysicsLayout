@@ -2,8 +2,6 @@ apply plugin: "com.android.application"
 
 apply plugin: "kotlin-android"
 
-apply plugin: "kotlin-android-extensions"
-
 android {
     compileSdkVersion 30
 
@@ -13,6 +11,10 @@ android {
         targetSdkVersion 30
         versionCode 101
         versionName "1.0.1"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {

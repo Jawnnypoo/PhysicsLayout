@@ -1,6 +1,6 @@
 # PhysicsLayout
 
-[![Build Status](https://travis-ci.org/Jawnnypoo/PhysicsLayout.svg?branch=master)](https://travis-ci.org/Jawnnypoo/PhysicsLayout) [![](https://jitpack.io/v/Jawnnypoo/PhysicsLayout.svg)](https://jitpack.io/#Jawnnypoo/PhysicsLayout)
+[![](https://jitpack.io/v/Jawnnypoo/PhysicsLayout.svg)](https://jitpack.io/#Jawnnypoo/PhysicsLayout)
 
 Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/jbox2d). Simply add views, enable physics, and watch them fall!
 
