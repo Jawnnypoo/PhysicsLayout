@@ -1,14 +1,13 @@
 apply plugin: "com.android.application"
-
 apply plugin: "kotlin-android"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.jawnnypoo.physicslayout.sample"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 101
         versionName "1.0.1"
     }
@@ -40,19 +39,17 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-def coroutinesVersion = "1.4.2"
+def coroutinesVersion = "1.6.0"
 def retrofitVersion = "2.9.0"
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
-
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
-    implementation("androidx.activity:activity-ktx:1.2.2")
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+    implementation("androidx.activity:activity-ktx:1.4.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
 
-    implementation("com.google.android.material:material:1.3.0")
+    implementation("com.google.android.material:material:1.5.0")
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
@@ -61,7 +58,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
 
-    implementation("com.squareup.moshi:moshi-kotlin:1.11.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
 
     implementation("com.wefika:flowlayout:0.4.1") {
         exclude group: "com.intellij", module: "annotations"

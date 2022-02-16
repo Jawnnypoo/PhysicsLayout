@@ -1,0 +1,38 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+    if: github.repository == 'Jawnnypoo/PhysicsLayout'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set version
+        run: sed -i "s/VERSION_NAME=0.0.1/VERSION_NAME=$GITHUB_REF_NAME/" gradle.properties
+
+      - name: Upload release
+        run: ./gradlew publishAllPublicationsToMavenCentralRepository --no-daemon --no-parallel
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+      - name: Publish release
+        run: ./gradlew closeAndReleaseRepository --no-daemon --no-parallel
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}

@@ -1,12 +1,14 @@
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
+apply plugin: "com.vanniktech.maven.publish"
+apply from: "../publish.gradle"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
     }
@@ -16,9 +18,7 @@ android {
 }
 
 dependencies {
-    api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
+    api("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     api("org.jbox2d:jbox2d-library:2.2.1.1")
     api("com.github.Commit451:TranslationViewDragHelper:2.0.1")
 }
-
-apply from: "https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.1.0/gradle-android-javadocs.gradle"

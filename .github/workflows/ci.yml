@@ -1,10 +1,29 @@
 name: Build
-on: [pull_request, push]
+
+on: [push, pull_request]
+
 jobs:
-  build:
+  jvm:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version:
+          - 11
+
     steps:
-      - name: Checkout the code
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Build the app
-        run: ./gradlew build
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Configure JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java-version }}
+
+      - name: Test
+        run: ./gradlew assemble
