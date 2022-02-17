@@ -1,23 +1,16 @@
 # PhysicsLayout
-
-[![](https://jitpack.io/v/Jawnnypoo/PhysicsLayout.svg)](https://jitpack.io/#Jawnnypoo/PhysicsLayout)
-
 Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/jbox2d). Simply add views, enable physics, and watch them fall!
 
 See it in action with the sample app:
 
 [![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
-## Gradle Dependency
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.commit451/translationviewdraghelper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.commit451/translationviewdraghelper)
 
-Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
-
-```gradle
-allprojects {
-	repositories {
-		...
-		maven { url "https://jitpack.io" }
-	}
+## Gradle
+```groovy
+dependencies {
+    implementation("com.commit451:physicslayout:latest.release.here")
 }
 ```
 
