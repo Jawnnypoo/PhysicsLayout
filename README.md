@@ -96,7 +96,7 @@ This library was designed with the intention of allowing for playful animations 
 License
 --------
 
-    Copyright 2021 John Carlson
+    Copyright 2022 John Carlson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
