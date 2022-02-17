@@ -4,11 +4,11 @@ apply plugin: "com.vanniktech.maven.publish"
 apply from: "../publish.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
     }
@@ -20,5 +20,5 @@ android {
 dependencies {
     api("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     api("org.jbox2d:jbox2d-library:2.2.1.1")
-    api("com.github.Commit451:TranslationViewDragHelper:2.0.1")
+    api("com.commit451:translationviewdraghelper:2.0.3")
 }
