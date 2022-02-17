@@ -10,14 +10,7 @@ See it in action with the sample app:
 ## Gradle
 ```groovy
 dependencies {
-    implementation("com.commit451:physicslayout:latest.release.here")
-}
-```
-
-Then, add the library to your project `build.gradle`
-```gradle
-dependencies {
-    implementation("com.github.Jawnnypoo:PhysicsLayout:latest.version.here")
+    implementation("com.jawnnypoo:physicslayout:latest.release.here")
 }
 ```
 
