@@ -13,7 +13,7 @@ import android.widget.RelativeLayout
  * physics component.
  */
 @Suppress("unused")
-class PhysicsRelativeLayout : RelativeLayout {
+open class PhysicsRelativeLayout : RelativeLayout {
 
     lateinit var physics: Physics
 

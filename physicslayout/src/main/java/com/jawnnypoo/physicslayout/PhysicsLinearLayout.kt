@@ -13,7 +13,7 @@ import android.widget.LinearLayout
  * physics component.
  */
 @Suppress("unused")
-class PhysicsLinearLayout : LinearLayout {
+open class PhysicsLinearLayout : LinearLayout {
 
     lateinit var physics: Physics
 

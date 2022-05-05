@@ -13,7 +13,7 @@ import android.widget.FrameLayout
  * physics component.
  */
 @Suppress("unused")
-class PhysicsFrameLayout : FrameLayout {
+open class PhysicsFrameLayout : FrameLayout {
 
     lateinit var physics: Physics
 
