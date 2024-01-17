@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.forEach
+import androidx.core.view.forEachIndexed
 import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsConfig
 import com.jawnnypoo.physicslayout.Shape
@@ -43,9 +45,11 @@ class MainActivity : AppCompatActivity() {
         binding.physicsSwitch.setOnCheckedChangeListener { _, isChecked ->
             binding.physicsLayout.physics.isPhysicsEnabled = isChecked
             if (!isChecked) {
-                for (i in 0 until binding.physicsLayout.childCount) {
-                    binding.physicsLayout.getChildAt(i)
-                        .animate().translationY(0f).translationX(0f).rotation(0f)
+                binding.physicsLayout.forEach {
+                    it.animate()
+                        .translationY(0f)
+                        .translationX(0f)
+                        .rotation(0f)
                 }
             }
         }
@@ -71,10 +75,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        for (i in 0 until binding.physicsLayout.childCount) {
-            val imageView = binding.physicsLayout.getChildAt(i) as ImageView
-            imageView.id = i
-            imageView.setImageResource(R.drawable.ic_logo)
+        binding.physicsLayout.forEachIndexed { index, view ->
+            view.id = index
+            (view as ImageView).setImageResource(R.drawable.ic_logo)
         }
         index = binding.physicsLayout.childCount + 1
 
