@@ -35,4 +35,4 @@ gimbal = { group = "com.github.Commit451", name = "Gimbal", version = "3.0.0" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
-com-vanniktech-publish = { id = "com.vanniktech.maven.publish", version = "0.18.0" }
+com-vanniktech-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }

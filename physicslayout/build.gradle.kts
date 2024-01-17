@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
@@ -24,9 +25,21 @@ dependencies {
     api(libs.translation.drag.view.helper)
 }
 
-mavenPublish {
-    sonatypeHost = SonatypeHost.S01
+mavenPublishing {
+    configure(
+        AndroidSingleVariantLibrary(
+            // the published variant
+            variant = "release",
+            // whether to publish a sources jar
+            sourcesJar = true,
+            // whether to publish a javadoc jar
+            publishJavadocJar = true,
+        )
+    )
+    publishToMavenCentral(SonatypeHost.S01)
     // We need this, because on Jitpack, we don't want the release to be signed,
     // but on GitHub actions, we do, since it will be published to Maven Central
-    releaseSigningEnabled = System.getenv("RELEASE_SIGNING_ENABLED") == "true"
+    if (System.getenv("RELEASE_SIGNING_ENABLED") == "true") {
+        signAllPublications()
+    }
 }

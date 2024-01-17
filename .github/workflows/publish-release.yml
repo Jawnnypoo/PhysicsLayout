@@ -27,7 +27,7 @@ jobs:
         run: sed -i "s/VERSION_NAME=0.0.1/VERSION_NAME=$GITHUB_REF_NAME/" gradle.properties
 
       - name: Upload release
-        run: ./gradlew publishAllPublicationsToMavenCentralRepository --no-daemon --no-parallel
+        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
