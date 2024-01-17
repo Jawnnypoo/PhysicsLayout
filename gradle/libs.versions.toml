@@ -1,7 +1,7 @@
 [versions]
 org-jetbrains-kotlin-android = "1.9.10"
 agp = "8.2.1"
-coroutines = "1.7.1"
+coroutines = "1.7.3"
 retrofit = "2.9.0"
 
 [libraries]
@@ -19,7 +19,7 @@ google-material = { group = "com.google.android.material", name = "material", ve
 
 circle-image-view = { group = "de.hdodenhof", name = "circleimageview", version = "3.1.0" }
 
-coil = { group = "io.coil-kt", name = "coil", version = "1.1.1" }
+coil = { group = "io.coil-kt", name = "coil", version = "2.5.0" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }

@@ -90,6 +90,10 @@ class Physics @JvmOverloads constructor(
      * Enable/disable physics on the view
      */
     var isPhysicsEnabled = true
+        set(value) {
+            field = value
+            viewGroup.invalidate()
+        }
 
     /**
      * Enable/disable fling for this View
