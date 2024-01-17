@@ -11,12 +11,12 @@ object GitHubClient {
 
     private val github: GitHub by lazy {
         val moshi = Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
+            .add(KotlinJsonAdapterFactory())
+            .build()
         val retrofit = Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .baseUrl("https://api.github.com/")
-                .build()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl("https://api.github.com/")
+            .build()
         retrofit.create(GitHub::class.java)
     }
 
@@ -27,8 +27,8 @@ object GitHubClient {
     interface GitHub {
         @GET("/repos/{owner}/{repo}/contributors")
         suspend fun contributors(
-                @Path("owner") owner: String,
-                @Path("repo") repo: String
+            @Path("owner") owner: String,
+            @Path("repo") repo: String
         ): List<Contributor>
     }
 }

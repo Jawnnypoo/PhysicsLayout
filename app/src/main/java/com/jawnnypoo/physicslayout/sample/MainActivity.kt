@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             if (!isChecked) {
                 for (i in 0 until binding.physicsLayout.childCount) {
                     binding.physicsLayout.getChildAt(i)
-                            .animate().translationY(0f).translationX(0f).rotation(0f)
+                        .animate().translationY(0f).translationX(0f).rotation(0f)
                 }
             }
         }
@@ -54,14 +54,14 @@ class MainActivity : AppCompatActivity() {
         }
         binding.impulseButton.setOnClickListener { binding.physicsLayout.physics.giveRandomImpulse() }
         val circlePhysicsConfig = PhysicsConfig(
-                shape = Shape.CIRCLE
+            shape = Shape.CIRCLE
         )
         binding.addViewButton.setOnClickListener {
             val imageView = ImageView(this)
             imageView.setImageResource(R.drawable.ic_logo)
             val layoutParams = LinearLayout.LayoutParams(
-                    resources.getDimensionPixelSize(R.dimen.square_size),
-                    resources.getDimensionPixelSize(R.dimen.square_size)
+                resources.getDimensionPixelSize(R.dimen.square_size),
+                resources.getDimensionPixelSize(R.dimen.square_size)
             )
             imageView.layoutParams = layoutParams
             imageView.id = index
@@ -87,13 +87,15 @@ class MainActivity : AppCompatActivity() {
             override fun onCollisionExited(viewIdA: Int, viewIdB: Int) {}
         })
 
-        binding.physicsLayout.physics.addOnPhysicsProcessedListener(object : Physics.OnPhysicsProcessedListener {
+        binding.physicsLayout.physics.addOnPhysicsProcessedListener(object :
+            Physics.OnPhysicsProcessedListener {
             override fun onPhysicsProcessed(physics: Physics, world: World) {
                 Log.d(TAG, "onPhysicsProcessed")
             }
         })
 
-        binding.physicsLayout.physics.setOnBodyCreatedListener(object : Physics.OnBodyCreatedListener {
+        binding.physicsLayout.physics.setOnBodyCreatedListener(object :
+            Physics.OnBodyCreatedListener {
             override fun onBodyCreated(view: View, body: Body) {
                 Log.d(TAG, "Body created for view ${view.id}")
             }

@@ -1,18 +1,14 @@
 buildscript {
-    ext.kotlin_version = "1.6.10"
+    ext.kotlin_version = "1.9.10"
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.1.1"
+        classpath 'com.android.tools.build:gradle:8.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.vanniktech:gradle-maven-publish-plugin:0.18.0"
     }
-}
-
-plugins {
-    id "com.github.ben-manes.versions" version "0.42.0"
 }
 
 allprojects {

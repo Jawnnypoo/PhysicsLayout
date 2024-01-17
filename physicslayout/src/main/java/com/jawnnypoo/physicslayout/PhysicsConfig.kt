@@ -41,7 +41,7 @@ data class PhysicsConfig(
 
         fun createDefaultBodyDef(): BodyDef {
             val bodyDef = BodyDef()
-            bodyDef.type = BodyType.DYNAMIC //movable by default
+            bodyDef.type = BodyType.DYNAMIC // movable by default
             return bodyDef
         }
     }

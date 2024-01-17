@@ -36,7 +36,7 @@ class AboutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAboutBinding
     private lateinit var sensorManager: SensorManager
-    private lateinit var gravitySensor: Sensor
+    private var gravitySensor: Sensor? = null
     private lateinit var gimbal: Gimbal
 
     private val sensorEventListener = object : SensorEventListener {
@@ -61,18 +61,22 @@ class AboutActivity : AppCompatActivity() {
         val drawerArrowDrawable = DrawerArrowDrawable(this)
         drawerArrowDrawable.progress = 1.0f
         binding.toolbar.navigationIcon = drawerArrowDrawable
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { finish() }
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)
         val model: ContributorsViewModel by viewModels()
-        model.getContributors().observe(this, { contributors ->
+        model.getContributors().observe(this) { contributors ->
             addContributors(contributors)
-        })
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        sensorManager.registerListener(sensorEventListener, gravitySensor, SensorManager.SENSOR_DELAY_GAME)
+        sensorManager.registerListener(
+            sensorEventListener,
+            gravitySensor,
+            SensorManager.SENSOR_DELAY_GAME
+        )
     }
 
     override fun onPause() {
@@ -88,8 +92,9 @@ class AboutActivity : AppCompatActivity() {
             val contributor = contributors[i]
             val imageView = CircleImageView(this)
             val llp = FlowLayout.LayoutParams(
-                    imageSize,
-                    imageSize)
+                imageSize,
+                imageSize
+            )
             imageView.layoutParams = llp
             imageView.borderWidth = borderSize
             imageView.borderColor = Color.BLACK
@@ -108,8 +113,11 @@ class AboutActivity : AppCompatActivity() {
         try {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, "You don't have a browser... What are you doing?", Toast.LENGTH_LONG)
-                    .show()
+            Toast.makeText(
+                this,
+                "You don't have a browser... What are you doing?",
+                Toast.LENGTH_LONG
+            ).show()
         }
 
     }

@@ -36,18 +36,21 @@ object PhysicsLayoutParamsProcessor {
             config.shape = shape
         }
         if (array.hasValue(R.styleable.Physics_Layout_layout_circleRadius)) {
-            val radius = array.getDimensionPixelSize(R.styleable.Physics_Layout_layout_circleRadius, -1)
+            val radius =
+                array.getDimensionPixelSize(R.styleable.Physics_Layout_layout_circleRadius, -1)
             config.radius = radius.toFloat()
         }
     }
 
     private fun processBodyDef(array: TypedArray, config: PhysicsConfig) {
         if (array.hasValue(R.styleable.Physics_Layout_layout_bodyType)) {
-            val type = array.getInt(R.styleable.Physics_Layout_layout_bodyType, BodyType.DYNAMIC.ordinal)
-            config.bodyDef.type = BodyType.values()[type]
+            val type =
+                array.getInt(R.styleable.Physics_Layout_layout_bodyType, BodyType.DYNAMIC.ordinal)
+            config.bodyDef.type = BodyType.entries.toTypedArray()[type]
         }
         if (array.hasValue(R.styleable.Physics_Layout_layout_fixedRotation)) {
-            val fixedRotation = array.getBoolean(R.styleable.Physics_Layout_layout_fixedRotation, false)
+            val fixedRotation =
+                array.getBoolean(R.styleable.Physics_Layout_layout_fixedRotation, false)
             config.bodyDef.fixedRotation = fixedRotation
         }
     }

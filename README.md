@@ -76,7 +76,7 @@ Each view contained within the layout has a physics configuration that it uses t
   app:layout_density="0.5" />
 ```
 or alternatively, the Physics definition can be made programmatically:
-```java
+```
 val circleView = findViewById<View>(R.id.circle)
 val config = PhysicsConfig(
     shape = Shape.CIRCLE,
@@ -96,7 +96,7 @@ This library was designed with the intention of allowing for playful animations 
 License
 --------
 
-    Copyright 2022 John Carlson
+    Copyright 2024 John Carlson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

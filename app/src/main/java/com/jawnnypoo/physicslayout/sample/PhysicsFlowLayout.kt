@@ -27,7 +27,11 @@ class PhysicsFlowLayout : FlowLayout {
         init(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(attrs)
     }
 
@@ -63,7 +67,8 @@ class PhysicsFlowLayout : FlowLayout {
         return LayoutParams(context, attrs)
     }
 
-    class LayoutParams(c: Context, attrs: AttributeSet) : FlowLayout.LayoutParams(c, attrs), PhysicsLayoutParams {
+    class LayoutParams(c: Context, attrs: AttributeSet) : FlowLayout.LayoutParams(c, attrs),
+        PhysicsLayoutParams {
         override var config: PhysicsConfig = PhysicsLayoutParamsProcessor.process(c, attrs)
     }
 }

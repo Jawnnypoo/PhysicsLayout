@@ -25,12 +25,21 @@ class PhysicsLinearLayout : LinearLayout {
         init(attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init(attrs)
     }
 
     @TargetApi(21)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes) {
         init(attrs)
     }
 
@@ -67,7 +76,8 @@ class PhysicsLinearLayout : LinearLayout {
         return LayoutParams(context, attrs)
     }
 
-    class LayoutParams(c: Context, attrs: AttributeSet?) : LinearLayout.LayoutParams(c, attrs), PhysicsLayoutParams {
+    class LayoutParams(c: Context, attrs: AttributeSet?) : LinearLayout.LayoutParams(c, attrs),
+        PhysicsLayoutParams {
         override var config: PhysicsConfig = PhysicsLayoutParamsProcessor.process(c, attrs)
     }
 }

@@ -2,12 +2,13 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 
 android {
-    compileSdkVersion 32
+    namespace = "com.jawnnypoo.physicslayout.sample"
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.jawnnypoo.physicslayout.sample"
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdk 21
+        targetSdk 34
         versionCode 101
         versionName "1.0.1"
     }
@@ -23,33 +24,23 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    lintOptions {
-        abortOnError false
-    }
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+kotlin {
+    jvmToolchain 17
 }
 
-def coroutinesVersion = "1.6.0"
+def coroutinesVersion = "1.7.1"
 def retrofitVersion = "2.9.0"
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
-    implementation("androidx.activity:activity-ktx:1.4.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.11.0")
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
