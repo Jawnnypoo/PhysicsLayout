@@ -76,7 +76,7 @@ Each view contained within the layout has a physics configuration that it uses t
   app:layout_density="0.5" />
 ```
 or alternatively, the Physics definition can be made programmatically:
-```
+```kotlin
 val circleView = findViewById<View>(R.id.circle)
 val config = PhysicsConfig(
     shape = Shape.CIRCLE,
