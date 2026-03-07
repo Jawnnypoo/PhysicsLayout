@@ -3,9 +3,9 @@ Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/j
 
 See it in action with the sample app:
 
-[![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
+[![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/main/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jawnnypoo/physicslayout/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jawnnypoo/physicslayout)
+[![Build](https://github.com/Jawnnypoo/PhysicsLayout/actions/workflows/ci.yml/badge.svg)](https://github.com/Jawnnypoo/PhysicsLayout/actions/workflows/ci.yml) [![Maven Central](https://img.shields.io/maven-central/v/com.jawnnypoo/physicslayout.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.jawnnypoo/physicslayout)
 
 ## Gradle
 ```groovy

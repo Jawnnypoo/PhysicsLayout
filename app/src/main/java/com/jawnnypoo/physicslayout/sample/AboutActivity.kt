@@ -16,7 +16,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import coil.load
-import com.commit451.gimbal.Gimbal
 import com.jawnnypoo.physicslayout.Physics
 import com.jawnnypoo.physicslayout.PhysicsConfig
 import com.jawnnypoo.physicslayout.Shape
@@ -37,12 +36,10 @@ class AboutActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAboutBinding
     private lateinit var sensorManager: SensorManager
     private var gravitySensor: Sensor? = null
-    private lateinit var gimbal: Gimbal
 
     private val sensorEventListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
             if (event.sensor.type == Sensor.TYPE_GRAVITY) {
-                gimbal.normalizeGravityEvent(event)
                 binding.physicsLayout.physics.setGravity(-event.values[0], event.values[1])
             }
         }
@@ -52,8 +49,6 @@ class AboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gimbal = Gimbal(this)
-        gimbal.lock()
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         findViewById<View>(R.id.sauce).setOnClickListener { openPage("https://github.com/Jawnnypoo/PhysicsLayout") }
