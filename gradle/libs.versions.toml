@@ -1,38 +1,34 @@
 [versions]
-org-jetbrains-kotlin-android = "1.9.10"
-agp = "8.2.1"
-coroutines = "1.7.3"
-retrofit = "2.9.0"
+agp = "9.1.0"
+coroutines = "1.10.2"
 
 [libraries]
 jbox2d = { group = "org.jbox2d", name = "jbox2d-library", version = "2.2.1.1" }
 translation-drag-view-helper = { group = "com.commit451", name = "translationviewdraghelper", version = "2.0.3" }
 
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
-androidx-activity = { group = "androidx.activity", name = "activity-ktx", version = "1.8.2" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
-androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.7.0" }
+androidx-activity = { group = "androidx.activity", name = "activity-ktx", version = "1.10.1" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.9.0" }
 
-google-material = { group = "com.google.android.material", name = "material", version = "1.11.0" }
+google-material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
 
 circle-image-view = { group = "de.hdodenhof", name = "circleimageview", version = "3.1.0" }
 
-coil = { group = "io.coil-kt", name = "coil", version = "2.5.0" }
+coil = { group = "io.coil-kt", name = "coil", version = "2.7.0" }
 
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.11.0" }
+retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version = "2.11.0" }
 
-moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.13.0" }
+moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.15.2" }
 
 flowlayout = { group = "com.wefika", name = "flowlayout", version = "0.4.1" }
 
 gimbal = { group = "com.github.Commit451", name = "Gimbal", version = "3.0.0" }
 
-
 [plugins]
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
-com-android-application = { id = "com.android.application", version.ref = "agp" }
-com-android-library = { id = "com.android.library", version.ref = "agp" }
-com-vanniktech-publish = { id = "com.vanniktech.maven.publish", version = "0.27.0" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version = "0.30.0" }
