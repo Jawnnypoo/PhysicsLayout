@@ -1,18 +1,17 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
 }
 
 android {
     namespace = "com.jawnnypoo.physicslayout.sample"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.jawnnypoo.physicslayout.sample"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 101
-        versionName = "1.0.1"
+        targetSdk = 35
+        versionCode = 102
+        versionName = "1.0.2"
     }
 
     buildFeatures {
@@ -23,15 +22,19 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles("proguard-rules.pro", getDefaultProguardFile("proguard-android.txt"))
+            proguardFiles("proguard-rules.pro", getDefaultProguardFile("proguard-android-optimize.txt"))
         }
         getByName("debug") {
             isMinifyEnabled = false
             isShrinkResources = false
-            proguardFiles("proguard-rules.pro", getDefaultProguardFile("proguard-android.txt"))
+            proguardFiles("proguard-rules.pro", getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 kotlin {
@@ -61,7 +64,6 @@ dependencies {
     implementation(libs.flowlayout) {
         exclude(group = "com.intellij", module = "annotations")
     }
-
 
     implementation(libs.gimbal)
 

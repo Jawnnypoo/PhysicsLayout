@@ -8,7 +8,7 @@ See it in action with the sample app:
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jawnnypoo/physicslayout/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jawnnypoo/physicslayout)
 
 ## Gradle
-```groovy
+```kotlin
 dependencies {
     implementation("com.jawnnypoo:physicslayout:latest.release.here")
 }
@@ -96,7 +96,7 @@ This library was designed with the intention of allowing for playful animations 
 License
 --------
 
-    Copyright 2024 John Carlson
+    Copyright 2025 John Carlson
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
