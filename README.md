@@ -5,7 +5,7 @@ See it in action with the sample app:
 
 [![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.jawnnypoo/physicslayout/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.jawnnypoo/physicslayout)
+[![Maven Central](https://img.shields.io/maven-central/v/com.jawnnypoo/physicslayout)](https://central.sonatype.com/artifact/com.jawnnypoo/physicslayout)
 
 ## Gradle
 ```kotlin
