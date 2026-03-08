@@ -26,7 +26,7 @@ moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.15.2
 
 flowlayout = { group = "com.wefika", name = "flowlayout", version = "0.4.1" }
 
-gimbal = { group = "com.github.Commit451", name = "Gimbal", version = "3.0.0" }
+gimbal = { group = "com.commit451", name = "gimbal", version = "3.1.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
