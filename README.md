@@ -1,6 +1,8 @@
 # PhysicsLayout
 Android layout that simulates physics using [JBox2D](https://github.com/jbox2d/jbox2d). Simply add views, enable physics, and watch them fall!
 
+### Looking for a Compose version? Try [PhysicsBox](https://github.com/Jawnnypoo/PhysicsBox)!
+
 See it in action with the sample app:
 
 [![Google Play](https://raw.githubusercontent.com/Jawnnypoo/PhysicsLayout/master/art/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.jawnnypoo.physicslayout.sample)
